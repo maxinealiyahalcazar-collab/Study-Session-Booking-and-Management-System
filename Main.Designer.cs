@@ -62,7 +62,7 @@
             // 
             // btnSignup2
             // 
-            btnSignup2.Location = new Point(341, 384);
+            btnSignup2.Location = new Point(637, 421);
             btnSignup2.Name = "btnSignup2";
             btnSignup2.Size = new Size(112, 34);
             btnSignup2.TabIndex = 7;
@@ -74,7 +74,7 @@
             // 
             cmbProgram.FormattingEnabled = true;
             cmbProgram.Items.AddRange(new object[] { "Civil Engineering", "Computer Engineering", "Mechanical Engineering", "Electronics Engineering", "Electrical Engineering" });
-            cmbProgram.Location = new Point(486, 160);
+            cmbProgram.Location = new Point(567, 190);
             cmbProgram.Name = "cmbProgram";
             cmbProgram.Size = new Size(182, 33);
             cmbProgram.TabIndex = 6;
@@ -83,35 +83,35 @@
             // 
             cmbYear.FormattingEnabled = true;
             cmbYear.Items.AddRange(new object[] { "1st Year", "2nd Year", "3rd Year", "4th Year" });
-            cmbYear.Location = new Point(486, 82);
+            cmbYear.Location = new Point(567, 93);
             cmbYear.Name = "cmbYear";
             cmbYear.Size = new Size(182, 33);
             cmbYear.TabIndex = 5;
             // 
             // txtConfirmPassword
             // 
-            txtConfirmPassword.Location = new Point(486, 316);
+            txtConfirmPassword.Location = new Point(567, 342);
             txtConfirmPassword.Name = "txtConfirmPassword";
             txtConfirmPassword.Size = new Size(182, 31);
             txtConfirmPassword.TabIndex = 4;
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(486, 239);
+            txtPassword.Location = new Point(567, 267);
             txtPassword.Name = "txtPassword";
             txtPassword.Size = new Size(182, 31);
             txtPassword.TabIndex = 3;
             // 
             // txtUEGmail
             // 
-            txtUEGmail.Location = new Point(114, 276);
+            txtUEGmail.Location = new Point(114, 301);
             txtUEGmail.Name = "txtUEGmail";
             txtUEGmail.Size = new Size(182, 31);
             txtUEGmail.TabIndex = 2;
             // 
             // txtStudentNumber
             // 
-            txtStudentNumber.Location = new Point(114, 190);
+            txtStudentNumber.Location = new Point(114, 217);
             txtStudentNumber.Name = "txtStudentNumber";
             txtStudentNumber.Size = new Size(182, 31);
             txtStudentNumber.TabIndex = 1;

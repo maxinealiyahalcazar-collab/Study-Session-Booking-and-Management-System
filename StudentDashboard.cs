@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Utilities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,8 @@ namespace Study_Session
         DataTable availableTutors = new DataTable();
         HashSet<int> selectedTutorIds = new HashSet<int>();
         private DataTable browseSessions = new DataTable();
+        private bool isEditMode = false;
+        private int editingSessionId = 0;
 
         public StudentDashboard()
         {
@@ -43,6 +46,7 @@ namespace Study_Session
             LoadNotifications();
             LoadAvailableTutors();
             LoadBrowseSessions();
+            LoadMySessions();
 
             dtpSessionDate.MinDate = DateTime.Today;
         }
@@ -86,7 +90,7 @@ namespace Study_Session
         private void LoadStudentProfile()
         {
             UserRepository repository = new UserRepository();
-            DataTable studentProfile = repository.GetStudentProfile(loggedInUserId);
+            DataTable studentProfile = repository.GetUserProfile(loggedInUserId);
             if (studentProfile.Rows.Count > 0)
             {
                 DataRow row = studentProfile.Rows[0];
@@ -195,10 +199,27 @@ namespace Study_Session
 
         }
 
+        private void btnViewProfile_Click(object sender, EventArgs e)
+        {
+            UserRepository repository = new UserRepository();
+
+            DataTable profile = repository.GetUserProfile(loggedInUserId);
+
+            if (profile.Rows.Count > 0)
+            {
+                UserProfile profileForm = new UserProfile(profile.Rows[0]);
+                profileForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Profile not found.");
+            }
+        }
         private void btnCreateSession_Click(object sender, EventArgs e)
         {
             pnlMyProfile.Visible = false;
             pnlCreateSession.Visible = true;
+            isEditMode = false;
         }
 
         private void btnSubmitSession_Click(object sender, EventArgs e)
@@ -232,31 +253,61 @@ namespace Study_Session
                 return;
             }
 
-            UserRepository repository = new UserRepository();
-
-            bool success = repository.createStudentSession(loggedInUserId, txtSubject.Text.Trim(), txtTopic.Text.Trim(), startDateTime, endDateTime, (int)numSlots.Value, (int)numRequiredTutors.Value, txtLocation.Text.Trim());
-
-            if (success)
+            if (isEditMode)
             {
-                MessageBox.Show("Study session successfully created!");
+                bool success = repository.UpdateStudentSession(editingSessionId, txtSubject.Text.Trim(), txtTopic.Text.Trim(), startDateTime, endDateTime, (int)numSlots.Value, (int)numRequiredTutors.Value, txtLocation.Text.Trim());
 
-                txtSubject.Clear();
-                txtTopic.Clear();
-                txtLocation.Clear();
+                if (success)
+                {
+                    MessageBox.Show("Study session successfully updated!");
+                    isEditMode = false;
+                    editingSessionId = 0;
+                }
 
-                selectedTutorIds.Clear();
-                lblSelectedTutors.Text = "Selected Tutors: " + selectedTutorIds.Count();
-
-                numSlots.Value = 0;
-                numRequiredTutors.Value = 0;
-                dtpSessionDate.Value = DateTime.Today;
-                dtpStartTime.Value = DateTime.Now;
-                dtpEndTime.Value = DateTime.Now.AddHours(1);
+                else
+                {
+                    MessageBox.Show("Unable to update the study session.");
+                }
             }
 
             else
             {
-                MessageBox.Show("Unable to create the study session.");
+                UserRepository repository = new UserRepository();
+
+                int newSessionId = repository.createStudentSession(loggedInUserId, txtSubject.Text.Trim(), txtTopic.Text.Trim(), startDateTime, endDateTime, (int)numSlots.Value, (int)numRequiredTutors.Value, txtLocation.Text.Trim(), selectedTutorIds);
+
+                if (newSessionId > 0)
+                {
+                    DataRow sessionData = repository.GetSessionById(newSessionId);
+
+                    if (sessionData != null)
+                    {
+                        using (BookingForm bookingForm = new BookingForm(sessionData, loggedInUserId, true))
+                        {
+                            bookingForm.ShowDialog();
+                        }
+                    }
+
+                    MessageBox.Show("Study session successfully created!");
+
+                    txtSubject.Clear();
+                    txtTopic.Clear();
+                    txtLocation.Clear();
+
+                    selectedTutorIds.Clear();
+                    lblSelectedTutors.Text = "Selected Tutors: " + selectedTutorIds.Count();
+
+                    numSlots.Value = numSlots.Minimum;
+                    numRequiredTutors.Value = numRequiredTutors.Minimum;
+                    dtpSessionDate.Value = DateTime.Today;
+                    dtpStartTime.Value = DateTime.Now;
+                    dtpEndTime.Value = DateTime.Now.AddHours(1);
+                }
+
+                else
+                {
+                    MessageBox.Show("Unable to create the study session.");
+                }
             }
         }
 
@@ -381,7 +432,7 @@ namespace Study_Session
 
         private void LoadBrowseSessions()
         {
-            browseSessions = repository.GetBrowseSessions();
+            browseSessions = repository.GetBrowseSessions(loggedInUserId);
             DisplayBrowseSessions(browseSessions);
         }
 
@@ -395,7 +446,7 @@ namespace Study_Session
                 Panel sessionCard = new Panel();
 
                 sessionCard.Width = flpBrowseSessions.ClientSize.Width - 35;
-                sessionCard.Height = 150;
+                sessionCard.Height = 185;
                 sessionCard.BorderStyle = BorderStyle.FixedSingle;
                 sessionCard.Margin = new Padding(5);
                 sessionCard.Padding = new Padding(10);
@@ -422,21 +473,62 @@ namespace Study_Session
                 lblDateTime.AutoSize = true;
 
                 Label lblSlots = new Label();
-                lblSlots.Text = "Available Slots: " +
-                    row["availableSlots"] + " / " + row["slots"];
+                lblSlots.Text = "Available Slots: " + row["availableSlots"];
                 lblSlots.Location = new Point(10, 90);
                 lblSlots.AutoSize = true;
+
+                int availableSlots = Convert.ToInt32(row["availableSlots"]);
+                int totalSlots = Convert.ToInt32(row["slots"]);
 
                 Label lblLocation = new Label();
                 lblLocation.Text = "Location: " + row["location"].ToString();
                 lblLocation.Location = new Point(10, 115);
                 lblLocation.AutoSize = true;
 
+                int waitlistedCount = Convert.ToInt32(row["waitlistedCount"]);
+
+                Button btnJoinSession = new Button();
+                btnJoinSession.Text = "Join Session";
+                btnJoinSession.Width = 110;
+                btnJoinSession.Height = 30;
+                btnJoinSession.Location = new Point(10, 145);
+                btnJoinSession.Visible = availableSlots > 0;
+
+                Button btnJoinWaitlist = new Button();
+                btnJoinWaitlist.Text = "Join Waitlist";
+                btnJoinWaitlist.Width = 120;
+                btnJoinWaitlist.Height = 30;
+                btnJoinWaitlist.Location = new Point(10, 145);
+                btnJoinWaitlist.Visible = availableSlots <= 0 && waitlistedCount < 5;
+
+                btnJoinSession.Click += (sender, e) =>
+                {
+                    BookingForm bookingForm = new BookingForm(row, loggedInUserId);
+
+                    if (bookingForm.ShowDialog() == DialogResult.OK)
+                    {
+                        DisplayBrowseSessions(repository.GetBrowseSessions(loggedInUserId));
+                    }
+                };
+
+                btnJoinWaitlist.Click += (sender, e) =>
+                {
+                    BookingForm bookingForm = new BookingForm(row, loggedInUserId, false, true);
+                    bookingForm.ShowDialog();
+
+                    if (bookingForm.ShowDialog() == DialogResult.OK)
+                    {
+                        DisplayBrowseSessions(repository.GetBrowseSessions(loggedInUserId));
+                    }
+                };
+
                 sessionCard.Controls.Add(lblSubject);
                 sessionCard.Controls.Add(lblTopic);
                 sessionCard.Controls.Add(lblDateTime);
                 sessionCard.Controls.Add(lblSlots);
                 sessionCard.Controls.Add(lblLocation);
+                sessionCard.Controls.Add(btnJoinSession);
+                sessionCard.Controls.Add(btnJoinWaitlist);
 
                 flpBrowseSessions.Controls.Add(sessionCard);
             }
@@ -461,6 +553,182 @@ namespace Study_Session
             }
 
             DisplayBrowseSessions(filteredSessions);
+        }
+
+        private void btnMySessions_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private Panel CreateSessionCard(DataRow row)
+        {
+            Panel card = new Panel();
+            card.Width = 250;
+            card.BorderStyle = BorderStyle.FixedSingle;
+            card.Margin = new Padding(0, 5, 0, 5);
+
+            Label lblSubject = new Label();
+            lblSubject.Text = row["subject"].ToString();
+            lblSubject.Font = new Font("Arial", 12, FontStyle.Bold);
+            lblSubject.Location = new Point(10, 10);
+            lblSubject.Size = new Size(180, 30);
+            lblSubject.AutoEllipsis = true;
+
+            Label lblTopic = new Label();
+            lblTopic.Text = "Topic: " + row["topic"].ToString();
+            lblTopic.Width = 180;
+            lblTopic.Font = new Font("Arial", 10);
+
+            lblTopic.Location = new Point(10, 45);
+            lblTopic.Width = 270;
+            lblTopic.AutoSize = false;
+            lblTopic.AutoEllipsis = true;
+
+            Size topicSize = TextRenderer.MeasureText(
+                lblTopic.Text,
+                lblTopic.Font,
+                new Size(180, 0),
+                TextFormatFlags.WordBreak
+            );
+
+            lblTopic.Height = topicSize.Height + 5;
+
+            Label lblDate = new Label();
+            lblDate.Text = Convert.ToDateTime(row["startDateTime"])
+                .ToString("MMMM dd, yyyy");
+            lblDate.Location = new Point(10, lblTopic.Bottom + 10);
+            lblDate.AutoSize = true;
+
+            Button btnView = new Button();
+            btnView.Text = "View Details";
+            btnView.Size = new Size(110, 35);
+            btnView.Location = new Point(10, lblDate.Bottom + 10);
+
+            string category = "";
+
+            if (DateTime.Now < Convert.ToDateTime(row["startDateTime"]))
+                category = "Upcoming";
+            else if (DateTime.Now <= Convert.ToDateTime(row["endDateTime"]))
+                category = "Ongoing";
+            else
+                category = "Completed";
+
+            btnView.Click += (sender, e) =>
+            {
+                SessionDetails detailsForm = new SessionDetails(row, category, loggedInUserId, data => LoadSessionForEditing(data));
+
+                if (detailsForm.ShowDialog() == DialogResult.OK)
+                {
+                    LoadMySessions();
+                }
+            };
+
+            card.Height = btnView.Bottom + 15;
+
+            card.Controls.Add(lblSubject);
+            card.Controls.Add(lblTopic);
+            card.Controls.Add(lblDate);
+            card.Controls.Add(btnView);
+
+            return card;
+        }
+        private void LoadMySessions()
+        {
+            repository.CancelUnderstaffedSessions();
+            DataTable sessions = repository.GetMySessions(loggedInUserId);
+
+            flpUpcomingSessions.Controls.Clear();
+            flpOngoingSessions.Controls.Clear();
+            flpCompletedSessions.Controls.Clear();
+
+            DateTime now = DateTime.Now;
+
+            foreach (DataRow row in sessions.Rows)
+            {
+                DateTime start = Convert.ToDateTime(row["startDateTime"]);
+                DateTime end = Convert.ToDateTime(row["endDateTime"]);
+                string status = row["sessionStatus"].ToString();
+
+
+                if (status == "Completed")
+                {
+                    flpCompletedSessions.Controls.Add(CreateSessionCard(row));
+                }
+                else if (now < start)
+                {
+                    flpUpcomingSessions.Controls.Add(CreateSessionCard(row));
+                }
+                else if (now >= start && now <= end)
+                {
+                    flpOngoingSessions.Controls.Add(CreateSessionCard(row));
+                }
+                else
+                {
+                    flpCompletedSessions.Controls.Add(CreateSessionCard(row));
+                }
+            }
+        }
+
+        private void LoadSessionForEditing(DataRow data)
+        {
+            isEditMode = true;
+            selectedTutorIds.Clear();
+            editingSessionId = Convert.ToInt32(data["sessionId"]);
+
+            UserRepository repository = new UserRepository();
+
+            DataTable selectedTutors = repository.GetAcceptedSessionTutors(editingSessionId);
+            foreach (DataRow tutor in selectedTutors.Rows)
+            {
+                selectedTutorIds.Add(Convert.ToInt32(tutor["tutorId"]));
+            }
+
+            txtSubject.Text = data["subject"].ToString();
+            txtTopic.Text = data["topic"].ToString();
+            txtLocation.Text = data["location"].ToString();
+
+            DateTime start = Convert.ToDateTime(data["startDateTime"]);
+            DateTime end = Convert.ToDateTime(data["endDateTime"]);
+
+            dtpSessionDate.Value = start;
+            dtpStartTime.Value = start;
+            dtpEndTime.Value = end;
+
+            numSlots.Value = Convert.ToDecimal(data["slots"]);
+
+            if (data["requiredTutors"] != DBNull.Value)
+            {
+                numRequiredTutors.Value = Convert.ToDecimal(data["requiredTutors"]);
+            }
+
+            btnSubmitSession.Text = "Save Changes";
+
+            pnlCreateSession.Visible = true;
+            pnlCreateSession.BringToFront();
+            DisplayTutorList(txtSearchTutor.Text);
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to log-out?", "Confirm Logout",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                this.Hide();
+
+                Main loginForm = new Main();
+                loginForm.Show();
+
+                this.Close();
+            }
+
+        }
+
+        private void btnSwitchTutorMode_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

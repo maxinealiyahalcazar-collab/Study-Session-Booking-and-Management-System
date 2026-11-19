@@ -50,6 +50,7 @@
             lblNotificationsTitle = new Label();
             flpNotifications = new FlowLayoutPanel();
             pnlMyProfile = new Panel();
+            btnViewProfile = new Button();
             btnCancelProfile = new Button();
             btnSaveProfile = new Button();
             lblProfileProgramValue = new Label();
@@ -95,6 +96,16 @@
             txtSearchSessions = new TextBox();
             lblSearchSessions = new Label();
             flpBrowseSessions = new FlowLayoutPanel();
+            flpUpcomingSessions = new FlowLayoutPanel();
+            flpOngoingSessions = new FlowLayoutPanel();
+            flpCompletedSessions = new FlowLayoutPanel();
+            pnlMySession = new Panel();
+            lblCompleted = new Label();
+            lblOngoing = new Label();
+            lblUpcoming = new Label();
+            lblMySessionsDescription = new Label();
+            lblMySessions = new Label();
+            btnSwitchTutorMode = new Button();
             pnlSidebar.SuspendLayout();
             pnlBookedSessions.SuspendLayout();
             pnlWaitlistedSessions.SuspendLayout();
@@ -105,11 +116,13 @@
             ((System.ComponentModel.ISupportInitialize)numSlots).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numRequiredTutors).BeginInit();
             pnlBrowseSession.SuspendLayout();
+            pnlMySession.SuspendLayout();
             SuspendLayout();
             // 
             // pnlSidebar
             // 
             pnlSidebar.BackColor = Color.MediumSlateBlue;
+            pnlSidebar.Controls.Add(btnSwitchTutorMode);
             pnlSidebar.Controls.Add(btnLogout);
             pnlSidebar.Controls.Add(btnBrowseSession);
             pnlSidebar.Controls.Add(btnCreateSession);
@@ -130,6 +143,7 @@
             btnLogout.TabIndex = 7;
             btnLogout.Text = "Logout";
             btnLogout.UseVisualStyleBackColor = true;
+            btnLogout.Click += btnLogout_Click;
             // 
             // btnBrowseSession
             // 
@@ -158,6 +172,7 @@
             btnMySessions.TabIndex = 4;
             btnMySessions.Text = "My Sessions";
             btnMySessions.UseVisualStyleBackColor = true;
+            btnMySessions.Click += btnMySessions_Click;
             // 
             // btnMyProfile
             // 
@@ -314,6 +329,7 @@
             // 
             // pnlMyProfile
             // 
+            pnlMyProfile.Controls.Add(btnViewProfile);
             pnlMyProfile.Controls.Add(btnCancelProfile);
             pnlMyProfile.Controls.Add(btnSaveProfile);
             pnlMyProfile.Controls.Add(lblProfileProgramValue);
@@ -336,6 +352,16 @@
             pnlMyProfile.Size = new Size(1178, 644);
             pnlMyProfile.TabIndex = 7;
             pnlMyProfile.Visible = false;
+            // 
+            // btnViewProfile
+            // 
+            btnViewProfile.Location = new Point(971, 451);
+            btnViewProfile.Name = "btnViewProfile";
+            btnViewProfile.Size = new Size(131, 34);
+            btnViewProfile.TabIndex = 17;
+            btnViewProfile.Text = "View Profile";
+            btnViewProfile.UseVisualStyleBackColor = true;
+            btnViewProfile.Click += btnViewProfile_Click;
             // 
             // btnCancelProfile
             // 
@@ -397,7 +423,7 @@
             // 
             // btnEditProfile
             // 
-            btnEditProfile.Location = new Point(815, 427);
+            btnEditProfile.Location = new Point(815, 451);
             btnEditProfile.Name = "btnEditProfile";
             btnEditProfile.Size = new Size(131, 34);
             btnEditProfile.TabIndex = 10;
@@ -411,6 +437,7 @@
             txtEditFullName.Name = "txtEditFullName";
             txtEditFullName.Size = new Size(444, 31);
             txtEditFullName.TabIndex = 9;
+            txtEditFullName.Visible = false;
             // 
             // txtEditProgram
             // 
@@ -418,6 +445,7 @@
             txtEditProgram.Name = "txtEditProgram";
             txtEditProgram.Size = new Size(444, 31);
             txtEditProgram.TabIndex = 8;
+            txtEditProgram.Visible = false;
             // 
             // txtEditUEGmail
             // 
@@ -425,6 +453,7 @@
             txtEditUEGmail.Name = "txtEditUEGmail";
             txtEditUEGmail.Size = new Size(444, 31);
             txtEditUEGmail.TabIndex = 7;
+            txtEditUEGmail.Visible = false;
             // 
             // txtEditYear
             // 
@@ -432,6 +461,7 @@
             txtEditYear.Name = "txtEditYear";
             txtEditYear.Size = new Size(444, 31);
             txtEditYear.TabIndex = 6;
+            txtEditYear.Visible = false;
             // 
             // lblProfileYear
             // 
@@ -763,15 +793,116 @@
             flpBrowseSessions.TabIndex = 0;
             flpBrowseSessions.WrapContents = false;
             // 
+            // flpUpcomingSessions
+            // 
+            flpUpcomingSessions.AutoScroll = true;
+            flpUpcomingSessions.FlowDirection = FlowDirection.TopDown;
+            flpUpcomingSessions.Location = new Point(261, 193);
+            flpUpcomingSessions.Name = "flpUpcomingSessions";
+            flpUpcomingSessions.Size = new Size(278, 426);
+            flpUpcomingSessions.TabIndex = 0;
+            flpUpcomingSessions.WrapContents = false;
+            // 
+            // flpOngoingSessions
+            // 
+            flpOngoingSessions.AutoScroll = true;
+            flpOngoingSessions.FlowDirection = FlowDirection.TopDown;
+            flpOngoingSessions.Location = new Point(545, 193);
+            flpOngoingSessions.Name = "flpOngoingSessions";
+            flpOngoingSessions.Size = new Size(301, 426);
+            flpOngoingSessions.TabIndex = 1;
+            flpOngoingSessions.WrapContents = false;
+            // 
+            // flpCompletedSessions
+            // 
+            flpCompletedSessions.AutoScroll = true;
+            flpCompletedSessions.FlowDirection = FlowDirection.TopDown;
+            flpCompletedSessions.Location = new Point(852, 193);
+            flpCompletedSessions.Name = "flpCompletedSessions";
+            flpCompletedSessions.Size = new Size(301, 426);
+            flpCompletedSessions.TabIndex = 2;
+            flpCompletedSessions.WrapContents = false;
+            // 
+            // pnlMySession
+            // 
+            pnlMySession.Controls.Add(lblCompleted);
+            pnlMySession.Controls.Add(lblOngoing);
+            pnlMySession.Controls.Add(lblUpcoming);
+            pnlMySession.Controls.Add(lblMySessionsDescription);
+            pnlMySession.Controls.Add(lblMySessions);
+            pnlMySession.Controls.Add(flpCompletedSessions);
+            pnlMySession.Controls.Add(flpOngoingSessions);
+            pnlMySession.Controls.Add(flpUpcomingSessions);
+            pnlMySession.Location = new Point(0, 0);
+            pnlMySession.Name = "pnlMySession";
+            pnlMySession.Size = new Size(1178, 644);
+            pnlMySession.TabIndex = 24;
+            // 
+            // lblCompleted
+            // 
+            lblCompleted.AutoSize = true;
+            lblCompleted.Location = new Point(852, 153);
+            lblCompleted.Name = "lblCompleted";
+            lblCompleted.Size = new Size(100, 25);
+            lblCompleted.TabIndex = 7;
+            lblCompleted.Text = "Completed";
+            // 
+            // lblOngoing
+            // 
+            lblOngoing.AutoSize = true;
+            lblOngoing.Location = new Point(547, 149);
+            lblOngoing.Name = "lblOngoing";
+            lblOngoing.Size = new Size(83, 25);
+            lblOngoing.TabIndex = 6;
+            lblOngoing.Text = "Ongoing";
+            // 
+            // lblUpcoming
+            // 
+            lblUpcoming.AutoSize = true;
+            lblUpcoming.Location = new Point(261, 148);
+            lblUpcoming.Name = "lblUpcoming";
+            lblUpcoming.Size = new Size(95, 25);
+            lblUpcoming.TabIndex = 5;
+            lblUpcoming.Text = "Upcoming";
+            // 
+            // lblMySessionsDescription
+            // 
+            lblMySessionsDescription.AutoSize = true;
+            lblMySessionsDescription.Location = new Point(261, 76);
+            lblMySessionsDescription.Name = "lblMySessionsDescription";
+            lblMySessionsDescription.Size = new Size(482, 25);
+            lblMySessionsDescription.TabIndex = 4;
+            lblMySessionsDescription.Text = "Here are your upcoming, ongoing, and completed sessions";
+            // 
+            // lblMySessions
+            // 
+            lblMySessions.AutoSize = true;
+            lblMySessions.Location = new Point(261, 38);
+            lblMySessions.Name = "lblMySessions";
+            lblMySessions.Size = new Size(110, 25);
+            lblMySessions.TabIndex = 3;
+            lblMySessions.Text = "My Sessions";
+            // 
+            // btnSwitchTutorMode
+            // 
+            btnSwitchTutorMode.Location = new Point(12, 598);
+            btnSwitchTutorMode.Name = "btnSwitchTutorMode";
+            btnSwitchTutorMode.Size = new Size(204, 34);
+            btnSwitchTutorMode.TabIndex = 8;
+            btnSwitchTutorMode.Text = "Switch to Tutor Mode";
+            btnSwitchTutorMode.UseVisualStyleBackColor = true;
+            btnSwitchTutorMode.Click += btnSwitchTutorMode_Click;
+            // 
             // StudentDashboard
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1178, 644);
             Controls.Add(pnlSidebar);
-            Controls.Add(pnlBrowseSession);
             Controls.Add(pnlMyProfile);
             Controls.Add(pnlCreateSession);
+            Controls.Add(pnlMySession);
+            Controls.Add(pnlBrowseSession);
             Controls.Add(pnlNotification);
             Controls.Add(pnlCompletedSessions);
             Controls.Add(pnlWaitlistedSessions);
@@ -799,6 +930,8 @@
             ((System.ComponentModel.ISupportInitialize)numRequiredTutors).EndInit();
             pnlBrowseSession.ResumeLayout(false);
             pnlBrowseSession.PerformLayout();
+            pnlMySession.ResumeLayout(false);
+            pnlMySession.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -873,5 +1006,16 @@
         private TextBox txtSearchSessions;
         private Label lblSearchSessions;
         private FlowLayoutPanel flpBrowseSessions;
+        private FlowLayoutPanel flpUpcomingSessions;
+        private FlowLayoutPanel flpOngoingSessions;
+        private FlowLayoutPanel flpCompletedSessions;
+        private Panel pnlMySession;
+        private Label lblMySessions;
+        private Label lblCompleted;
+        private Label lblOngoing;
+        private Label lblUpcoming;
+        private Label lblMySessionsDescription;
+        private Button btnViewProfile;
+        private Button btnSwitchTutorMode;
     }
 }
