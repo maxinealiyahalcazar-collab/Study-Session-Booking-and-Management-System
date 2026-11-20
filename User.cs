@@ -24,6 +24,11 @@ namespace Study_Session
             get { return fullName; }
         }
 
+        public string StudentNumber
+        {
+            get { return studentNumber; }
+        }
+
         public string UEGmail
         {
             get { return ueGmail; }
@@ -38,7 +43,7 @@ namespace Study_Session
             get { return program; }
         }
 
-        protected string PasswordHash
+        public string PasswordHash
         {
             get { return passwordHash; }
         }
@@ -54,7 +59,13 @@ namespace Study_Session
             this.passwordHash = passwordHash;
         }
 
-        public abstract void LoadDashboard(Panel dashboardPanel);  
+        public abstract void LoadDashboard(Panel dashboardPanel);
+
+        public bool login()
+        {
+            return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+        }
+    }
     }
 }
 

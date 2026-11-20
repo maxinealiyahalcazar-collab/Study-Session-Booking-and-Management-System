@@ -48,8 +48,8 @@
             lblUploadMaterial = new Label();
             pnlRateTutor = new Panel();
             pnlViewMaterials = new Panel();
-            lblNoMaterials = new Label();
             flpMaterials = new FlowLayoutPanel();
+            lblNoMaterials = new Label();
             lblViewMaterialsTitle = new Label();
             ((System.ComponentModel.ISupportInitialize)numRating).BeginInit();
             pnlUploadMaterials.SuspendLayout();
@@ -244,21 +244,12 @@
             // 
             // pnlViewMaterials
             // 
-            pnlViewMaterials.Controls.Add(flpMaterials);
             pnlViewMaterials.Controls.Add(lblViewMaterialsTitle);
+            pnlViewMaterials.Controls.Add(flpMaterials);
             pnlViewMaterials.Location = new Point(0, 0);
             pnlViewMaterials.Name = "pnlViewMaterials";
             pnlViewMaterials.Size = new Size(506, 609);
             pnlViewMaterials.TabIndex = 11;
-            // 
-            // lblNoMaterials
-            // 
-            lblNoMaterials.AutoSize = true;
-            lblNoMaterials.Location = new Point(3, 0);
-            lblNoMaterials.Name = "lblNoMaterials";
-            lblNoMaterials.Size = new Size(407, 25);
-            lblNoMaterials.TabIndex = 2;
-            lblNoMaterials.Text = "No materials have been uploaded for this session.";
             // 
             // flpMaterials
             // 
@@ -269,6 +260,15 @@
             flpMaterials.Size = new Size(415, 476);
             flpMaterials.TabIndex = 1;
             flpMaterials.WrapContents = false;
+            // 
+            // lblNoMaterials
+            // 
+            lblNoMaterials.AutoSize = true;
+            lblNoMaterials.Location = new Point(3, 0);
+            lblNoMaterials.Name = "lblNoMaterials";
+            lblNoMaterials.Size = new Size(407, 25);
+            lblNoMaterials.TabIndex = 2;
+            lblNoMaterials.Text = "No materials have been uploaded for this session.";
             // 
             // lblViewMaterialsTitle
             // 

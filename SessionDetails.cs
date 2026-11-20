@@ -13,16 +13,14 @@ namespace Study_Session
         private string sessionCategory;
         private int loggedInUserId;
         private int sessionId;
-        private DataRow sessionData;
-        private Action<DataRow> editSessionCallback;
-        UserRepository repository = new UserRepository();
-        public SessionDetails()
-        {
-            InitializeComponent();
+        private Action<Session> editSessionCallback;
+        private UserRepository userRepository = new UserRepository();
+        private SessionRepository sessionRepository = new SessionRepository();
+        private BookingRepository bookingRepository = new BookingRepository();
 
-        }
+        private Session sessionData;
 
-        public SessionDetails(DataRow sessionData, string category, int userId, Action<DataRow> editCallback)
+        public SessionDetails(Session sessionData, string category, int userId, Action<Session> editCallback)
         {
             InitializeComponent();
 
@@ -36,7 +34,7 @@ namespace Study_Session
 
             sessionCategory = category;
             loggedInUserId = userId;
-            sessionId = Convert.ToInt32(sessionData[sessionId]);
+            sessionId = sessionData.SessionId;
             this.sessionData = sessionData;
             editSessionCallback = editCallback;
 
@@ -44,21 +42,23 @@ namespace Study_Session
             btnUploadMaterials.Visible = category == "Completed";
             btnViewMaterials.Visible = category == "Completed";
 
-            lblSubject.Text = sessionData["subject"].ToString();
-            lblTopic.Text = "Topic: " + sessionData["topic"].ToString();
+            lblSubject.Text = sessionData.Subject;
+            lblTopic.Text = "Topic: " + sessionData.Topic;
 
-            DateTime start = Convert.ToDateTime(sessionData["startDateTime"]);
-            DateTime end = Convert.ToDateTime(sessionData["endDateTime"]);
+            DateTime start = Convert.ToDateTime(sessionData.StartDateTime);
+            DateTime end = Convert.ToDateTime(sessionData.EndDateTime);
 
             lblDate.Text = "Date: " + start.ToString("MMMM dd, yyyy");
             lblTime.Text = "Time: " + start.ToString("hh:mm tt")
                            + " - " + end.ToString("hh:mm tt");
 
-            lblLocation.Text = "Location: " + sessionData["location"].ToString();
-            lblSlots.Text = "Slots: " + sessionData["slots"].ToString();
-            lblStatus.Text = "Status: " + sessionData["sessionStatus"].ToString();
-
-            bool isCreator = Convert.ToInt32(sessionData["isCreator"]) == 1;
+            lblLocation.Text = "Location: " + sessionData.Location;
+            lblSlots.Text = "Slots: " + sessionData.Slots;
+            lblStatus.Text = "Status: " + sessionData.SessionStatus;
+           
+            int studentId = userRepository.GetStudentIdByUserId(loggedInUserId);
+            bool isCreator = sessionData.CreatorStudentId == studentId;
+           
 
             if (sessionCategory == "Upcoming")
             {
@@ -87,7 +87,7 @@ namespace Study_Session
 
             if (confirm == DialogResult.Yes)
             {
-                bool success = repository.CancelBooking(loggedInUserId, sessionId);
+                bool success = bookingRepository.CancelBooking(loggedInUserId, sessionId);
 
                 if (success)
                 {
@@ -112,7 +112,9 @@ namespace Study_Session
 
             if (confirm == DialogResult.Yes)
             {
-                bool success = repository.CancelSession(sessionId);
+                string oldStatus = sessionData.SessionStatus;
+                sessionData.CancelSession();
+                bool success = sessionRepository.CancelSession(sessionData);
 
                 if (success)
                 {
@@ -124,6 +126,7 @@ namespace Study_Session
 
                 else
                 {
+                    sessionData.RestoreSessionStatus(oldStatus);
                     MessageBox.Show("Unable to cancel your session.");
                 }
             }
@@ -148,9 +151,9 @@ namespace Study_Session
 
             if (result == DialogResult.Yes)
             {
-                UserRepository repository = new UserRepository();
-
-                bool success = repository.CompleteSession(sessionId);
+                string oldStatus = sessionData.SessionStatus;
+                sessionData.CompleteSession();
+                bool success = sessionRepository.UpdateSessionStatus(sessionData);
 
                 if (success)
                 {
@@ -162,6 +165,8 @@ namespace Study_Session
                 else
                 {
                     MessageBox.Show("Unable to complete the session.");
+                    sessionData.RestoreSessionStatus(oldStatus);
+
                 }
             }
         }
@@ -178,7 +183,7 @@ namespace Study_Session
                 return;
             }
 
-            SessionActivityForm ratingForm = new SessionActivityForm(sessionId, studentId, "Rate");
+            SessionActivityForm ratingForm = new SessionActivityForm(sessionData, studentId, "Rate");
             ratingForm.ShowDialog();
         }
 
@@ -194,8 +199,7 @@ namespace Study_Session
                 return;
             }
 
-            SessionActivityForm activityForm = new SessionActivityForm(sessionId, studentId, "Upload");
-
+            SessionActivityForm activityForm = new SessionActivityForm(sessionData, studentId, "Upload");
             activityForm.ShowDialog();
         }
 
@@ -211,9 +215,7 @@ namespace Study_Session
                 return;
             }
 
-            SessionActivityForm activityForm =
-                new SessionActivityForm(sessionId, studentId, "View");
-
+            SessionActivityForm activityForm = new SessionActivityForm(sessionData, studentId, "View");
             activityForm.ShowDialog();
         }
     }

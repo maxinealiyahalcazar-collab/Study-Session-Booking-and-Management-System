@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Study_Session
 {
-    internal class Student : User
+    public class Student : User
     {
         private int studentId;
         public int StudentId
@@ -20,7 +20,8 @@ namespace Study_Session
 
         public override void LoadDashboard(Panel dashboardPanel)
         {
-           MessageBox.Show("Student Dashboard loaded.");
+            StudentDashboard dashboard = new StudentDashboard(this);
+            dashboard.Show();
         }
     }
 }

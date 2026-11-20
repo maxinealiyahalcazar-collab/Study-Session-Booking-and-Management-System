@@ -6,6 +6,7 @@ namespace Study_Session
 {
     public partial class Main : Form
     {
+        private UserRepository userRepository = new UserRepository();
         public Main()
         {
             InitializeComponent();
@@ -29,9 +30,14 @@ namespace Study_Session
 
             try
             {
-                UserRepository repository = new UserRepository();
-                int userId = repository.RegisterUser(txtFullName.Text.Trim(), txtStudentNumber.Text.Trim(), txtUEGmail.Text.Trim(), cmbYear.SelectedItem.ToString(), cmbProgram.SelectedItem.ToString(), txtPassword.Text);
 
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(txtPassword.Text);
+
+                Student newStudent = new Student(0, 0, txtFullName.Text.Trim(), txtStudentNumber.Text.Trim(), txtUEGmail.Text.Trim(), cmbYear.SelectedItem.ToString(),
+                cmbProgram.SelectedItem.ToString(), passwordHash);
+
+                Student registeredStudent = userRepository.RegisterUser(newStudent);
+                
                 MessageBox.Show("User registered successfully.");
 
                 txtFullName.Clear();
@@ -61,17 +67,17 @@ namespace Study_Session
             {
                 UserRepository repository = new UserRepository();
 
-                int userId = repository.LoginUser(txtStudentNumber2.Text.Trim(), txtPassword2.Text);
+                User loggedInUser = repository.LoginUser(txtStudentNumber2.Text.Trim(), txtPassword2.Text);
 
-                if (userId == 0)
+                if (loggedInUser == null)
                 {
                     MessageBox.Show("Invalid student number or password.");
                     return;
                 }
 
                 MessageBox.Show("Login successful.");
-                StudentDashboard dashboard = new StudentDashboard(userId);
-                dashboard.Show();
+
+                loggedInUser.LoadDashboard(null);
                 this.Hide();
             }
 

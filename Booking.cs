@@ -59,24 +59,25 @@ namespace Study_Session
             this.waitlistPosition = waitlistPosition;
         }
 
-        public void UpdateBookingStatus(string bookingStatus)
+        public void confirmBooking()
         {
-            this.bookingStatus = bookingStatus;
-        } 
-      
-        public void UpdatePaymentStatus(string paymentStatus)
-        {
-            this.paymentStatus = paymentStatus;
+            bookingStatus = "Accepted";
         }
 
-        public void UpdateWaitlistPosition(int? waitlistPosition)
+        public void completePayment()
         {
-            this.waitlistPosition = waitlistPosition;
+            paymentStatus = "Paid";
+        }
+
+        public void moveFromWaitlist()
+        {
+            bookingStatus = "Accepted";
+            waitlistPosition = null;
         }
 
         public void cancelBooking()
         {
-            bookingStatus = "Cancelled";
+            bookingStatus = "Withdrawn";
             waitlistPosition = null;
         }
     }

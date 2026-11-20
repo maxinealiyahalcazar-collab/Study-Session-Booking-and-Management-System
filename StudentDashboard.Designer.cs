@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             pnlSidebar = new Panel();
+            btnSwitchTutorMode = new Button();
             btnLogout = new Button();
             btnBrowseSession = new Button();
             btnCreateSession = new Button();
@@ -105,7 +106,8 @@
             lblUpcoming = new Label();
             lblMySessionsDescription = new Label();
             lblMySessions = new Label();
-            btnSwitchTutorMode = new Button();
+            flpWaitlistedSessions = new FlowLayoutPanel();
+            lblWaitlist = new Label();
             pnlSidebar.SuspendLayout();
             pnlBookedSessions.SuspendLayout();
             pnlWaitlistedSessions.SuspendLayout();
@@ -134,6 +136,16 @@
             pnlSidebar.Name = "pnlSidebar";
             pnlSidebar.Size = new Size(230, 644);
             pnlSidebar.TabIndex = 0;
+            // 
+            // btnSwitchTutorMode
+            // 
+            btnSwitchTutorMode.Location = new Point(12, 598);
+            btnSwitchTutorMode.Name = "btnSwitchTutorMode";
+            btnSwitchTutorMode.Size = new Size(204, 34);
+            btnSwitchTutorMode.TabIndex = 8;
+            btnSwitchTutorMode.Text = "Switch to Tutor Mode";
+            btnSwitchTutorMode.UseVisualStyleBackColor = true;
+            btnSwitchTutorMode.Click += btnSwitchTutorMode_Click;
             // 
             // btnLogout
             // 
@@ -349,7 +361,7 @@
             pnlMyProfile.Controls.Add(lblProfileTitle);
             pnlMyProfile.Location = new Point(0, 0);
             pnlMyProfile.Name = "pnlMyProfile";
-            pnlMyProfile.Size = new Size(1178, 644);
+            pnlMyProfile.Size = new Size(1415, 644);
             pnlMyProfile.TabIndex = 7;
             pnlMyProfile.Visible = false;
             // 
@@ -544,7 +556,7 @@
             pnlCreateSession.Controls.Add(lblCreateSessionTitle);
             pnlCreateSession.Location = new Point(0, 0);
             pnlCreateSession.Name = "pnlCreateSession";
-            pnlCreateSession.Size = new Size(1178, 644);
+            pnlCreateSession.Size = new Size(1412, 644);
             pnlCreateSession.TabIndex = 17;
             pnlCreateSession.Visible = false;
             // 
@@ -797,9 +809,9 @@
             // 
             flpUpcomingSessions.AutoScroll = true;
             flpUpcomingSessions.FlowDirection = FlowDirection.TopDown;
-            flpUpcomingSessions.Location = new Point(261, 193);
+            flpUpcomingSessions.Location = new Point(544, 193);
             flpUpcomingSessions.Name = "flpUpcomingSessions";
-            flpUpcomingSessions.Size = new Size(278, 426);
+            flpUpcomingSessions.Size = new Size(265, 426);
             flpUpcomingSessions.TabIndex = 0;
             flpUpcomingSessions.WrapContents = false;
             // 
@@ -807,9 +819,9 @@
             // 
             flpOngoingSessions.AutoScroll = true;
             flpOngoingSessions.FlowDirection = FlowDirection.TopDown;
-            flpOngoingSessions.Location = new Point(545, 193);
+            flpOngoingSessions.Location = new Point(826, 193);
             flpOngoingSessions.Name = "flpOngoingSessions";
-            flpOngoingSessions.Size = new Size(301, 426);
+            flpOngoingSessions.Size = new Size(276, 426);
             flpOngoingSessions.TabIndex = 1;
             flpOngoingSessions.WrapContents = false;
             // 
@@ -817,14 +829,16 @@
             // 
             flpCompletedSessions.AutoScroll = true;
             flpCompletedSessions.FlowDirection = FlowDirection.TopDown;
-            flpCompletedSessions.Location = new Point(852, 193);
+            flpCompletedSessions.Location = new Point(1119, 189);
             flpCompletedSessions.Name = "flpCompletedSessions";
-            flpCompletedSessions.Size = new Size(301, 426);
+            flpCompletedSessions.Size = new Size(269, 426);
             flpCompletedSessions.TabIndex = 2;
             flpCompletedSessions.WrapContents = false;
             // 
             // pnlMySession
             // 
+            pnlMySession.Controls.Add(lblWaitlist);
+            pnlMySession.Controls.Add(flpWaitlistedSessions);
             pnlMySession.Controls.Add(lblCompleted);
             pnlMySession.Controls.Add(lblOngoing);
             pnlMySession.Controls.Add(lblUpcoming);
@@ -835,13 +849,13 @@
             pnlMySession.Controls.Add(flpUpcomingSessions);
             pnlMySession.Location = new Point(0, 0);
             pnlMySession.Name = "pnlMySession";
-            pnlMySession.Size = new Size(1178, 644);
+            pnlMySession.Size = new Size(1415, 644);
             pnlMySession.TabIndex = 24;
             // 
             // lblCompleted
             // 
             lblCompleted.AutoSize = true;
-            lblCompleted.Location = new Point(852, 153);
+            lblCompleted.Location = new Point(1119, 148);
             lblCompleted.Name = "lblCompleted";
             lblCompleted.Size = new Size(100, 25);
             lblCompleted.TabIndex = 7;
@@ -850,7 +864,7 @@
             // lblOngoing
             // 
             lblOngoing.AutoSize = true;
-            lblOngoing.Location = new Point(547, 149);
+            lblOngoing.Location = new Point(826, 149);
             lblOngoing.Name = "lblOngoing";
             lblOngoing.Size = new Size(83, 25);
             lblOngoing.TabIndex = 6;
@@ -859,7 +873,7 @@
             // lblUpcoming
             // 
             lblUpcoming.AutoSize = true;
-            lblUpcoming.Location = new Point(261, 148);
+            lblUpcoming.Location = new Point(545, 149);
             lblUpcoming.Name = "lblUpcoming";
             lblUpcoming.Size = new Size(95, 25);
             lblUpcoming.TabIndex = 5;
@@ -883,25 +897,34 @@
             lblMySessions.TabIndex = 3;
             lblMySessions.Text = "My Sessions";
             // 
-            // btnSwitchTutorMode
+            // flpWaitlistedSessions
             // 
-            btnSwitchTutorMode.Location = new Point(12, 598);
-            btnSwitchTutorMode.Name = "btnSwitchTutorMode";
-            btnSwitchTutorMode.Size = new Size(204, 34);
-            btnSwitchTutorMode.TabIndex = 8;
-            btnSwitchTutorMode.Text = "Switch to Tutor Mode";
-            btnSwitchTutorMode.UseVisualStyleBackColor = true;
-            btnSwitchTutorMode.Click += btnSwitchTutorMode_Click;
+            flpWaitlistedSessions.AutoScroll = true;
+            flpWaitlistedSessions.FlowDirection = FlowDirection.TopDown;
+            flpWaitlistedSessions.Location = new Point(257, 193);
+            flpWaitlistedSessions.Name = "flpWaitlistedSessions";
+            flpWaitlistedSessions.Size = new Size(265, 426);
+            flpWaitlistedSessions.TabIndex = 8;
+            flpWaitlistedSessions.WrapContents = false;
+            // 
+            // lblWaitlist
+            // 
+            lblWaitlist.AutoSize = true;
+            lblWaitlist.Location = new Point(261, 143);
+            lblWaitlist.Name = "lblWaitlist";
+            lblWaitlist.Size = new Size(69, 25);
+            lblWaitlist.TabIndex = 9;
+            lblWaitlist.Text = "Waitlist";
             // 
             // StudentDashboard
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1178, 644);
+            ClientSize = new Size(1413, 644);
             Controls.Add(pnlSidebar);
-            Controls.Add(pnlMyProfile);
-            Controls.Add(pnlCreateSession);
             Controls.Add(pnlMySession);
+            Controls.Add(pnlCreateSession);
+            Controls.Add(pnlMyProfile);
             Controls.Add(pnlBrowseSession);
             Controls.Add(pnlNotification);
             Controls.Add(pnlCompletedSessions);
@@ -1017,5 +1040,7 @@
         private Label lblMySessionsDescription;
         private Button btnViewProfile;
         private Button btnSwitchTutorMode;
+        private FlowLayoutPanel flpWaitlistedSessions;
+        private Label lblWaitlist;
     }
 }

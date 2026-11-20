@@ -15,41 +15,43 @@ namespace Study_Session
         private bool isCreator;
         private bool isWaitlist;
 
-        private UserRepository repository = new UserRepository();
+        private UserRepository userRepository = new UserRepository();
+        private SessionRepository sessionRepository = new SessionRepository();
+        private BookingRepository bookingRepository = new BookingRepository();
         public BookingForm()
         {
             InitializeComponent();
         }
 
-        public BookingForm(DataRow sessionData, int userId, bool creator = false, bool waitlist = false)
+        public BookingForm(Session sessionData, int userId, bool creator = false, bool waitlist = false)
         {
             InitializeComponent();
+
             loggedInUserId = userId;
             isCreator = creator;
-            sessionId = Convert.ToInt32(sessionData["sessionId"]);
+            sessionId = sessionData.SessionId;
             isWaitlist = waitlist;
 
-            lblSubject.Text = sessionData["subject"].ToString();
-            lblTopic.Text = sessionData["topic"].ToString();
+            lblSubject.Text = sessionData.Subject;
+            lblTopic.Text = sessionData.Topic;
 
-            DateTime start = Convert.ToDateTime(sessionData["startDateTime"]);
-            DateTime end = Convert.ToDateTime(sessionData["endDateTime"]);
+            DateTime start = sessionData.StartDateTime;
+            DateTime end = sessionData.EndDateTime;
 
             lblDate.Text = start.ToString("MMMM dd, yyyy");
             lblTime.Text = start.ToString("hh:mm tt") + " - " + end.ToString("hh:mm tt");
-            lblLocation.Text = sessionData["location"].ToString();
-            lblSlots.Text = sessionData["availableSlots"].ToString() + " / " + sessionData["slots"].ToString();
-            lblRequiredTutors.Text = sessionData["requiredTutors"].ToString();
+            lblLocation.Text = sessionData.Location;
+            lblSlots.Text = sessionData.AvailableSlots + " / " + sessionData.Slots;
+            lblRequiredTutors.Text = sessionData.RequiredTutors.ToString();
 
-            LoadAcceptedTutors(Convert.ToInt32(sessionData["sessionId"]));
+            LoadAcceptedTutors(sessionData.SessionId);
         }
 
 
         private void LoadAcceptedTutors(int sessionId)
         {
-            UserRepository repository = new UserRepository();
 
-            DataTable tutors = repository.GetAcceptedSessionTutors(sessionId);
+            DataTable tutors = sessionRepository.GetAcceptedSessionTutors(sessionId);
 
             flpSessionTutors.Controls.Clear();
 
@@ -135,48 +137,18 @@ namespace Study_Session
 
             if (isCreator)
             {
-                result = repository.CompleteCreatorBooking(loggedInUserId, sessionId, txtExpectations.Text.Trim());
+                result = bookingRepository.CompleteCreatorBooking(loggedInUserId, sessionId, txtExpectations.Text.Trim());
             }
 
+            else if (isWaitlist)
+            {
+                result = bookingRepository.CompleteWaitlistPayment(loggedInUserId, sessionId, txtExpectations.Text.Trim());
+            }
             else
             {
-                result = repository.JoinSession(loggedInUserId, sessionId, txtExpectations.Text.Trim());
+                result = bookingRepository.JoinSession(loggedInUserId, sessionId, txtExpectations.Text.Trim());
             }
 
-            if (result == "Joined")
-            {
-                MessageBox.Show("Payment successful! Your booking has been confirmed.");
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-            }
-        
-            else if (result == "Already Booked")
-            {
-                MessageBox.Show("You have already booked this session.");
-            }
-
-            else if (result == "Waitlisted")
-            {
-                MessageBox.Show("This session is full. You have been added to the waitlist");
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-            }
-
-            else if (result == "Session Not Found")
-            {
-                MessageBox.Show("This session no longer exists.");
-            }
-
-            else if (result == "Session Unavailable")
-            {
-                MessageBox.Show("This session is no longer available.");
-            }
-
-            else if (result == "Student Not Found")
-            {
-                MessageBox.Show("Student account not found.");
-            }
         }
-
     }
 }

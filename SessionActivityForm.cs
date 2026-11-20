@@ -19,13 +19,18 @@ namespace Study_Session
         private DataTable sessionTutors;
         private string selectedFilePath = "";
         private string activityMode;
+        private Session sessionData;
+        private UserRepository userRepository = new UserRepository();
+        private SessionRepository sessionRepository = new SessionRepository();
 
-        public SessionActivityForm(int sessionId, int studentId, string mode)
+        public SessionActivityForm(Session session, int studentId, string mode)
         {
             InitializeComponent();
-            this.sessionId = sessionId;
+            this.sessionData = session;
+            this.sessionId = session.SessionId;
             this.studentId = studentId;
-            activityMode = mode;
+            this.activityMode = mode;
+
             selectedTutorId = 0;
 
             pnlRateTutor.Visible = false;
@@ -52,9 +57,8 @@ namespace Study_Session
 
         private void LoadSessionTutors()
         {
-            UserRepository repository = new UserRepository();
 
-            sessionTutors = repository.GetAcceptedSessionTutors(sessionId);
+            sessionTutors = sessionRepository.GetAcceptedSessionTutors(sessionId);
 
             flpTutorList.Controls.Clear();
 
@@ -85,7 +89,7 @@ namespace Study_Session
                     lblSelectedTutor.Text = "Selected Tutor: " + tutorName;
                 };
 
-                bool alreadyRated = repository.HasAlreadyRated(studentId, tutorId, sessionId);
+                bool alreadyRated = userRepository.HasAlreadyRated(studentId, tutorId, sessionId);
 
                 if (alreadyRated)
                 {
@@ -186,9 +190,19 @@ namespace Study_Session
 
             System.IO.File.Copy(selectedFilePath, destinationPath, true);
 
-            UserRepository repository = new UserRepository();
+            string materialName = txtMaterialName.Text.Trim();
+            string description = txtDescription.Text.Trim();
+            string fileLink = destinationPath;
 
-            bool success = repository.AddMaterial(sessionId, txtMaterialName.Text.Trim(), txtDescription.Text.Trim(), destinationPath);
+            bool isValid = sessionData.AddMaterials(materialName, description, fileLink);
+
+            if (!isValid)
+            {
+                MessageBox.Show("Invalid material information.");
+                return;
+            }
+
+            bool success = sessionRepository.AddMaterial(sessionData.SessionId, materialName, description, fileLink);
 
             if (success)
             {
@@ -206,20 +220,21 @@ namespace Study_Session
         }
 
         private void LoadMaterials()
-        {
-            UserRepository repository = new UserRepository();
-
-            DataTable materials = repository.GetMaterialsBySessionId(sessionId);
+        { 
+            DataTable materials = sessionData.ViewMaterials(sessionRepository);
 
             flpMaterials.Controls.Clear();
 
             if (materials.Rows.Count == 0)
             {
                 lblNoMaterials.Visible = true;
+                lblNoMaterials.BringToFront();
+                flpMaterials.Visible = false;
                 return;
             }
 
             lblNoMaterials.Visible = false;
+            flpMaterials.Visible = true;
 
             foreach (DataRow row in materials.Rows)
             {
