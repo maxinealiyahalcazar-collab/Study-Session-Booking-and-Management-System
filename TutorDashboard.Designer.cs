@@ -117,6 +117,7 @@
             pnlSideBar.Name = "pnlSideBar";
             pnlSideBar.Size = new Size(184, 515);
             pnlSideBar.TabIndex = 0;
+            pnlSideBar.Paint += pnlSideBar_Paint;
             // 
             // btnStudentMode
             // 

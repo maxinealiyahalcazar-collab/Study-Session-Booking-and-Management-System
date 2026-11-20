@@ -50,6 +50,7 @@
             lblNotificationsTitle = new Label();
             flpNotifications = new FlowLayoutPanel();
             pnlMyProfile = new Panel();
+            btnTutorMode = new Button();
             btnCancelProfile = new Button();
             btnSaveProfile = new Button();
             lblProfileProgramValue = new Label();
@@ -95,7 +96,6 @@
             txtSearchSessions = new TextBox();
             lblSearchSessions = new Label();
             flpBrowseSessions = new FlowLayoutPanel();
-            btnTutorMode = new Button();
             pnlBookedSessions.SuspendLayout();
             pnlWaitlistedSessions.SuspendLayout();
             pnlCompletedSessions.SuspendLayout();
@@ -114,8 +114,8 @@
             btnLogout.FlatAppearance.BorderSize = 0;
             btnLogout.FlatStyle = FlatStyle.Flat;
             btnLogout.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnLogout.ForeColor = SystemColors.Control;
-            btnLogout.Location = new Point(8, 285);
+            btnLogout.ForeColor = Color.MediumSlateBlue;
+            btnLogout.Location = new Point(9, 310);
             btnLogout.Margin = new Padding(2);
             btnLogout.Name = "btnLogout";
             btnLogout.Size = new Size(168, 29);
@@ -130,8 +130,8 @@
             btnBrowseSession.FlatAppearance.BorderSize = 0;
             btnBrowseSession.FlatStyle = FlatStyle.Flat;
             btnBrowseSession.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnBrowseSession.ForeColor = SystemColors.Control;
-            btnBrowseSession.Location = new Point(8, 196);
+            btnBrowseSession.ForeColor = Color.MediumSlateBlue;
+            btnBrowseSession.Location = new Point(7, 224);
             btnBrowseSession.Margin = new Padding(2);
             btnBrowseSession.Name = "btnBrowseSession";
             btnBrowseSession.Size = new Size(169, 32);
@@ -146,8 +146,8 @@
             btnCreateSession.FlatAppearance.BorderSize = 0;
             btnCreateSession.FlatStyle = FlatStyle.Flat;
             btnCreateSession.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnCreateSession.ForeColor = SystemColors.Control;
-            btnCreateSession.Location = new Point(10, 159);
+            btnCreateSession.ForeColor = Color.MediumSlateBlue;
+            btnCreateSession.Location = new Point(12, 178);
             btnCreateSession.Margin = new Padding(2);
             btnCreateSession.Name = "btnCreateSession";
             btnCreateSession.Size = new Size(167, 30);
@@ -163,8 +163,8 @@
             btnMySessions.FlatAppearance.BorderSize = 0;
             btnMySessions.FlatStyle = FlatStyle.Flat;
             btnMySessions.Font = new Font("Arial Narrow", 10F, FontStyle.Bold);
-            btnMySessions.ForeColor = SystemColors.Control;
-            btnMySessions.Location = new Point(11, 114);
+            btnMySessions.ForeColor = Color.MediumSlateBlue;
+            btnMySessions.Location = new Point(12, 132);
             btnMySessions.Margin = new Padding(2);
             btnMySessions.Name = "btnMySessions";
             btnMySessions.Size = new Size(166, 32);
@@ -179,8 +179,8 @@
             btnMyProfile.FlatAppearance.BorderSize = 0;
             btnMyProfile.FlatStyle = FlatStyle.Flat;
             btnMyProfile.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnMyProfile.ForeColor = SystemColors.Control;
-            btnMyProfile.Location = new Point(15, 70);
+            btnMyProfile.ForeColor = Color.MediumSlateBlue;
+            btnMyProfile.Location = new Point(14, 85);
             btnMyProfile.Margin = new Padding(2);
             btnMyProfile.Name = "btnMyProfile";
             btnMyProfile.Size = new Size(165, 32);
@@ -197,8 +197,8 @@
             btnMain.FlatAppearance.BorderSize = 0;
             btnMain.FlatStyle = FlatStyle.Flat;
             btnMain.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnMain.ForeColor = SystemColors.ButtonFace;
-            btnMain.Location = new Point(12, 27);
+            btnMain.ForeColor = Color.MediumSlateBlue;
+            btnMain.Location = new Point(14, 39);
             btnMain.Margin = new Padding(2);
             btnMain.Name = "btnMain";
             btnMain.Size = new Size(165, 32);
@@ -390,6 +390,22 @@
             pnlMyProfile.TabIndex = 7;
             pnlMyProfile.Visible = false;
             // 
+            // btnTutorMode
+            // 
+            btnTutorMode.BackgroundImage = (Image)resources.GetObject("btnTutorMode.BackgroundImage");
+            btnTutorMode.BackgroundImageLayout = ImageLayout.Stretch;
+            btnTutorMode.FlatAppearance.BorderSize = 0;
+            btnTutorMode.FlatStyle = FlatStyle.Flat;
+            btnTutorMode.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnTutorMode.ForeColor = Color.MediumSlateBlue;
+            btnTutorMode.Location = new Point(8, 268);
+            btnTutorMode.Margin = new Padding(2);
+            btnTutorMode.Name = "btnTutorMode";
+            btnTutorMode.Size = new Size(168, 29);
+            btnTutorMode.TabIndex = 17;
+            btnTutorMode.Text = "Tutor Mode";
+            btnTutorMode.UseVisualStyleBackColor = true;
+            // 
             // btnCancelProfile
             // 
             btnCancelProfile.BackgroundImage = (Image)resources.GetObject("btnCancelProfile.BackgroundImage");
@@ -397,8 +413,8 @@
             btnCancelProfile.FlatAppearance.BorderSize = 0;
             btnCancelProfile.FlatStyle = FlatStyle.Flat;
             btnCancelProfile.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnCancelProfile.ForeColor = SystemColors.Control;
-            btnCancelProfile.Location = new Point(783, 462);
+            btnCancelProfile.ForeColor = Color.Lavender;
+            btnCancelProfile.Location = new Point(471, 412);
             btnCancelProfile.Margin = new Padding(2);
             btnCancelProfile.Name = "btnCancelProfile";
             btnCancelProfile.Size = new Size(145, 31);
@@ -415,11 +431,11 @@
             btnSaveProfile.FlatAppearance.BorderSize = 0;
             btnSaveProfile.FlatStyle = FlatStyle.Flat;
             btnSaveProfile.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSaveProfile.ForeColor = SystemColors.Control;
-            btnSaveProfile.Location = new Point(783, 418);
+            btnSaveProfile.ForeColor = Color.Lavender;
+            btnSaveProfile.Location = new Point(287, 410);
             btnSaveProfile.Margin = new Padding(2);
             btnSaveProfile.Name = "btnSaveProfile";
-            btnSaveProfile.Size = new Size(145, 27);
+            btnSaveProfile.Size = new Size(145, 34);
             btnSaveProfile.TabIndex = 15;
             btnSaveProfile.Text = "Save";
             btnSaveProfile.UseVisualStyleBackColor = true;
@@ -429,40 +445,49 @@
             // lblProfileProgramValue
             // 
             lblProfileProgramValue.AutoSize = true;
+            lblProfileProgramValue.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileProgramValue.ForeColor = Color.DarkSlateBlue;
             lblProfileProgramValue.Location = new Point(327, 256);
             lblProfileProgramValue.Margin = new Padding(2, 0, 2, 0);
             lblProfileProgramValue.Name = "lblProfileProgramValue";
-            lblProfileProgramValue.Size = new Size(66, 20);
+            lblProfileProgramValue.Size = new Size(61, 20);
             lblProfileProgramValue.TabIndex = 14;
             lblProfileProgramValue.Text = "Program";
             // 
             // lblProfileYearValue
             // 
             lblProfileYearValue.AutoSize = true;
+            lblProfileYearValue.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileYearValue.ForeColor = Color.DarkSlateBlue;
             lblProfileYearValue.Location = new Point(327, 218);
             lblProfileYearValue.Margin = new Padding(2, 0, 2, 0);
             lblProfileYearValue.Name = "lblProfileYearValue";
-            lblProfileYearValue.Size = new Size(37, 20);
+            lblProfileYearValue.Size = new Size(36, 20);
             lblProfileYearValue.TabIndex = 13;
             lblProfileYearValue.Text = "Year";
             // 
             // lblProfileUEGmailValue
             // 
             lblProfileUEGmailValue.AutoSize = true;
+            lblProfileUEGmailValue.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileUEGmailValue.ForeColor = Color.DarkSlateBlue;
             lblProfileUEGmailValue.Location = new Point(322, 178);
             lblProfileUEGmailValue.Margin = new Padding(2, 0, 2, 0);
             lblProfileUEGmailValue.Name = "lblProfileUEGmailValue";
-            lblProfileUEGmailValue.Size = new Size(70, 20);
+            lblProfileUEGmailValue.Size = new Size(65, 20);
             lblProfileUEGmailValue.TabIndex = 12;
             lblProfileUEGmailValue.Text = "UE Gmail";
             // 
             // lblProfileFullNameValue
             // 
             lblProfileFullNameValue.AutoSize = true;
-            lblProfileFullNameValue.Location = new Point(322, 142);
+            lblProfileFullNameValue.BackColor = SystemColors.Control;
+            lblProfileFullNameValue.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileFullNameValue.ForeColor = Color.DarkSlateBlue;
+            lblProfileFullNameValue.Location = new Point(324, 144);
             lblProfileFullNameValue.Margin = new Padding(2, 0, 2, 0);
             lblProfileFullNameValue.Name = "lblProfileFullNameValue";
-            lblProfileFullNameValue.Size = new Size(76, 20);
+            lblProfileFullNameValue.Size = new Size(70, 20);
             lblProfileFullNameValue.TabIndex = 11;
             lblProfileFullNameValue.Text = "Full Name";
             // 
@@ -473,8 +498,8 @@
             btnEditProfile.FlatAppearance.BorderSize = 0;
             btnEditProfile.FlatStyle = FlatStyle.Flat;
             btnEditProfile.Font = new Font("Arial Narrow", 10F, FontStyle.Bold);
-            btnEditProfile.ForeColor = SystemColors.Control;
-            btnEditProfile.Location = new Point(783, 371);
+            btnEditProfile.ForeColor = Color.Lavender;
+            btnEditProfile.Location = new Point(376, 347);
             btnEditProfile.Margin = new Padding(2);
             btnEditProfile.Name = "btnEditProfile";
             btnEditProfile.Size = new Size(145, 37);
@@ -486,6 +511,7 @@
             // txtEditFullName
             // 
             txtEditFullName.BackColor = Color.White;
+            txtEditFullName.ForeColor = Color.Lavender;
             txtEditFullName.Location = new Point(322, 142);
             txtEditFullName.Margin = new Padding(2);
             txtEditFullName.Name = "txtEditFullName";
@@ -494,6 +520,7 @@
             // 
             // txtEditProgram
             // 
+            txtEditProgram.ForeColor = Color.Lavender;
             txtEditProgram.Location = new Point(322, 256);
             txtEditProgram.Margin = new Padding(2);
             txtEditProgram.Name = "txtEditProgram";
@@ -502,6 +529,7 @@
             // 
             // txtEditUEGmail
             // 
+            txtEditUEGmail.ForeColor = Color.Lavender;
             txtEditUEGmail.Location = new Point(322, 176);
             txtEditUEGmail.Margin = new Padding(2);
             txtEditUEGmail.Name = "txtEditUEGmail";
@@ -510,6 +538,7 @@
             // 
             // txtEditYear
             // 
+            txtEditYear.ForeColor = Color.Lavender;
             txtEditYear.Location = new Point(322, 218);
             txtEditYear.Margin = new Padding(2);
             txtEditYear.Name = "txtEditYear";
@@ -521,7 +550,7 @@
             lblProfileYear.AutoSize = true;
             lblProfileYear.BackColor = Color.Transparent;
             lblProfileYear.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblProfileYear.ForeColor = Color.MediumSlateBlue;
+            lblProfileYear.ForeColor = Color.Lavender;
             lblProfileYear.Location = new Point(233, 218);
             lblProfileYear.Margin = new Padding(2, 0, 2, 0);
             lblProfileYear.Name = "lblProfileYear";
@@ -534,7 +563,7 @@
             lblProfileProgram.AutoSize = true;
             lblProfileProgram.BackColor = Color.Transparent;
             lblProfileProgram.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblProfileProgram.ForeColor = Color.MediumSlateBlue;
+            lblProfileProgram.ForeColor = Color.Lavender;
             lblProfileProgram.Location = new Point(233, 256);
             lblProfileProgram.Margin = new Padding(2, 0, 2, 0);
             lblProfileProgram.Name = "lblProfileProgram";
@@ -547,7 +576,7 @@
             lblProfileUEGmail.AutoSize = true;
             lblProfileUEGmail.BackColor = Color.Transparent;
             lblProfileUEGmail.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblProfileUEGmail.ForeColor = Color.MediumSlateBlue;
+            lblProfileUEGmail.ForeColor = Color.Lavender;
             lblProfileUEGmail.Location = new Point(233, 177);
             lblProfileUEGmail.Margin = new Padding(2, 0, 2, 0);
             lblProfileUEGmail.Name = "lblProfileUEGmail";
@@ -560,7 +589,7 @@
             lblProfileFullName.AutoSize = true;
             lblProfileFullName.BackColor = Color.Transparent;
             lblProfileFullName.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblProfileFullName.ForeColor = Color.MediumSlateBlue;
+            lblProfileFullName.ForeColor = Color.Lavender;
             lblProfileFullName.Location = new Point(233, 142);
             lblProfileFullName.Margin = new Padding(2, 0, 2, 0);
             lblProfileFullName.Name = "lblProfileFullName";
@@ -572,12 +601,12 @@
             // 
             lblProfileDescription.AutoSize = true;
             lblProfileDescription.BackColor = Color.Transparent;
-            lblProfileDescription.Font = new Font("Arial Narrow", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblProfileDescription.ForeColor = Color.MediumSlateBlue;
+            lblProfileDescription.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileDescription.ForeColor = Color.Lavender;
             lblProfileDescription.Location = new Point(218, 70);
             lblProfileDescription.Margin = new Padding(2, 0, 2, 0);
             lblProfileDescription.Name = "lblProfileDescription";
-            lblProfileDescription.Size = new Size(356, 24);
+            lblProfileDescription.Size = new Size(278, 20);
             lblProfileDescription.TabIndex = 1;
             lblProfileDescription.Text = "View and manage your personal information.";
             // 
@@ -586,12 +615,12 @@
             lblProfileTitle.AutoSize = true;
             lblProfileTitle.BackColor = Color.Transparent;
             lblProfileTitle.FlatStyle = FlatStyle.Flat;
-            lblProfileTitle.Font = new Font("Arial Narrow", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblProfileTitle.ForeColor = Color.MediumSlateBlue;
+            lblProfileTitle.Font = new Font("Arial Narrow", 15.7F, FontStyle.Bold);
+            lblProfileTitle.ForeColor = Color.Lavender;
             lblProfileTitle.Location = new Point(218, 30);
             lblProfileTitle.Margin = new Padding(2, 0, 2, 0);
             lblProfileTitle.Name = "lblProfileTitle";
-            lblProfileTitle.Size = new Size(87, 24);
+            lblProfileTitle.Size = new Size(119, 31);
             lblProfileTitle.TabIndex = 0;
             lblProfileTitle.Text = "My Profile";
             // 
@@ -898,22 +927,6 @@
             flpBrowseSessions.Size = new Size(707, 414);
             flpBrowseSessions.TabIndex = 0;
             flpBrowseSessions.WrapContents = false;
-            // 
-            // btnTutorMode
-            // 
-            btnTutorMode.BackgroundImage = (Image)resources.GetObject("btnTutorMode.BackgroundImage");
-            btnTutorMode.BackgroundImageLayout = ImageLayout.Stretch;
-            btnTutorMode.FlatAppearance.BorderSize = 0;
-            btnTutorMode.FlatStyle = FlatStyle.Flat;
-            btnTutorMode.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnTutorMode.ForeColor = SystemColors.Control;
-            btnTutorMode.Location = new Point(10, 247);
-            btnTutorMode.Margin = new Padding(2);
-            btnTutorMode.Name = "btnTutorMode";
-            btnTutorMode.Size = new Size(168, 29);
-            btnTutorMode.TabIndex = 17;
-            btnTutorMode.Text = "Tutor Mode";
-            btnTutorMode.UseVisualStyleBackColor = true;
             // 
             // StudentDashboard
             // 
