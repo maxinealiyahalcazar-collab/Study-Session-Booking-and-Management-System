@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            pnlSidebar = new Panel();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StudentDashboard));
             btnLogout = new Button();
             btnBrowseSession = new Button();
             btnCreateSession = new Button();
@@ -95,7 +95,7 @@
             txtSearchSessions = new TextBox();
             lblSearchSessions = new Label();
             flpBrowseSessions = new FlowLayoutPanel();
-            pnlSidebar.SuspendLayout();
+            btnTutorMode = new Button();
             pnlBookedSessions.SuspendLayout();
             pnlWaitlistedSessions.SuspendLayout();
             pnlCompletedSessions.SuspendLayout();
@@ -107,48 +107,50 @@
             pnlBrowseSession.SuspendLayout();
             SuspendLayout();
             // 
-            // pnlSidebar
-            // 
-            pnlSidebar.BackColor = Color.MediumSlateBlue;
-            pnlSidebar.Controls.Add(btnLogout);
-            pnlSidebar.Controls.Add(btnBrowseSession);
-            pnlSidebar.Controls.Add(btnCreateSession);
-            pnlSidebar.Controls.Add(btnMySessions);
-            pnlSidebar.Controls.Add(btnMyProfile);
-            pnlSidebar.Controls.Add(btnMain);
-            pnlSidebar.Dock = DockStyle.Left;
-            pnlSidebar.Location = new Point(0, 0);
-            pnlSidebar.Margin = new Padding(2, 2, 2, 2);
-            pnlSidebar.Name = "pnlSidebar";
-            pnlSidebar.Size = new Size(184, 515);
-            pnlSidebar.TabIndex = 0;
-            // 
             // btnLogout
             // 
-            btnLogout.Location = new Point(10, 178);
-            btnLogout.Margin = new Padding(2, 2, 2, 2);
+            btnLogout.BackgroundImage = (Image)resources.GetObject("btnLogout.BackgroundImage");
+            btnLogout.BackgroundImageLayout = ImageLayout.Stretch;
+            btnLogout.FlatAppearance.BorderSize = 0;
+            btnLogout.FlatStyle = FlatStyle.Flat;
+            btnLogout.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnLogout.ForeColor = SystemColors.Control;
+            btnLogout.Location = new Point(8, 285);
+            btnLogout.Margin = new Padding(2);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(163, 27);
+            btnLogout.Size = new Size(168, 29);
             btnLogout.TabIndex = 7;
             btnLogout.Text = "Logout";
             btnLogout.UseVisualStyleBackColor = true;
             // 
             // btnBrowseSession
             // 
-            btnBrowseSession.Location = new Point(10, 146);
-            btnBrowseSession.Margin = new Padding(2, 2, 2, 2);
+            btnBrowseSession.BackgroundImage = (Image)resources.GetObject("btnBrowseSession.BackgroundImage");
+            btnBrowseSession.BackgroundImageLayout = ImageLayout.Stretch;
+            btnBrowseSession.FlatAppearance.BorderSize = 0;
+            btnBrowseSession.FlatStyle = FlatStyle.Flat;
+            btnBrowseSession.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnBrowseSession.ForeColor = SystemColors.Control;
+            btnBrowseSession.Location = new Point(8, 196);
+            btnBrowseSession.Margin = new Padding(2);
             btnBrowseSession.Name = "btnBrowseSession";
-            btnBrowseSession.Size = new Size(163, 27);
+            btnBrowseSession.Size = new Size(169, 32);
             btnBrowseSession.TabIndex = 6;
             btnBrowseSession.Text = "Browse Session";
             btnBrowseSession.UseVisualStyleBackColor = true;
             // 
             // btnCreateSession
             // 
-            btnCreateSession.Location = new Point(10, 114);
-            btnCreateSession.Margin = new Padding(2, 2, 2, 2);
+            btnCreateSession.BackgroundImage = (Image)resources.GetObject("btnCreateSession.BackgroundImage");
+            btnCreateSession.BackgroundImageLayout = ImageLayout.Stretch;
+            btnCreateSession.FlatAppearance.BorderSize = 0;
+            btnCreateSession.FlatStyle = FlatStyle.Flat;
+            btnCreateSession.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCreateSession.ForeColor = SystemColors.Control;
+            btnCreateSession.Location = new Point(10, 159);
+            btnCreateSession.Margin = new Padding(2);
             btnCreateSession.Name = "btnCreateSession";
-            btnCreateSession.Size = new Size(163, 27);
+            btnCreateSession.Size = new Size(167, 30);
             btnCreateSession.TabIndex = 5;
             btnCreateSession.Text = "Create Session";
             btnCreateSession.UseVisualStyleBackColor = true;
@@ -156,20 +158,32 @@
             // 
             // btnMySessions
             // 
-            btnMySessions.Location = new Point(10, 82);
-            btnMySessions.Margin = new Padding(2, 2, 2, 2);
+            btnMySessions.BackgroundImage = (Image)resources.GetObject("btnMySessions.BackgroundImage");
+            btnMySessions.BackgroundImageLayout = ImageLayout.Stretch;
+            btnMySessions.FlatAppearance.BorderSize = 0;
+            btnMySessions.FlatStyle = FlatStyle.Flat;
+            btnMySessions.Font = new Font("Arial Narrow", 10F, FontStyle.Bold);
+            btnMySessions.ForeColor = SystemColors.Control;
+            btnMySessions.Location = new Point(11, 114);
+            btnMySessions.Margin = new Padding(2);
             btnMySessions.Name = "btnMySessions";
-            btnMySessions.Size = new Size(163, 27);
+            btnMySessions.Size = new Size(166, 32);
             btnMySessions.TabIndex = 4;
             btnMySessions.Text = "My Sessions";
             btnMySessions.UseVisualStyleBackColor = true;
             // 
             // btnMyProfile
             // 
-            btnMyProfile.Location = new Point(10, 50);
-            btnMyProfile.Margin = new Padding(2, 2, 2, 2);
+            btnMyProfile.BackgroundImage = (Image)resources.GetObject("btnMyProfile.BackgroundImage");
+            btnMyProfile.BackgroundImageLayout = ImageLayout.Stretch;
+            btnMyProfile.FlatAppearance.BorderSize = 0;
+            btnMyProfile.FlatStyle = FlatStyle.Flat;
+            btnMyProfile.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnMyProfile.ForeColor = SystemColors.Control;
+            btnMyProfile.Location = new Point(15, 70);
+            btnMyProfile.Margin = new Padding(2);
             btnMyProfile.Name = "btnMyProfile";
-            btnMyProfile.Size = new Size(163, 27);
+            btnMyProfile.Size = new Size(165, 32);
             btnMyProfile.TabIndex = 3;
             btnMyProfile.Text = "My Profile";
             btnMyProfile.UseVisualStyleBackColor = true;
@@ -177,13 +191,20 @@
             // 
             // btnMain
             // 
-            btnMain.Location = new Point(10, 18);
-            btnMain.Margin = new Padding(2, 2, 2, 2);
+            btnMain.BackColor = SystemColors.ControlLightLight;
+            btnMain.BackgroundImage = (Image)resources.GetObject("btnMain.BackgroundImage");
+            btnMain.BackgroundImageLayout = ImageLayout.Stretch;
+            btnMain.FlatAppearance.BorderSize = 0;
+            btnMain.FlatStyle = FlatStyle.Flat;
+            btnMain.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnMain.ForeColor = SystemColors.ButtonFace;
+            btnMain.Location = new Point(12, 27);
+            btnMain.Margin = new Padding(2);
             btnMain.Name = "btnMain";
-            btnMain.Size = new Size(163, 27);
+            btnMain.Size = new Size(165, 32);
             btnMain.TabIndex = 2;
             btnMain.Text = "Main";
-            btnMain.UseVisualStyleBackColor = true;
+            btnMain.UseVisualStyleBackColor = false;
             // 
             // lblDashboardTitle
             // 
@@ -211,7 +232,7 @@
             pnlBookedSessions.Controls.Add(lblBookedCount);
             pnlBookedSessions.Controls.Add(lblBookedTitle);
             pnlBookedSessions.Location = new Point(206, 103);
-            pnlBookedSessions.Margin = new Padding(2, 2, 2, 2);
+            pnlBookedSessions.Margin = new Padding(2);
             pnlBookedSessions.Name = "pnlBookedSessions";
             pnlBookedSessions.Size = new Size(291, 120);
             pnlBookedSessions.TabIndex = 3;
@@ -243,7 +264,7 @@
             pnlWaitlistedSessions.Controls.Add(lblWaitlistedCount);
             pnlWaitlistedSessions.Controls.Add(lblWaitlistedTitle);
             pnlWaitlistedSessions.Location = new Point(206, 240);
-            pnlWaitlistedSessions.Margin = new Padding(2, 2, 2, 2);
+            pnlWaitlistedSessions.Margin = new Padding(2);
             pnlWaitlistedSessions.Name = "pnlWaitlistedSessions";
             pnlWaitlistedSessions.Size = new Size(291, 120);
             pnlWaitlistedSessions.TabIndex = 4;
@@ -275,7 +296,7 @@
             pnlCompletedSessions.Controls.Add(lblCompletedCount);
             pnlCompletedSessions.Controls.Add(lblCompletedTitle);
             pnlCompletedSessions.Location = new Point(206, 375);
-            pnlCompletedSessions.Margin = new Padding(2, 2, 2, 2);
+            pnlCompletedSessions.Margin = new Padding(2);
             pnlCompletedSessions.Name = "pnlCompletedSessions";
             pnlCompletedSessions.Size = new Size(291, 120);
             pnlCompletedSessions.TabIndex = 5;
@@ -307,7 +328,7 @@
             pnlNotification.Controls.Add(lblNotificationsTitle);
             pnlNotification.Controls.Add(flpNotifications);
             pnlNotification.Location = new Point(517, 103);
-            pnlNotification.Margin = new Padding(2, 2, 2, 2);
+            pnlNotification.Margin = new Padding(2);
             pnlNotification.Name = "pnlNotification";
             pnlNotification.Size = new Size(403, 392);
             pnlNotification.TabIndex = 6;
@@ -327,7 +348,7 @@
             flpNotifications.AutoScroll = true;
             flpNotifications.FlowDirection = FlowDirection.TopDown;
             flpNotifications.Location = new Point(26, 57);
-            flpNotifications.Margin = new Padding(2, 2, 2, 2);
+            flpNotifications.Margin = new Padding(2);
             flpNotifications.Name = "flpNotifications";
             flpNotifications.Size = new Size(346, 312);
             flpNotifications.TabIndex = 4;
@@ -335,11 +356,21 @@
             // 
             // pnlMyProfile
             // 
+            pnlMyProfile.BackgroundImage = (Image)resources.GetObject("pnlMyProfile.BackgroundImage");
+            pnlMyProfile.BackgroundImageLayout = ImageLayout.Stretch;
+            pnlMyProfile.BorderStyle = BorderStyle.Fixed3D;
+            pnlMyProfile.Controls.Add(btnTutorMode);
+            pnlMyProfile.Controls.Add(btnLogout);
             pnlMyProfile.Controls.Add(btnCancelProfile);
+            pnlMyProfile.Controls.Add(btnBrowseSession);
             pnlMyProfile.Controls.Add(btnSaveProfile);
+            pnlMyProfile.Controls.Add(btnCreateSession);
             pnlMyProfile.Controls.Add(lblProfileProgramValue);
+            pnlMyProfile.Controls.Add(btnMySessions);
             pnlMyProfile.Controls.Add(lblProfileYearValue);
+            pnlMyProfile.Controls.Add(btnMyProfile);
             pnlMyProfile.Controls.Add(lblProfileUEGmailValue);
+            pnlMyProfile.Controls.Add(btnMain);
             pnlMyProfile.Controls.Add(lblProfileFullNameValue);
             pnlMyProfile.Controls.Add(btnEditProfile);
             pnlMyProfile.Controls.Add(txtEditFullName);
@@ -352,8 +383,8 @@
             pnlMyProfile.Controls.Add(lblProfileFullName);
             pnlMyProfile.Controls.Add(lblProfileDescription);
             pnlMyProfile.Controls.Add(lblProfileTitle);
-            pnlMyProfile.Location = new Point(0, 0);
-            pnlMyProfile.Margin = new Padding(2, 2, 2, 2);
+            pnlMyProfile.Location = new Point(1, 0);
+            pnlMyProfile.Margin = new Padding(2);
             pnlMyProfile.Name = "pnlMyProfile";
             pnlMyProfile.Size = new Size(942, 515);
             pnlMyProfile.TabIndex = 7;
@@ -361,10 +392,16 @@
             // 
             // btnCancelProfile
             // 
-            btnCancelProfile.Location = new Point(777, 404);
-            btnCancelProfile.Margin = new Padding(2, 2, 2, 2);
+            btnCancelProfile.BackgroundImage = (Image)resources.GetObject("btnCancelProfile.BackgroundImage");
+            btnCancelProfile.BackgroundImageLayout = ImageLayout.Stretch;
+            btnCancelProfile.FlatAppearance.BorderSize = 0;
+            btnCancelProfile.FlatStyle = FlatStyle.Flat;
+            btnCancelProfile.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancelProfile.ForeColor = SystemColors.Control;
+            btnCancelProfile.Location = new Point(783, 462);
+            btnCancelProfile.Margin = new Padding(2);
             btnCancelProfile.Name = "btnCancelProfile";
-            btnCancelProfile.Size = new Size(105, 27);
+            btnCancelProfile.Size = new Size(145, 31);
             btnCancelProfile.TabIndex = 16;
             btnCancelProfile.Text = "Cancel";
             btnCancelProfile.UseVisualStyleBackColor = true;
@@ -373,10 +410,16 @@
             // 
             // btnSaveProfile
             // 
-            btnSaveProfile.Location = new Point(652, 404);
-            btnSaveProfile.Margin = new Padding(2, 2, 2, 2);
+            btnSaveProfile.BackgroundImage = (Image)resources.GetObject("btnSaveProfile.BackgroundImage");
+            btnSaveProfile.BackgroundImageLayout = ImageLayout.Stretch;
+            btnSaveProfile.FlatAppearance.BorderSize = 0;
+            btnSaveProfile.FlatStyle = FlatStyle.Flat;
+            btnSaveProfile.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSaveProfile.ForeColor = SystemColors.Control;
+            btnSaveProfile.Location = new Point(783, 418);
+            btnSaveProfile.Margin = new Padding(2);
             btnSaveProfile.Name = "btnSaveProfile";
-            btnSaveProfile.Size = new Size(105, 27);
+            btnSaveProfile.Size = new Size(145, 27);
             btnSaveProfile.TabIndex = 15;
             btnSaveProfile.Text = "Save";
             btnSaveProfile.UseVisualStyleBackColor = true;
@@ -425,10 +468,16 @@
             // 
             // btnEditProfile
             // 
-            btnEditProfile.Location = new Point(652, 342);
-            btnEditProfile.Margin = new Padding(2, 2, 2, 2);
+            btnEditProfile.BackgroundImage = (Image)resources.GetObject("btnEditProfile.BackgroundImage");
+            btnEditProfile.BackgroundImageLayout = ImageLayout.Stretch;
+            btnEditProfile.FlatAppearance.BorderSize = 0;
+            btnEditProfile.FlatStyle = FlatStyle.Flat;
+            btnEditProfile.Font = new Font("Arial Narrow", 10F, FontStyle.Bold);
+            btnEditProfile.ForeColor = SystemColors.Control;
+            btnEditProfile.Location = new Point(783, 371);
+            btnEditProfile.Margin = new Padding(2);
             btnEditProfile.Name = "btnEditProfile";
-            btnEditProfile.Size = new Size(105, 27);
+            btnEditProfile.Size = new Size(145, 37);
             btnEditProfile.TabIndex = 10;
             btnEditProfile.Text = "Edit profile";
             btnEditProfile.UseVisualStyleBackColor = true;
@@ -436,8 +485,9 @@
             // 
             // txtEditFullName
             // 
+            txtEditFullName.BackColor = Color.White;
             txtEditFullName.Location = new Point(322, 142);
-            txtEditFullName.Margin = new Padding(2, 2, 2, 2);
+            txtEditFullName.Margin = new Padding(2);
             txtEditFullName.Name = "txtEditFullName";
             txtEditFullName.Size = new Size(356, 27);
             txtEditFullName.TabIndex = 9;
@@ -445,7 +495,7 @@
             // txtEditProgram
             // 
             txtEditProgram.Location = new Point(322, 256);
-            txtEditProgram.Margin = new Padding(2, 2, 2, 2);
+            txtEditProgram.Margin = new Padding(2);
             txtEditProgram.Name = "txtEditProgram";
             txtEditProgram.Size = new Size(356, 27);
             txtEditProgram.TabIndex = 8;
@@ -453,7 +503,7 @@
             // txtEditUEGmail
             // 
             txtEditUEGmail.Location = new Point(322, 176);
-            txtEditUEGmail.Margin = new Padding(2, 2, 2, 2);
+            txtEditUEGmail.Margin = new Padding(2);
             txtEditUEGmail.Name = "txtEditUEGmail";
             txtEditUEGmail.Size = new Size(356, 27);
             txtEditUEGmail.TabIndex = 7;
@@ -461,7 +511,7 @@
             // txtEditYear
             // 
             txtEditYear.Location = new Point(322, 218);
-            txtEditYear.Margin = new Padding(2, 2, 2, 2);
+            txtEditYear.Margin = new Padding(2);
             txtEditYear.Name = "txtEditYear";
             txtEditYear.Size = new Size(356, 27);
             txtEditYear.TabIndex = 6;
@@ -469,6 +519,9 @@
             // lblProfileYear
             // 
             lblProfileYear.AutoSize = true;
+            lblProfileYear.BackColor = Color.Transparent;
+            lblProfileYear.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileYear.ForeColor = Color.MediumSlateBlue;
             lblProfileYear.Location = new Point(233, 218);
             lblProfileYear.Margin = new Padding(2, 0, 2, 0);
             lblProfileYear.Name = "lblProfileYear";
@@ -479,50 +532,66 @@
             // lblProfileProgram
             // 
             lblProfileProgram.AutoSize = true;
+            lblProfileProgram.BackColor = Color.Transparent;
+            lblProfileProgram.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileProgram.ForeColor = Color.MediumSlateBlue;
             lblProfileProgram.Location = new Point(233, 256);
             lblProfileProgram.Margin = new Padding(2, 0, 2, 0);
             lblProfileProgram.Name = "lblProfileProgram";
-            lblProfileProgram.Size = new Size(69, 20);
+            lblProfileProgram.Size = new Size(65, 20);
             lblProfileProgram.TabIndex = 4;
             lblProfileProgram.Text = "Program:";
             // 
             // lblProfileUEGmail
             // 
             lblProfileUEGmail.AutoSize = true;
+            lblProfileUEGmail.BackColor = Color.Transparent;
+            lblProfileUEGmail.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileUEGmail.ForeColor = Color.MediumSlateBlue;
             lblProfileUEGmail.Location = new Point(233, 177);
             lblProfileUEGmail.Margin = new Padding(2, 0, 2, 0);
             lblProfileUEGmail.Name = "lblProfileUEGmail";
-            lblProfileUEGmail.Size = new Size(73, 20);
+            lblProfileUEGmail.Size = new Size(69, 20);
             lblProfileUEGmail.TabIndex = 3;
             lblProfileUEGmail.Text = "UE Gmail:";
             // 
             // lblProfileFullName
             // 
             lblProfileFullName.AutoSize = true;
+            lblProfileFullName.BackColor = Color.Transparent;
+            lblProfileFullName.Font = new Font("Arial Narrow", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileFullName.ForeColor = Color.MediumSlateBlue;
             lblProfileFullName.Location = new Point(233, 142);
             lblProfileFullName.Margin = new Padding(2, 0, 2, 0);
             lblProfileFullName.Name = "lblProfileFullName";
-            lblProfileFullName.Size = new Size(79, 20);
+            lblProfileFullName.Size = new Size(74, 20);
             lblProfileFullName.TabIndex = 2;
             lblProfileFullName.Text = "Full Name:";
             // 
             // lblProfileDescription
             // 
             lblProfileDescription.AutoSize = true;
+            lblProfileDescription.BackColor = Color.Transparent;
+            lblProfileDescription.Font = new Font("Arial Narrow", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileDescription.ForeColor = Color.MediumSlateBlue;
             lblProfileDescription.Location = new Point(218, 70);
             lblProfileDescription.Margin = new Padding(2, 0, 2, 0);
             lblProfileDescription.Name = "lblProfileDescription";
-            lblProfileDescription.Size = new Size(307, 20);
+            lblProfileDescription.Size = new Size(356, 24);
             lblProfileDescription.TabIndex = 1;
             lblProfileDescription.Text = "View and manage your personal information.";
             // 
             // lblProfileTitle
             // 
             lblProfileTitle.AutoSize = true;
+            lblProfileTitle.BackColor = Color.Transparent;
+            lblProfileTitle.FlatStyle = FlatStyle.Flat;
+            lblProfileTitle.Font = new Font("Arial Narrow", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProfileTitle.ForeColor = Color.MediumSlateBlue;
             lblProfileTitle.Location = new Point(218, 30);
             lblProfileTitle.Margin = new Padding(2, 0, 2, 0);
             lblProfileTitle.Name = "lblProfileTitle";
-            lblProfileTitle.Size = new Size(76, 20);
+            lblProfileTitle.Size = new Size(87, 24);
             lblProfileTitle.TabIndex = 0;
             lblProfileTitle.Text = "My Profile";
             // 
@@ -552,7 +621,7 @@
             pnlCreateSession.Controls.Add(lblCreateSessionDescription);
             pnlCreateSession.Controls.Add(lblCreateSessionTitle);
             pnlCreateSession.Location = new Point(0, 0);
-            pnlCreateSession.Margin = new Padding(2, 2, 2, 2);
+            pnlCreateSession.Margin = new Padding(2);
             pnlCreateSession.Name = "pnlCreateSession";
             pnlCreateSession.Size = new Size(942, 515);
             pnlCreateSession.TabIndex = 17;
@@ -561,7 +630,7 @@
             // txtSearchTutor
             // 
             txtSearchTutor.Location = new Point(698, 110);
-            txtSearchTutor.Margin = new Padding(2, 2, 2, 2);
+            txtSearchTutor.Margin = new Padding(2);
             txtSearchTutor.Name = "txtSearchTutor";
             txtSearchTutor.Size = new Size(209, 27);
             txtSearchTutor.TabIndex = 23;
@@ -593,7 +662,7 @@
             flpTutorList.BorderStyle = BorderStyle.FixedSingle;
             flpTutorList.FlowDirection = FlowDirection.TopDown;
             flpTutorList.Location = new Point(601, 146);
-            flpTutorList.Margin = new Padding(2, 2, 2, 2);
+            flpTutorList.Margin = new Padding(2);
             flpTutorList.Name = "flpTutorList";
             flpTutorList.Size = new Size(305, 275);
             flpTutorList.TabIndex = 20;
@@ -624,7 +693,7 @@
             dtpEndTime.CustomFormat = "hh:mm tt";
             dtpEndTime.Format = DateTimePickerFormat.Custom;
             dtpEndTime.Location = new Point(327, 307);
-            dtpEndTime.Margin = new Padding(2, 2, 2, 2);
+            dtpEndTime.Margin = new Padding(2);
             dtpEndTime.Name = "dtpEndTime";
             dtpEndTime.ShowUpDown = true;
             dtpEndTime.Size = new Size(213, 27);
@@ -635,7 +704,7 @@
             dtpStartTime.CustomFormat = "hh:mm tt";
             dtpStartTime.Format = DateTimePickerFormat.Custom;
             dtpStartTime.Location = new Point(327, 274);
-            dtpStartTime.Margin = new Padding(2, 2, 2, 2);
+            dtpStartTime.Margin = new Padding(2);
             dtpStartTime.Name = "dtpStartTime";
             dtpStartTime.ShowUpDown = true;
             dtpStartTime.Size = new Size(213, 27);
@@ -646,7 +715,7 @@
             dtpSessionDate.CustomFormat = "MMMM dd, yyyy";
             dtpSessionDate.Format = DateTimePickerFormat.Custom;
             dtpSessionDate.Location = new Point(327, 240);
-            dtpSessionDate.Margin = new Padding(2, 2, 2, 2);
+            dtpSessionDate.Margin = new Padding(2);
             dtpSessionDate.Name = "dtpSessionDate";
             dtpSessionDate.Size = new Size(213, 27);
             dtpSessionDate.TabIndex = 15;
@@ -655,7 +724,7 @@
             // btnSubmitSession
             // 
             btnSubmitSession.Location = new Point(755, 454);
-            btnSubmitSession.Margin = new Padding(2, 2, 2, 2);
+            btnSubmitSession.Margin = new Padding(2);
             btnSubmitSession.Name = "btnSubmitSession";
             btnSubmitSession.Size = new Size(150, 27);
             btnSubmitSession.TabIndex = 14;
@@ -666,7 +735,7 @@
             // numSlots
             // 
             numSlots.Location = new Point(395, 390);
-            numSlots.Margin = new Padding(2, 2, 2, 2);
+            numSlots.Margin = new Padding(2);
             numSlots.Maximum = new decimal(new int[] { 30, 0, 0, 0 });
             numSlots.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numSlots.Name = "numSlots";
@@ -677,7 +746,7 @@
             // numRequiredTutors
             // 
             numRequiredTutors.Location = new Point(395, 346);
-            numRequiredTutors.Margin = new Padding(2, 2, 2, 2);
+            numRequiredTutors.Margin = new Padding(2);
             numRequiredTutors.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
             numRequiredTutors.Name = "numRequiredTutors";
             numRequiredTutors.Size = new Size(144, 27);
@@ -687,7 +756,7 @@
             // txtLocation
             // 
             txtLocation.Location = new Point(395, 422);
-            txtLocation.Margin = new Padding(2, 2, 2, 2);
+            txtLocation.Margin = new Padding(2);
             txtLocation.Name = "txtLocation";
             txtLocation.Size = new Size(145, 27);
             txtLocation.TabIndex = 10;
@@ -695,7 +764,7 @@
             // txtTopic
             // 
             txtTopic.Location = new Point(340, 198);
-            txtTopic.Margin = new Padding(2, 2, 2, 2);
+            txtTopic.Margin = new Padding(2);
             txtTopic.Name = "txtTopic";
             txtTopic.Size = new Size(200, 27);
             txtTopic.TabIndex = 9;
@@ -703,7 +772,7 @@
             // txtSubject
             // 
             txtSubject.Location = new Point(340, 154);
-            txtSubject.Margin = new Padding(2, 2, 2, 2);
+            txtSubject.Margin = new Padding(2);
             txtSubject.Name = "txtSubject";
             txtSubject.Size = new Size(200, 27);
             txtSubject.TabIndex = 8;
@@ -794,7 +863,7 @@
             pnlBrowseSession.Controls.Add(lblSearchSessions);
             pnlBrowseSession.Controls.Add(flpBrowseSessions);
             pnlBrowseSession.Location = new Point(0, 0);
-            pnlBrowseSession.Margin = new Padding(2, 2, 2, 2);
+            pnlBrowseSession.Margin = new Padding(2);
             pnlBrowseSession.Name = "pnlBrowseSession";
             pnlBrowseSession.Size = new Size(942, 515);
             pnlBrowseSession.TabIndex = 17;
@@ -802,7 +871,7 @@
             // txtSearchSessions
             // 
             txtSearchSessions.Location = new Point(327, 38);
-            txtSearchSessions.Margin = new Padding(2, 2, 2, 2);
+            txtSearchSessions.Margin = new Padding(2);
             txtSearchSessions.Name = "txtSearchSessions";
             txtSearchSessions.Size = new Size(590, 27);
             txtSearchSessions.TabIndex = 2;
@@ -823,34 +892,49 @@
             flpBrowseSessions.AutoScroll = true;
             flpBrowseSessions.FlowDirection = FlowDirection.TopDown;
             flpBrowseSessions.Location = new Point(209, 78);
-            flpBrowseSessions.Margin = new Padding(2, 2, 2, 2);
+            flpBrowseSessions.Margin = new Padding(2);
             flpBrowseSessions.Name = "flpBrowseSessions";
-            flpBrowseSessions.Padding = new Padding(8, 8, 8, 8);
+            flpBrowseSessions.Padding = new Padding(8);
             flpBrowseSessions.Size = new Size(707, 414);
             flpBrowseSessions.TabIndex = 0;
             flpBrowseSessions.WrapContents = false;
+            // 
+            // btnTutorMode
+            // 
+            btnTutorMode.BackgroundImage = (Image)resources.GetObject("btnTutorMode.BackgroundImage");
+            btnTutorMode.BackgroundImageLayout = ImageLayout.Stretch;
+            btnTutorMode.FlatAppearance.BorderSize = 0;
+            btnTutorMode.FlatStyle = FlatStyle.Flat;
+            btnTutorMode.Font = new Font("Arial Narrow", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnTutorMode.ForeColor = SystemColors.Control;
+            btnTutorMode.Location = new Point(10, 247);
+            btnTutorMode.Margin = new Padding(2);
+            btnTutorMode.Name = "btnTutorMode";
+            btnTutorMode.Size = new Size(168, 29);
+            btnTutorMode.TabIndex = 17;
+            btnTutorMode.Text = "Tutor Mode";
+            btnTutorMode.UseVisualStyleBackColor = true;
             // 
             // StudentDashboard
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(942, 515);
-            Controls.Add(pnlSidebar);
             Controls.Add(pnlMyProfile);
             Controls.Add(pnlCreateSession);
-            Controls.Add(pnlBrowseSession);
+            Controls.Add(pnlBookedSessions);
             Controls.Add(pnlNotification);
+            Controls.Add(pnlBrowseSession);
             Controls.Add(pnlCompletedSessions);
             Controls.Add(pnlWaitlistedSessions);
-            Controls.Add(pnlBookedSessions);
             Controls.Add(lblWelcome);
             Controls.Add(lblDashboardTitle);
             FormBorderStyle = FormBorderStyle.FixedSingle;
-            Margin = new Padding(2, 2, 2, 2);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(2);
             Name = "StudentDashboard";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Student Dashboard";
-            pnlSidebar.ResumeLayout(false);
             pnlBookedSessions.ResumeLayout(false);
             pnlBookedSessions.PerformLayout();
             pnlWaitlistedSessions.ResumeLayout(false);
@@ -872,8 +956,6 @@
         }
 
         #endregion
-
-        private Panel pnlSidebar;
         private Label lblDashboardTitle;
         private Label lblWelcome;
         private Panel pnlBookedSessions;
@@ -941,5 +1023,6 @@
         private TextBox txtSearchSessions;
         private Label lblSearchSessions;
         private FlowLayoutPanel flpBrowseSessions;
+        private Button btnTutorMode;
     }
 }
