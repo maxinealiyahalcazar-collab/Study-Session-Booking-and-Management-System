@@ -51,11 +51,11 @@ namespace Study_Session
         private void LoadAcceptedTutors(int sessionId)
         {
 
-            DataTable tutors = sessionRepository.GetAcceptedSessionTutors(sessionId);
+            List<Tutor> tutors = sessionRepository.GetRequestedSessionTutors(sessionId);
 
             flpSessionTutors.Controls.Clear();
 
-            foreach (DataRow row in tutors.Rows)
+            foreach (Tutor tutor in tutors)
             {
                 Panel tutorCard = new Panel();
                 tutorCard.Width = 280;
@@ -64,18 +64,18 @@ namespace Study_Session
                 tutorCard.Margin = new Padding(5);
 
                 Label lblName = new Label();
-                lblName.Text = row["fullName"].ToString();
+                lblName.Text = tutor.FullName;
                 lblName.Font = new Font("Arial", 10, FontStyle.Bold);
                 lblName.Location = new Point(10, 10);
                 lblName.AutoSize = true;
 
                 Label lblSubjects = new Label();
-                lblSubjects.Text = "Subjects: " + row["subjects"].ToString();
+                lblSubjects.Text = "Subjects: " + tutor.Subjects;
                 lblSubjects.Location = new Point(10, 35);
                 lblSubjects.AutoSize = true;
 
                 Label lblRating = new Label();
-                lblRating.Text = "Rating: " + row["rating"].ToString();
+                lblRating.Text = "Rating: " + tutor.Rating.ToString("");
                 lblRating.Location = new Point(10, 60);
                 lblRating.AutoSize = true;
 

@@ -12,6 +12,7 @@ namespace Study_Session
     {
         private string sessionCategory;
         private int loggedInUserId;
+        private bool isTutor;
         private int sessionId;
         private Action<Session> editSessionCallback;
         private UserRepository userRepository = new UserRepository();
@@ -20,7 +21,7 @@ namespace Study_Session
 
         private Session sessionData;
 
-        public SessionDetails(Session sessionData, string category, int userId, Action<Session> editCallback)
+        public SessionDetails(Session sessionData, string category, int userId, Action<Session> editCallback, bool isTutor = false)
         {
             InitializeComponent();
 
@@ -35,6 +36,7 @@ namespace Study_Session
             sessionCategory = category;
             loggedInUserId = userId;
             sessionId = sessionData.SessionId;
+            this.isTutor = isTutor;
             this.sessionData = sessionData;
             editSessionCallback = editCallback;
 
@@ -55,26 +57,49 @@ namespace Study_Session
             lblLocation.Text = "Location: " + sessionData.Location;
             lblSlots.Text = "Slots: " + sessionData.Slots;
             lblStatus.Text = "Status: " + sessionData.SessionStatus;
-           
-            int studentId = userRepository.GetStudentIdByUserId(loggedInUserId);
-            bool isCreator = sessionData.CreatorStudentId == studentId;
-           
+
+            bool isCreator;
+
+            if (isTutor)
+            {
+                int tutorId = userRepository.GetTutorIdByUserId(loggedInUserId);
+                isCreator = sessionData.CreatorTutorId == tutorId;
+            }
+            else
+            {
+                int studentId = userRepository.GetStudentIdByUserId(loggedInUserId);
+                isCreator = sessionData.CreatorStudentId == studentId;
+            }
+
 
             if (sessionCategory == "Upcoming")
             {
                 btnEditSession.Visible = isCreator;
-                btnCancelSession.Visible = isCreator;
-                btnCancelBooking.Visible = !isCreator;
+
+                if (isTutor)
+                    btnWithdraw.Visible = !isCreator;
+
+                else
+                {
+                    btnCancelSession.Visible = isCreator;
+                    btnCancelBooking.Visible = !isCreator;
+                }
             }
+
             else if (sessionCategory == "Ongoing")
             {
                 btnCompleteSession.Visible = isCreator;
             }
+
             else if (sessionCategory == "Completed")
             {
-                btnUploadMaterials.Visible = true;
                 btnViewMaterials.Visible = true;
-                btnRateTutor.Visible = true;
+
+                if (!isTutor)
+                {
+                    btnUploadMaterials.Visible = true;
+                    btnRateTutor.Visible = true;
+                }
             }
         }
 
@@ -217,6 +242,11 @@ namespace Study_Session
 
             SessionActivityForm activityForm = new SessionActivityForm(sessionData, studentId, "View");
             activityForm.ShowDialog();
+        }
+
+        private void btnWithdraw_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

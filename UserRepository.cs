@@ -84,36 +84,16 @@ namespace Study_Session
                         {
                             string passwordHash = reader["password"].ToString();
 
-                            if (BCrypt.Net.BCrypt.Verify(password, passwordHash))
-                            {
-                                Student student = new Student(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["studentId"]), reader["fullName"].ToString(),
-                                reader["studentNumber"].ToString(), reader["ueGmail"].ToString(), reader["year"].ToString(), reader["program"].ToString(),
-                                passwordHash);
+                            Student student = new Student(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["studentId"]), reader["fullName"].ToString(), reader["studentNumber"].ToString(),
+                            reader["ueGmail"].ToString(), reader["year"].ToString(), reader["program"].ToString(), passwordHash);
 
-                                return student;
-                            }
+                            return student;
                         }
                     }
                 }
             }
 
             return null;
-        }
-
-        public string GetUserFullName(int userId)
-        {
-            using (MySqlConnection connection = Database.GetConnection())
-            {
-                connection.Open();
-                string userQuery3 = @"SELECT fullName FROM user WHERE userId = @userId";
-
-                using (MySqlCommand command = new MySqlCommand(userQuery3, connection))
-                {
-                    command.Parameters.AddWithValue("@userId", userId);
-                    object result = command.ExecuteScalar();
-                    return Convert.ToString(result) ?? "Student";
-                }
-            }
         }
 
         public int GetStudentIdByUserId(int userId)
@@ -133,6 +113,56 @@ namespace Study_Session
                     return result == null ? 0 : Convert.ToInt32(result);
                 }
             }
+        }
+
+        public int GetTutorIdByUserId(int userId)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = "SELECT tutorId FROM tutor WHERE userId = @userId";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@userId", userId);
+
+                    object result = command.ExecuteScalar();
+
+                    return result == null || result == DBNull.Value
+                        ? 0
+                        : Convert.ToInt32(result);
+                }
+            }
+        }
+
+        public Tutor GetTutorById(int tutorId)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT t.tutorId, u.userId, u.fullName, u.studentNumber, u.ueGmail, u.year, u.program, t.credentials,
+                t.subjects, t.availability, t.rating FROM tutor t INNER JOIN user u ON t.userId = u.userId WHERE t.tutorId = @tutorId";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@tutorId", tutorId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Tutor(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["tutorId"]), reader["fullName"].ToString(), reader["studentNumber"].ToString(),
+                            reader["ueGmail"].ToString(), reader["year"].ToString(), reader["program"].ToString(), string.Empty,
+                            reader["subjects"].ToString(), reader["availability"].ToString(), reader["credentials"].ToString(),
+                            Convert.ToDouble(reader["rating"]));
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
 
         public int GetBookedSessionCount(int userId)
@@ -204,27 +234,67 @@ namespace Study_Session
             }
         }
 
-        public DataTable GetUserProfile(int userId)
+        public bool AddNotification(int userId, string message)
         {
             using (MySqlConnection connection = Database.GetConnection())
             {
                 connection.Open();
-                string userQuery8 = @"SELECT u.fullName, u.ueGmail, u.year, u.program, t.credentials, t.subjects, t.rating, t.availability FROM user u LEFT JOIN tutor t ON u.userId = t.userId
-                WHERE u.userId = @userId";
-                using (MySqlCommand command = new MySqlCommand(userQuery8, connection))
+
+                string query = @"INSERT INTO notification (message, userId) VALUES (@message, @userId)";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
+                    command.Parameters.AddWithValue("@message", message);
                     command.Parameters.AddWithValue("@userId", userId);
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
-                    {
-                        DataTable profile = new DataTable();
-                        adapter.Fill(profile);
-                        return profile;
-                    }
+
+                    return command.ExecuteNonQuery() > 0;
                 }
             }
         }
 
-        public bool updateStudentProfile(int userId, string fullName, string ueGmail, string year, string program)
+        public User GetUserProfile(int userId)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT u.userId, u.fullName, u.studentNumber, u.ueGmail, u.year, u.program, u.password, s.studentId,
+                t.tutorId, t.credentials, t.subjects, t.rating, t.availability FROM user u LEFT JOIN student s ON u.userId = s.userId
+                LEFT JOIN tutor t ON u.userId = t.userId WHERE u.userId = @userId";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@userId", userId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int id = Convert.ToInt32(reader["userId"]);
+                            string fullName = reader["fullName"].ToString();
+                            string studentNumber = reader["studentNumber"].ToString();
+                            string email = reader["ueGmail"].ToString();
+                            string year = reader["year"].ToString();
+                            string program = reader["program"].ToString();
+                            string passwordHash = reader["password"].ToString();
+
+                            if (reader["tutorId"] != DBNull.Value)
+                            {
+                                return new Tutor(id, Convert.ToInt32(reader["tutorId"]), fullName, studentNumber, email,
+                                year, program, passwordHash, reader["subjects"].ToString(), reader["availability"].ToString(), reader["credentials"].ToString(),
+                                Convert.ToDouble(reader["rating"]));
+                            }
+
+                            return new Student(id, Convert.ToInt32(reader["studentId"]), fullName, studentNumber, email, year, program, passwordHash);
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public bool UpdateStudentProfile(Student student)
         {
             using (MySqlConnection connection = Database.GetConnection())
             {
@@ -233,100 +303,70 @@ namespace Study_Session
                 string updateQuery = @"UPDATE user SET fullName = @fullName, ueGmail = @ueGmail, year = @year, program = @program WHERE userId = @userId";
                 using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
                 {
-                    updateCommand.Parameters.AddWithValue("@userId", userId);
-                    updateCommand.Parameters.AddWithValue("@fullName", fullName);
-                    updateCommand.Parameters.AddWithValue("@ueGmail", ueGmail);
-                    updateCommand.Parameters.AddWithValue("@year", year);
-                    updateCommand.Parameters.AddWithValue("@program", program);
+                    updateCommand.Parameters.AddWithValue("@userId", student.UserId);
+                    updateCommand.Parameters.AddWithValue("@fullName", student.FullName);
+                    updateCommand.Parameters.AddWithValue("@ueGmail", student.UEGmail);
+                    updateCommand.Parameters.AddWithValue("@year", student.Year);
+                    updateCommand.Parameters.AddWithValue("@program", student.Program);
 
                     return updateCommand.ExecuteNonQuery() > 0;
                 }
             }
         }
 
-        public int createStudentSession(int userId, string subject, string topic, DateTime startDateTime, DateTime endDateTime, int requiredTutors, int slots, string location, HashSet<int> selectedTutorIds)
+        public bool UpdateTutorProfile(Tutor tutor)
         {
+            if (tutor == null)
+            {
+                return false;
+            }
+
             using (MySqlConnection connection = Database.GetConnection())
             {
                 connection.Open();
 
-                int studentId;
+                string query = @"UPDATE tutor SET subjects = @subjects, availability = @availability, credentials = @credentials
+                WHERE tutorId = @tutorId";
 
-                string studentQuery = @"SELECT studentId FROM student WHERE userId = @userId";
-
-                using (MySqlCommand studentCommand = new MySqlCommand(studentQuery, connection))
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    studentCommand.Parameters.AddWithValue("@userId", userId);
-                    object result = studentCommand.ExecuteScalar();
+                    command.Parameters.AddWithValue("@subjects", tutor.Subjects);
+                    command.Parameters.AddWithValue("@availability", tutor.Availability);
+                    command.Parameters.AddWithValue("@credentials", tutor.Credentials);
+                    command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
 
-                    if (result == null)
-                    {
-                        return 0;
-                    }
-
-                    studentId = Convert.ToInt32(result);
+                    return command.ExecuteNonQuery() > 0;
                 }
-
-                string studentQuery2 = @"INSERT INTO session (creatorStudentId, topic, subject, startDateTime, endDateTime, requiredTutors, slots, location) VALUES (@studentId, @topic, @subject, @startDateTime, @endDateTime, @requiredTutors, @slots, @location)";
-
-                using (MySqlCommand studentCommand2 = new MySqlCommand(studentQuery2, connection))
-                {
-                    studentCommand2.Parameters.AddWithValue("@studentId", studentId);
-                    studentCommand2.Parameters.AddWithValue("@topic", topic);
-                    studentCommand2.Parameters.AddWithValue("@subject", subject);
-                    studentCommand2.Parameters.AddWithValue("@startDateTime", startDateTime);
-                    studentCommand2.Parameters.AddWithValue("@endDateTime", endDateTime);
-                    studentCommand2.Parameters.AddWithValue("@slots", slots);
-                    studentCommand2.Parameters.AddWithValue("@requiredTutors", requiredTutors);
-                    studentCommand2.Parameters.AddWithValue("@location", location);
-                    studentCommand2.ExecuteNonQuery();
-
-                    int sessionId = Convert.ToInt32(studentCommand2.LastInsertedId);
-                    string bookingQuery = @"INSERT INTO booking (studentId, sessionId, bookingStatus, paymentStatus, expectation) VALUES (@studentId, @sessionId, 'Accepted', 'Unpaid', '')";
-
-                    foreach (int tutorId in selectedTutorIds)
-                    { string tutorQuery = @"INSERT INTO sessionTutor (sessionId, tutorId, requestStatus) VALUES (@sessionId, @tutorId, 'Pending')";
-
-                        using (MySqlCommand tutorCommand = new MySqlCommand(tutorQuery, connection))
-                        {
-                            tutorCommand.Parameters.AddWithValue("@sessionId", sessionId);
-                            tutorCommand.Parameters.AddWithValue("@tutorId", tutorId);
-
-                            tutorCommand.ExecuteNonQuery();
-                        }
-                    }
-
-                    using (MySqlCommand bookingCommand = new MySqlCommand(bookingQuery, connection))
-                    {
-                        bookingCommand.Parameters.AddWithValue("@studentId", studentId);
-                        bookingCommand.Parameters.AddWithValue("@sessionId", sessionId);
-
-                        bookingCommand.ExecuteNonQuery();
-                        return sessionId;
-                    }
-                }
-
             }
         }
 
-        public DataTable GetAvailableTutors()
+        public List<Tutor> GetAvailableTutors()
         {
+            List<Tutor> tutors = new List<Tutor>();
+
             using (MySqlConnection connection = Database.GetConnection())
             {
                 connection.Open();
 
-                string tutorQuery = @"SELECT t.tutorId, u.userId, u.fullName, u.ueGmail, u.year, u.program, t.credentials, t.subjects, t.rating, t.availability FROM tutor t INNER JOIN user u ON t.userId = u.userId ORDER BY u.fullname ASC";
+                string tutorQuery = @"SELECT t.tutorId, u.userId, u.fullName, u.studentNumber, u.ueGmail, u.year, u.program, t.credentials,
+                t.subjects, t.rating, t.availability FROM tutor t INNER JOIN user u ON t.userId = u.userId ORDER BY u.fullName ASC";
 
-                using (MySqlCommand tutorCommand = new MySqlCommand(tutorQuery, connection))
+                using (MySqlCommand command = new MySqlCommand(tutorQuery, connection))
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(tutorCommand))
+                    while (reader.Read())
                     {
-                        DataTable tutors = new DataTable();
-                        adapter.Fill(tutors);
-                        return tutors;
+                        Tutor tutor = new Tutor(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["tutorId"]),
+                        reader["fullName"].ToString(),reader["studentNumber"].ToString(), reader["ueGmail"].ToString(), reader["year"].ToString(),
+                        reader["program"].ToString(), string.Empty, reader["subjects"].ToString(),reader["availability"].ToString(),
+                        reader["credentials"].ToString(), Convert.ToDouble(reader["rating"]));
+
+                        tutors.Add(tutor);
                     }
                 }
             }
+
+            return tutors;
         }
 
 
@@ -366,6 +406,36 @@ namespace Study_Session
                     connection.Open();
 
                     return Convert.ToInt32(command.ExecuteScalar()) > 0;
+                }
+            }
+        }
+
+        public Tutor CreateTutor(Tutor tutor)
+        {
+            if (tutor == null)
+            {
+                return null;
+            }
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"INSERT INTO tutor (userId, credentials, rating, subjects, availability) VALUES
+                (@userId, @credentials, @rating, @subjects, @availability); SELECT LAST_INSERT_ID();";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@userId", tutor.UserId);
+                    command.Parameters.AddWithValue("@credentials", tutor.Credentials);
+                    command.Parameters.AddWithValue("@rating", tutor.Rating);
+                    command.Parameters.AddWithValue("@subjects", tutor.Subjects);
+                    command.Parameters.AddWithValue("@availability", tutor.Availability);
+
+                    int newTutorId = Convert.ToInt32(command.ExecuteScalar());
+
+                    return new Tutor(tutor.UserId, newTutorId, tutor.FullName, tutor.StudentNumber, tutor.UEGmail, tutor.Year,
+                    tutor.Program, tutor.PasswordHash, tutor.Subjects, tutor.Availability, tutor.Credentials, tutor.Rating);
                 }
             }
         }

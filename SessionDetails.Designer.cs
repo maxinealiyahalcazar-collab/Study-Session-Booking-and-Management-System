@@ -42,6 +42,7 @@
             btnUploadMaterials = new Button();
             btnViewMaterials = new Button();
             btnRateTutor = new Button();
+            btnWithdraw = new Button();
             SuspendLayout();
             // 
             // lblSubject
@@ -177,11 +178,22 @@
             btnRateTutor.UseVisualStyleBackColor = true;
             btnRateTutor.Click += btnRateTutor_Click;
             // 
+            // btnWithdraw
+            // 
+            btnWithdraw.Location = new Point(356, 400);
+            btnWithdraw.Name = "btnWithdraw";
+            btnWithdraw.Size = new Size(112, 34);
+            btnWithdraw.TabIndex = 14;
+            btnWithdraw.Text = "Withdraw";
+            btnWithdraw.UseVisualStyleBackColor = true;
+            btnWithdraw.Click += btnWithdraw_Click;
+            // 
             // SessionDetails
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(630, 660);
+            Controls.Add(btnWithdraw);
             Controls.Add(btnRateTutor);
             Controls.Add(btnViewMaterials);
             Controls.Add(btnUploadMaterials);
@@ -218,5 +230,6 @@
         private Button btnUploadMaterials;
         private Button btnViewMaterials;
         private Button btnRateTutor;
+        private Button btnWithdraw;
     }
 }

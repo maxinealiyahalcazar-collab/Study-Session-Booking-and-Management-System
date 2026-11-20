@@ -37,7 +37,7 @@ namespace Study_Session
                 cmbProgram.SelectedItem.ToString(), passwordHash);
 
                 Student registeredStudent = userRepository.RegisterUser(newStudent);
-                
+
                 MessageBox.Show("User registered successfully.");
 
                 txtFullName.Clear();
@@ -65,11 +65,9 @@ namespace Study_Session
 
             try
             {
-                UserRepository repository = new UserRepository();
+                User loggedInUser = userRepository.LoginUser(txtStudentNumber2.Text.Trim(), txtPassword2.Text);
 
-                User loggedInUser = repository.LoginUser(txtStudentNumber2.Text.Trim(), txtPassword2.Text);
-
-                if (loggedInUser == null)
+                if (loggedInUser == null || !loggedInUser.login(txtPassword2.Text))
                 {
                     MessageBox.Show("Invalid student number or password.");
                     return;

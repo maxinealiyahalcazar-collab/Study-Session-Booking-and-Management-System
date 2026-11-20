@@ -10,6 +10,7 @@ namespace Study_Session
         private int sessionId;
         private int? creatorStudentId;
         private int? creatorTutorId;
+        private string creatorTutorName = "";
         private int requiredTutors;
         private string subject  = "";
         private string topic = "";
@@ -37,6 +38,11 @@ namespace Study_Session
             get { return creatorTutorId; }
         }
 
+        public string CreatorTutorName
+        {
+            get { return creatorTutorName; }
+            set { creatorTutorName = value; }
+        }
         public int RequiredTutors
         {
             get { return requiredTutors; }

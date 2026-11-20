@@ -14,15 +14,15 @@ namespace Study_Session
     {
         private int sessionId;
         private int studentId;
+        private Student loggedInStudent;
         private int selectedTutorId;
         private string selectedTutorName;
-        private DataTable sessionTutors;
         private string selectedFilePath = "";
         private string activityMode;
         private Session sessionData;
         private UserRepository userRepository = new UserRepository();
         private SessionRepository sessionRepository = new SessionRepository();
-
+        private List<Tutor> sessionTutors = new List<Tutor>();
         public SessionActivityForm(Session session, int studentId, string mode)
         {
             InitializeComponent();
@@ -57,15 +57,14 @@ namespace Study_Session
 
         private void LoadSessionTutors()
         {
-
-            sessionTutors = sessionRepository.GetAcceptedSessionTutors(sessionId);
+            sessionTutors = sessionRepository.GetConfirmedSessionTutors(sessionId);
 
             flpTutorList.Controls.Clear();
 
-            foreach (DataRow row in sessionTutors.Rows)
+            foreach (Tutor tutor in sessionTutors)
             {
-                int tutorId = Convert.ToInt32(row["tutorId"]);
-                string tutorName = row["fullName"].ToString();
+                int tutorId = Convert.ToInt32(tutor.TutorId);
+                string tutorName = tutor.FullName;
 
                 Panel tutorPanel = new Panel();
                 tutorPanel.Width = flpTutorList.Width - 25;
@@ -118,15 +117,24 @@ namespace Study_Session
                 return;
             }
 
-            UserRepository repository = new UserRepository();
-
-            bool success = repository.AddRating(selectedTutorId, studentId, sessionId, numRating.Value, txtReview.Text.Trim());
-
-            if (repository.HasAlreadyRated(studentId, selectedTutorId, sessionId))
+            if (userRepository.HasAlreadyRated(studentId, selectedTutorId, sessionId))
             {
                 MessageBox.Show("You have already rated this tutor for this session.");
                 return;
             }
+
+            Tutor tutor = userRepository.GetTutorById(selectedTutorId);
+
+            if (tutor == null)
+            {
+                MessageBox.Show("Tutor not found.");
+                return;
+            }
+
+            Rating rating = new Rating(0, sessionId, studentId, selectedTutorId, (double)numRating.Value,
+            txtReview.Text.Trim());
+
+            bool success = loggedInStudent.rateTutor(tutor, rating);
 
             if (success)
             {
@@ -202,7 +210,7 @@ namespace Study_Session
                 return;
             }
 
-            bool success = sessionRepository.AddMaterial(sessionData.SessionId, materialName, description, fileLink);
+            bool success = loggedInStudent.uploadMaterials(sessionData, materialName, description, fileLink);
 
             if (success)
             {

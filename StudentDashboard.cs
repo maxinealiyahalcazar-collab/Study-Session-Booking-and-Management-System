@@ -1,4 +1,5 @@
-﻿using MySqlX.XDevAPI;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using MySqlX.XDevAPI;
 using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Study_Session
         private UserRepository userRepository = new UserRepository();
         private SessionRepository sessionRepository = new SessionRepository();
         private BookingRepository bookingRepository = new BookingRepository();
-        DataTable availableTutors = new DataTable();
+        List<Tutor> availableTutors = new List<Tutor>();
         private List<Session> browseSessions;
         private bool isEditMode = false;
         private int editingSessionId = 0;
@@ -52,50 +53,19 @@ namespace Study_Session
 
         private void LoadNotifications()
         {
-            DataTable notifications = userRepository.GetNotifications(loggedInUserId);
-
-            flpNotifications.Controls.Clear();
-
-            foreach (DataRow row in notifications.Rows)
-            {
-                Panel notificationPanel = new Panel();
-
-                notificationPanel.Size = new Size(320, 65);
-                notificationPanel.BackColor = Color.MediumSlateBlue;
-                notificationPanel.BorderStyle = BorderStyle.FixedSingle;
-                notificationPanel.Margin = new Padding(3, 3, 3, 8);
-
-                Label messageLabel = new Label();
-                messageLabel.Text = row["message"].ToString();
-                messageLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-                messageLabel.Location = new Point(10, 8);
-                messageLabel.Size = new Size(290, 22);
-
-                Label dateLabel = new Label();
-                DateTime createdAt = Convert.ToDateTime(row["createdAt"]);
-                dateLabel.Text = createdAt.ToString("MM/dd/yyyy HH:mm");
-                dateLabel.Font = new Font("Segoe UI", 8);
-                dateLabel.Location = new Point(10, 35);
-                dateLabel.AutoSize = true;
-
-                notificationPanel.Controls.Add(messageLabel);
-                notificationPanel.Controls.Add(dateLabel);
-
-                flpNotifications.Controls.Add(notificationPanel);
-            }
+            loggedInStudent.viewNotifications(flpNotifications);
         }
 
         private void LoadStudentProfile()
         {
-            DataTable studentProfile = userRepository.GetUserProfile(loggedInUserId);
-            if (studentProfile.Rows.Count > 0)
-            {
-                DataRow row = studentProfile.Rows[0];
+            User studentProfile = userRepository.GetUserProfile(loggedInUserId);
 
-                lblProfileFullNameValue.Text = row["fullName"].ToString();
-                lblProfileUEGmailValue.Text = row["ueGmail"].ToString();
-                lblProfileYearValue.Text = row["year"].ToString();
-                lblProfileProgramValue.Text = row["program"].ToString();
+            if (studentProfile != null)
+            {
+                lblProfileFullNameValue.Text = studentProfile.FullName;
+                lblProfileUEGmailValue.Text = studentProfile.UEGmail;
+                lblProfileYearValue.Text = studentProfile.Year;
+                lblProfileProgramValue.Text = studentProfile.Program;
             }
         }
 
@@ -146,8 +116,10 @@ namespace Study_Session
 
         private void btnSaveProfile_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtEditFullName.Text) || string.IsNullOrWhiteSpace(txtEditUEGmail.Text) ||
-                string.IsNullOrWhiteSpace(txtEditYear.Text) || string.IsNullOrWhiteSpace(txtEditProgram.Text))
+            if (string.IsNullOrWhiteSpace(txtEditFullName.Text) ||
+                string.IsNullOrWhiteSpace(txtEditUEGmail.Text) ||
+                string.IsNullOrWhiteSpace(txtEditYear.Text) ||
+                string.IsNullOrWhiteSpace(txtEditProgram.Text))
             {
                 MessageBox.Show("Please complete all fields.");
                 return;
@@ -155,14 +127,20 @@ namespace Study_Session
 
             try
             {
+                bool valid = loggedInStudent.editProfile(txtEditFullName.Text.Trim(), txtEditUEGmail.Text.Trim(), txtEditYear.Text.Trim(),
+                txtEditProgram.Text.Trim());
 
-                bool updated = userRepository.updateStudentProfile(loggedInUserId, txtEditFullName.Text.Trim(), txtEditUEGmail.Text.Trim(), txtEditYear.Text.Trim(), txtEditProgram.Text.Trim());
+                if (!valid)
+                {
+                    MessageBox.Show("Please complete all fields.");
+                    return;
+                }
+
+                bool updated = userRepository.UpdateStudentProfile(loggedInStudent);
 
                 if (updated)
                 {
                     MessageBox.Show("Profile updated successfully!");
-
-
                     LoadStudentProfile();
 
                     txtEditFullName.Visible = false;
@@ -178,37 +156,22 @@ namespace Study_Session
                     btnEditProfile.Visible = true;
                     btnSaveProfile.Visible = false;
                     btnCancelProfile.Visible = false;
-
                 }
-
                 else
                 {
                     MessageBox.Show("No profile changes were saved.");
                 }
-
             }
 
             catch (Exception ex)
             {
-                MessageBox.Show("Error updating profile." + ex.Message);
+                MessageBox.Show("Error updating profile. " + ex.Message);
             }
-
         }
 
         private void btnViewProfile_Click(object sender, EventArgs e)
         {
-
-            DataTable profile = userRepository.GetUserProfile(loggedInUserId);
-
-            if (profile.Rows.Count > 0)
-            {
-                UserProfile profileForm = new UserProfile(profile.Rows[0]);
-                profileForm.ShowDialog();
-            }
-            else
-            {
-                MessageBox.Show("Profile not found.");
-            }
+            loggedInStudent.viewProfile();
         }
         private void btnCreateSession_Click(object sender, EventArgs e)
         {
@@ -285,11 +248,33 @@ namespace Study_Session
                     MessageBox.Show("Unable to update the study session.");
                 }
             }
+
+            else
+            {
+                Session newSession = loggedInStudent.createSession(txtSubject.Text.Trim(), txtTopic.Text.Trim(), startDateTime,
+                endDateTime, (int)numRequiredTutors.Value, (int)numSlots.Value, txtLocation.Text.Trim());
+
+                if (newSession == null)
+                {
+                    MessageBox.Show("Invalid session details.");
+                    return;
+                }
+
+                int newSessionId = sessionRepository.createStudentSession(newSession, selectedTutorIds);
+
+                if (newSessionId > 0)
+                {
+                    MessageBox.Show("Study session created successfully!");
+                }
+                else
+                {
+                    MessageBox.Show("Unable to create the study session.");
+                }
+            }
         }
         private void LoadAvailableTutors()
         {
-            availableTutors = userRepository.GetAvailableTutors();
-
+            availableTutors = userRepository.GetAvailableTutors();    
             DisplayTutorList(txtSearchTutor.Text);
 
         }
@@ -297,11 +282,11 @@ namespace Study_Session
         {
             flpTutorList.Controls.Clear();
 
-            foreach (DataRow row in availableTutors.Rows)
+            foreach (Tutor tutor in availableTutors)
             {
-                string tutorName = row["fullName"].ToString();
-                string subjects = row["subjects"].ToString();
-                string availability = row["availability"].ToString();
+                string tutorName = tutor.FullName;
+                string subjects = tutor.Subjects;
+                string availability = tutor.Availability;
                 string sessionDay = dtpSessionDate.Value.DayOfWeek.ToString();
                 string[] availableDays = availability.Split(',');
                 bool isAvailable = false;
@@ -315,7 +300,7 @@ namespace Study_Session
                     }
                 }
 
-                bool isSelected = selectedTutorIds.Contains(Convert.ToInt32(row["tutorId"]));
+                bool isSelected = selectedTutorIds.Contains(tutor.TutorId);
 
                 if (!isAvailable && !isSelected)
                 {
@@ -327,8 +312,7 @@ namespace Study_Session
                     continue;
                 }
 
-                int tutorId = Convert.ToInt32(row["tutorId"]);
-
+                int tutorId = tutor.TutorId;
                 CheckBox tutorCheckBox = new CheckBox();
 
                 tutorCheckBox.Text = tutorName;
@@ -355,7 +339,15 @@ namespace Study_Session
                             return;
                         }
 
-                        selectedTutorIds.Add(tutorId);
+                        if (loggedInStudent.requestTutor(tutor))
+                        {
+                            selectedTutorIds.Add(tutorId);
+                        }
+                        else
+                        {
+                            tutorCheckBox.Checked = false;
+                            return;
+                        }
                     }
 
                     else
@@ -374,8 +366,19 @@ namespace Study_Session
 
                 btnViewProfile.Click += (sender, e) =>
                 {
-                    UserProfile profileForm = new UserProfile(row);
-                    profileForm.ShowDialog();
+                    int selectedUserId = tutor.UserId;
+
+                    User profileUser = userRepository.GetUserProfile(selectedUserId);
+
+                    if (profileUser != null)
+                    {
+                        UserProfile profileForm = new UserProfile(profileUser);
+                        profileForm.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Profile not found.");
+                    }
                 };
 
                 Panel tutorPanel = new Panel();
@@ -426,6 +429,7 @@ namespace Study_Session
             foreach (Session session in sessions)
             {
                 Panel sessionCard = new Panel();
+                loggedInStudent.browseSession(session);
 
                 sessionCard.Width = flpBrowseSessions.ClientSize.Width - 35;
                 sessionCard.Height = 185;
@@ -580,10 +584,18 @@ namespace Study_Session
             lblDate.Location = new Point(10, lblTopic.Bottom + 10);
             lblDate.AutoSize = true;
 
+            Label lblTutor = new Label();
+            lblTutor.Text = string.IsNullOrEmpty(session.CreatorTutorName)
+                ? "Tutor: Not assigned"
+                : "Tutor: " + session.CreatorTutorName;
+
+            lblTutor.Location = new Point(10, lblDate.Bottom + 10);
+            lblTutor.AutoSize = true;
+
             Button btnView = new Button();
             btnView.Text = "View Details";
             btnView.Size = new Size(110, 35);
-            btnView.Location = new Point(10, lblDate.Bottom + 10);
+            btnView.Location = new Point(10, lblTutor.Bottom + 10);
 
             string category = "";
 
@@ -611,6 +623,7 @@ namespace Study_Session
             card.Controls.Add(lblSubject);
             card.Controls.Add(lblTopic);
             card.Controls.Add(lblDate);
+            card.Controls.Add(lblTutor);
             card.Controls.Add(btnView);
 
             return card;
@@ -726,7 +739,7 @@ namespace Study_Session
                 }
             }
 
-            List<Session> sessions = sessionRepository.GetMySessions(loggedInUserId);
+            List<Session> sessions = loggedInStudent.viewMySessions();
 
             flpUpcomingSessions.Controls.Clear();
             flpOngoingSessions.Controls.Clear();
@@ -781,14 +794,14 @@ namespace Study_Session
             editingSession = session;
             editingSessionId = session.SessionId;
 
-            DataTable selectedTutors = sessionRepository.GetAcceptedSessionTutors(editingSessionId);
-            lblSelectedTutors.Text = "Selected Tutors: " + selectedTutorIds.Count;
+            List<Tutor> tutors = sessionRepository.GetRequestedSessionTutors(session.SessionId);
 
-            foreach (DataRow tutor in selectedTutors.Rows)
+            foreach (Tutor tutor in tutors)
             {
-                selectedTutorIds.Add(Convert.ToInt32(tutor["tutorId"]));
+                selectedTutorIds.Add(tutor.TutorId);
             }
 
+            lblSelectedTutors.Text = "Selected Tutors: " + selectedTutorIds.Count;
             txtSubject.Text = session.Subject;
             txtTopic.Text = session.Topic;
             txtLocation.Text = session.Location;
@@ -813,11 +826,12 @@ namespace Study_Session
         private void btnLogout_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("Are you sure you want to log-out?", "Confirm Logout",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question);
+            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
+                loggedInStudent.logout();
+
                 this.Hide();
 
                 Main loginForm = new Main();
@@ -830,7 +844,36 @@ namespace Study_Session
 
         private void btnSwitchTutorMode_Click(object sender, EventArgs e)
         {
+            User existingProfile = userRepository.GetUserProfile(loggedInStudent.UserId);
 
+            if (existingProfile is Tutor existingTutor)
+            {
+                MessageBox.Show("You are already registered as a tutor.");
+                existingTutor.LoadDashboard(null);
+                this.Hide();
+                return;
+            }   
+
+            Tutor newTutor = loggedInStudent.becomeTutor();
+
+            if (newTutor == null)
+            {
+                MessageBox.Show("Unable to switch to Tutor.");
+                return;
+            }
+
+            Tutor registeredTutor = userRepository.CreateTutor(newTutor);
+
+            if (registeredTutor != null)
+            {
+                MessageBox.Show("You have successfully registered as a tutor!");
+                registeredTutor.LoadDashboard(null);
+                this.Hide();
+            }
+            else
+            {
+                MessageBox.Show("Unable to register as a tutor.");
+            }
         }
     }
 }
