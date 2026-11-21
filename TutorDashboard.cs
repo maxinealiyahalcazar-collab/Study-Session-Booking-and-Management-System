@@ -14,6 +14,9 @@ namespace Study_Session
         private Tutor loggedInTutor;
         private UserRepository userRepository = new UserRepository();
         private SessionRepository sessionRepository = new SessionRepository();
+        private List<int> selectedTutorIds = new List<int>();
+        private List<Tutor> availableTutors = new List<Tutor>();
+
         public TutorDashboard()
         {
             InitializeComponent();
@@ -199,13 +202,7 @@ namespace Study_Session
 
             btnView.Click += (sender, e) =>
             {
-                SessionDetails detailsForm = new SessionDetails(
-                    session,
-                    category,
-                    loggedInTutor.UserId,
-                    null,
-                    true
-                );
+                SessionDetails detailsForm = new SessionDetails(session, category, loggedInTutor.UserId, null, true);
 
                 if (detailsForm.ShowDialog() == DialogResult.OK)
                 {
@@ -223,9 +220,227 @@ namespace Study_Session
             return card;
         }
 
-        private void lblSubmitSession2_Click(object sender, EventArgs e)
+        private void btnSubmitSession2_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtSubject3.Text) ||
+                string.IsNullOrWhiteSpace(txtTopic3.Text) ||
+                string.IsNullOrWhiteSpace(txtLocation2.Text))
+            {
+                MessageBox.Show("Please complete all fields.");
+                return;
+            }
 
+            if (numSlots2.Value <= 0)
+            {
+                MessageBox.Show("Please enter at least one available slot.");
+                return;
+            }
+
+            DateTime selectedDate = dtpSessionDate2.Value.Date;
+            DateTime startDateTime = selectedDate.Add(dtpStartTime2.Value.TimeOfDay);
+            DateTime endDateTime = selectedDate.Add(dtpEndTime2.Value.TimeOfDay);
+
+            if (startDateTime <= DateTime.Now)
+            {
+                MessageBox.Show("Please select a future starting time.");
+                return;
+            }
+
+            if (endDateTime <= startDateTime)
+            {
+                MessageBox.Show("End time must be later than start time.");
+                return;
+            }
+
+            Session newSession = loggedInTutor.createSession(txtSubject3.Text.Trim(), txtTopic3.Text.Trim(), startDateTime, endDateTime,
+            Convert.ToInt32(numRequiredTutors2.Value), Convert.ToInt32(numSlots2.Value), txtLocation2.Text.Trim());
+
+            if (newSession == null)
+            {
+                MessageBox.Show("Invalid session details. Please check the date, time, and other fields.");
+                return;
+            }
+
+            if (selectedTutorIds.Count != Convert.ToInt32(numRequiredTutors2.Value))
+            {
+                MessageBox.Show("Please select the required number of additional tutors.");
+                return;
+            }
+
+            int sessionId = sessionRepository.createTutorSession(newSession, selectedTutorIds);
+
+            if (sessionId > 0)
+            {
+                MessageBox.Show("Session created successfully!");
+                selectedTutorIds.Clear();
+                lblSelectedTutors2.Text = "Selected Tutors: 0";
+
+                txtSubject3.Clear();
+                txtTopic3.Clear();
+                txtLocation2.Clear();
+
+                numSlots2.Value = 1;
+                numRequiredTutors2.Value = 0;
+
+                dtpSessionDate2.Value = DateTime.Today;
+                dtpStartTime2.Value = DateTime.Now;
+                dtpEndTime2.Value = DateTime.Now;
+
+                LoadTutorSessions();
+            }
+
+            else
+            {
+                MessageBox.Show("Unable to create session.");
+                return;
+            }
+        }
+        private void LoadAvailableTutors()
+        {
+            availableTutors = userRepository.GetAvailableTutors();
+            DisplayTutorList(txtSearchTutor2.Text);
+        }
+
+        private void DisplayTutorList(string searchText)
+        {
+            flpTutorList2.Controls.Clear();
+
+            foreach (Tutor tutor in availableTutors)
+            {
+                if (tutor.TutorId == loggedInTutor.TutorId)
+                {
+                    continue;
+                }
+
+                string tutorName = tutor.FullName;
+                string subjects = tutor.Subjects;
+                string availability = tutor.Availability;
+                string sessionDay = dtpSessionDate2.Value.DayOfWeek.ToString();
+                string[] availableDays = availability.Split(',');
+                bool isAvailable = false;
+
+                foreach (string day in availableDays)
+                {
+                    if (day.Trim().Equals(sessionDay, StringComparison.OrdinalIgnoreCase))
+                    {
+                        isAvailable = true;
+                        break;
+                    }
+                }
+
+                bool isSelected = selectedTutorIds.Contains(tutor.TutorId);
+
+                if (!isAvailable && !isSelected)
+                {
+                    continue;
+                }
+
+                if (!tutorName.Contains(searchText, StringComparison.OrdinalIgnoreCase) && !subjects.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                int tutorId = tutor.TutorId;
+                CheckBox tutorCheckBox = new CheckBox();
+
+                tutorCheckBox.Text = tutorName;
+
+                tutorCheckBox.Tag = tutorId;
+                tutorCheckBox.AutoSize = true;
+                tutorCheckBox.Margin = new Padding(5);
+                tutorCheckBox.Checked = selectedTutorIds.Contains(tutorId);
+
+                if (!isAvailable)
+                {
+                    tutorCheckBox.Text = tutorName + " (Unavailable)";
+                    tutorCheckBox.Enabled = false;
+                }
+
+                tutorCheckBox.CheckedChanged += (sender, e) =>
+                {
+                    if (tutorCheckBox.Checked)
+                    {
+                        if (selectedTutorIds.Count >= numRequiredTutors2.Value)
+                        {
+                            MessageBox.Show("You can only select up to " + numRequiredTutors2.Value + " tutors.");
+                            tutorCheckBox.Checked = false;
+                            return;
+                        }
+
+                        if (!selectedTutorIds.Contains(tutorId))
+                        {
+                            selectedTutorIds.Add(tutorId);
+                        }
+                    }
+
+                    else
+                    {
+                        selectedTutorIds.Remove(tutorId);
+                    }
+
+                    lblSelectedTutors2.Text = "Selected Tutors: " + selectedTutorIds.Count;
+                };
+
+                Button btnViewProfile = new Button();
+
+                btnViewProfile.Text = "View Profile";
+                btnViewProfile.AutoSize = true;
+                btnViewProfile.Margin = new Padding(5);
+
+                btnViewProfile.Click += (sender, e) =>
+                {
+                    int selectedUserId = tutor.UserId;
+
+                    User profileUser = userRepository.GetUserProfile(selectedUserId);
+
+                    if (profileUser != null)
+                    {
+                        UserProfile profileForm = new UserProfile(profileUser);
+                        profileForm.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Profile not found.");
+                    }
+                };
+
+                Panel tutorPanel = new Panel();
+                tutorPanel.Width = flpTutorList2.Width - 25;
+                tutorPanel.Height = 45;
+
+                tutorCheckBox.Location = new Point(5, 10);
+                btnViewProfile.Location = new Point(tutorPanel.Width - btnViewProfile.Width - 10, 5);
+
+                tutorPanel.Controls.Add(tutorCheckBox);
+                tutorPanel.Controls.Add(btnViewProfile);
+
+                flpTutorList2.Controls.Add(tutorPanel);
+            }
+        }
+
+        private void txtSearchTutor2_TextChanged(object sender, EventArgs e)
+        {
+            DisplayTutorList(txtSearchTutor2.Text);
+        }
+
+        private void dtpSessionDate2_ValueChanged(object sender, EventArgs e)
+        {
+            DisplayTutorList(txtSearchTutor2.Text);
+        }
+
+        private void numRequiredTutors2_ValueChanged(object sender, EventArgs e)
+        {
+            if (numRequiredTutors.Value < selectedTutorIds.Count)
+            {
+                MessageBox.Show("You cannot set the required tutors below the number of tutors already selected.");
+
+                numRequiredTutors.Value = selectedTutorIds.Count;
+            }
+        }
+        private void btnCreateSession_Click(object sender, EventArgs e)
+        {
+            LoadAvailableTutors();
         }
     }
+
 }

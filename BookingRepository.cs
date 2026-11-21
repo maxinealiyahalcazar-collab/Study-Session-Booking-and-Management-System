@@ -209,7 +209,6 @@ namespace Study_Session
                 return "BookingNotFound";
             }
 
-            booking.moveFromWaitlist();
             booking.completePayment();
 
             using (MySqlConnection connection = Database.GetConnection())

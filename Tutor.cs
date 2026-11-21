@@ -77,5 +77,17 @@ namespace Study_Session
             TutorDashboard dashboard = new TutorDashboard(this);
             dashboard.Show();
         }
+
+        public Session createSession(string subject, string topic, DateTime startDateTime, DateTime endDateTime, int requiredTutors, int slots, string location)
+        {
+            if (string.IsNullOrWhiteSpace(subject) || string.IsNullOrWhiteSpace(topic) || string.IsNullOrWhiteSpace(location) ||
+                startDateTime <= DateTime.Now || endDateTime <= startDateTime || slots <= 0 || requiredTutors < 0)
+            {
+                return null;
+            }
+
+            return new Session(0, null, this.TutorId, requiredTutors, subject, topic, startDateTime, endDateTime, slots, location,
+            "Open", 0, slots, 0);
+        }
     }
 }

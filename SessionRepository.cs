@@ -532,6 +532,47 @@ namespace Study_Session
             }
         }
 
+        public int createTutorSession(Session session, List<int> selectedTutorIds)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string sessionQuery = @"INSERT INTO session (creatorTutorId, topic, subject, startDateTime, endDateTime, requiredTutors, slots, location) VALUES
+                (@tutorId, @topic, @subject, @startDateTime, @endDateTime, @requiredTutors, @slots, @location)";
+
+                using (MySqlCommand command = new MySqlCommand(sessionQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@tutorId", session.CreatorTutorId);
+                    command.Parameters.AddWithValue("@topic", session.Topic);
+                    command.Parameters.AddWithValue("@subject", session.Subject);
+                    command.Parameters.AddWithValue("@startDateTime", session.StartDateTime);
+                    command.Parameters.AddWithValue("@endDateTime", session.EndDateTime);
+                    command.Parameters.AddWithValue("@requiredTutors", session.RequiredTutors);
+                    command.Parameters.AddWithValue("@slots", session.Slots);
+                    command.Parameters.AddWithValue("@location", session.Location);
+
+                    command.ExecuteNonQuery();
+
+                    int sessionId = Convert.ToInt32(command.LastInsertedId);
+
+                    foreach (int tutorId in selectedTutorIds)
+                    {
+                        string tutorQuery = @"INSERT INTO sessionTutor (sessionId, tutorId, requestStatus) VALUES
+                        (@sessionId, @tutorId, 'Pending')";
+
+                        using (MySqlCommand tutorCommand = new MySqlCommand(tutorQuery, connection))
+                        {
+                            tutorCommand.Parameters.AddWithValue("@sessionId", sessionId);
+                            tutorCommand.Parameters.AddWithValue("@tutorId", tutorId);
+                            tutorCommand.ExecuteNonQuery();
+                        }
+                    }
+
+                    return sessionId;
+                }
+            }
+        }
     }
 } 
 

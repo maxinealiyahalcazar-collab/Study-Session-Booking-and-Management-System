@@ -265,6 +265,19 @@ namespace Study_Session
                 if (newSessionId > 0)
                 {
                     MessageBox.Show("Study session created successfully!");
+                    
+                    txtSubject.Clear();
+                    txtTopic.Clear();
+                    txtLocation.Clear();
+
+                    numSlots.Value = 1;
+                    numRequiredTutors.Value = 0;
+
+                    dtpSessionDate.Value = DateTime.Today;
+                    dtpStartTime.Value = DateTime.Now;
+                    dtpEndTime.Value = DateTime.Now;
+
+                    lblSelectedTutors.Text = "Selected Tutors: 0";
                 }
                 else
                 {
@@ -499,12 +512,30 @@ namespace Study_Session
 
                 btnJoinWaitlist.Click += (sender, e) =>
                 {
-                    BookingForm bookingForm = new BookingForm(session, loggedInUserId, false, true);
-                    bookingForm.ShowDialog();
+                    string result = bookingRepository.JoinSession(loggedInUserId, session.SessionId, "");
 
-                    if (bookingForm.ShowDialog() == DialogResult.OK)
+                    if (result == "Waitlisted")
                     {
+                        MessageBox.Show("You have been added to the waitlist!");
+
                         DisplayBrowseSessions(sessionRepository.GetBrowseSessions(loggedInUserId));
+                        LoadMySessions();
+                    }
+
+                    else if (result == "Joined")
+                    {
+                        BookingForm bookingForm = new BookingForm(session, loggedInUserId, false, true);
+
+                        if (bookingForm.ShowDialog() == DialogResult.OK)
+                        {
+                            DisplayBrowseSessions(sessionRepository.GetBrowseSessions(loggedInUserId));
+                            LoadMySessions();
+                        }
+                    }
+
+                    else
+                    {
+                        MessageBox.Show(result);
                     }
                 };
 
@@ -543,7 +574,7 @@ namespace Study_Session
 
         private void btnMySessions_Click(object sender, EventArgs e)
         {
-
+            LoadMySessions();
         }
 
         private Panel CreateSessionCard(Session session)

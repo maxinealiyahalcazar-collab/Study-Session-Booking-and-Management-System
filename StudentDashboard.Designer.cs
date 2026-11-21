@@ -141,7 +141,7 @@
             // btnSwitchTutorMode
             // 
             btnSwitchTutorMode.Location = new Point(15, 748);
-            btnSwitchTutorMode.Margin = new Padding(4, 4, 4, 4);
+            btnSwitchTutorMode.Margin = new Padding(4);
             btnSwitchTutorMode.Name = "btnSwitchTutorMode";
             btnSwitchTutorMode.Size = new Size(255, 42);
             btnSwitchTutorMode.TabIndex = 8;
@@ -391,7 +391,7 @@
             // btnViewProfile
             // 
             btnViewProfile.Location = new Point(1214, 564);
-            btnViewProfile.Margin = new Padding(4, 4, 4, 4);
+            btnViewProfile.Margin = new Padding(4);
             btnViewProfile.Name = "btnViewProfile";
             btnViewProfile.Size = new Size(164, 42);
             btnViewProfile.TabIndex = 17;
@@ -466,7 +466,7 @@
             // btnEditProfile
             // 
             btnEditProfile.Location = new Point(1019, 564);
-            btnEditProfile.Margin = new Padding(4, 4, 4, 4);
+            btnEditProfile.Margin = new Padding(4);
             btnEditProfile.Name = "btnEditProfile";
             btnEditProfile.Size = new Size(131, 34);
             btnEditProfile.TabIndex = 10;
@@ -869,7 +869,7 @@
             flpBrowseSessions.Location = new Point(261, 98);
             flpBrowseSessions.Margin = new Padding(2);
             flpBrowseSessions.Name = "flpBrowseSessions";
-            flpBrowseSessions.Padding = new Padding(10, 10, 10, 10);
+            flpBrowseSessions.Padding = new Padding(10);
             flpBrowseSessions.Size = new Size(884, 518);
             flpBrowseSessions.TabIndex = 0;
             flpBrowseSessions.WrapContents = false;
@@ -879,7 +879,7 @@
             flpUpcomingSessions.AutoScroll = true;
             flpUpcomingSessions.FlowDirection = FlowDirection.TopDown;
             flpUpcomingSessions.Location = new Point(680, 241);
-            flpUpcomingSessions.Margin = new Padding(4, 4, 4, 4);
+            flpUpcomingSessions.Margin = new Padding(4);
             flpUpcomingSessions.Name = "flpUpcomingSessions";
             flpUpcomingSessions.Size = new Size(331, 532);
             flpUpcomingSessions.TabIndex = 0;
@@ -890,7 +890,7 @@
             flpOngoingSessions.AutoScroll = true;
             flpOngoingSessions.FlowDirection = FlowDirection.TopDown;
             flpOngoingSessions.Location = new Point(1032, 241);
-            flpOngoingSessions.Margin = new Padding(4, 4, 4, 4);
+            flpOngoingSessions.Margin = new Padding(4);
             flpOngoingSessions.Name = "flpOngoingSessions";
             flpOngoingSessions.Size = new Size(345, 532);
             flpOngoingSessions.TabIndex = 1;
@@ -901,7 +901,7 @@
             flpCompletedSessions.AutoScroll = true;
             flpCompletedSessions.FlowDirection = FlowDirection.TopDown;
             flpCompletedSessions.Location = new Point(1399, 236);
-            flpCompletedSessions.Margin = new Padding(4, 4, 4, 4);
+            flpCompletedSessions.Margin = new Padding(4);
             flpCompletedSessions.Name = "flpCompletedSessions";
             flpCompletedSessions.Size = new Size(336, 532);
             flpCompletedSessions.TabIndex = 2;
@@ -920,7 +920,7 @@
             pnlMySession.Controls.Add(flpOngoingSessions);
             pnlMySession.Controls.Add(flpUpcomingSessions);
             pnlMySession.Location = new Point(0, 0);
-            pnlMySession.Margin = new Padding(4, 4, 4, 4);
+            pnlMySession.Margin = new Padding(4);
             pnlMySession.Name = "pnlMySession";
             pnlMySession.Size = new Size(1769, 805);
             pnlMySession.TabIndex = 24;
@@ -940,7 +940,7 @@
             flpWaitlistedSessions.AutoScroll = true;
             flpWaitlistedSessions.FlowDirection = FlowDirection.TopDown;
             flpWaitlistedSessions.Location = new Point(321, 241);
-            flpWaitlistedSessions.Margin = new Padding(4, 4, 4, 4);
+            flpWaitlistedSessions.Margin = new Padding(4);
             flpWaitlistedSessions.Name = "flpWaitlistedSessions";
             flpWaitlistedSessions.Size = new Size(331, 532);
             flpWaitlistedSessions.TabIndex = 8;
@@ -1002,9 +1002,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1766, 805);
             Controls.Add(pnlSidebar);
+            Controls.Add(pnlMyProfile);
             Controls.Add(pnlCreateSession);
             Controls.Add(pnlMySession);
-            Controls.Add(pnlMyProfile);
             Controls.Add(pnlBrowseSession);
             Controls.Add(pnlNotification);
             Controls.Add(pnlCompletedSessions);

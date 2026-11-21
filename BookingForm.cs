@@ -149,6 +149,19 @@ namespace Study_Session
                 result = bookingRepository.JoinSession(loggedInUserId, sessionId, txtExpectations.Text.Trim());
             }
 
+            if (result == "Joined")
+            {
+                MessageBox.Show("Booking completed successfully!");
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+
+            else
+            {
+                MessageBox.Show("Unable to complete booking: " + result);
+            }
+
         }
     }
 }

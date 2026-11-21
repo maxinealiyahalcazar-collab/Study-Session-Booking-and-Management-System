@@ -69,12 +69,6 @@ namespace Study_Session
             paymentStatus = "Paid";
         }
 
-        public void moveFromWaitlist()
-        {
-            bookingStatus = "Accepted";
-            waitlistPosition = null;
-        }
-
         public void cancelBooking()
         {
             bookingStatus = "Withdrawn";

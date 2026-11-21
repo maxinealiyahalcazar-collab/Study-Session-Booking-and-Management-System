@@ -86,7 +86,7 @@
             btnViewProfile = new Button();
             pnlMySessions = new Panel();
             panel1 = new Panel();
-            this.txtSearchTutor2 = new TextBox();
+            txtSearchTutor2 = new TextBox();
             lblSearchTutor2 = new Label();
             lblCreateSessionTitle2 = new Label();
             lblSelectedTutors2 = new Label();
@@ -184,6 +184,7 @@
             btnCreateSession.TabIndex = 4;
             btnCreateSession.Text = "Create Session";
             btnCreateSession.UseVisualStyleBackColor = true;
+            btnCreateSession.Click += btnCreateSession_Click;
             // 
             // btnTutorRequests
             // 
@@ -745,7 +746,7 @@
             // 
             // panel1
             // 
-            panel1.Controls.Add(this.txtSearchTutor2);
+            panel1.Controls.Add(txtSearchTutor2);
             panel1.Controls.Add(lblSearchTutor2);
             panel1.Controls.Add(lblCreateSessionTitle2);
             panel1.Controls.Add(lblSelectedTutors2);
@@ -774,12 +775,13 @@
             // 
             // txtSearchTutor2
             // 
-            this.txtSearchTutor2.BackColor = SystemColors.HighlightText;
-            this.txtSearchTutor2.Location = new Point(870, 132);
-            this.txtSearchTutor2.Margin = new Padding(2);
-            this.txtSearchTutor2.Name = "txtSearchTutor2";
-            this.txtSearchTutor2.Size = new Size(249, 31);
-            this.txtSearchTutor2.TabIndex = 54;
+            txtSearchTutor2.BackColor = SystemColors.HighlightText;
+            txtSearchTutor2.Location = new Point(870, 132);
+            txtSearchTutor2.Margin = new Padding(2);
+            txtSearchTutor2.Name = "txtSearchTutor2";
+            txtSearchTutor2.Size = new Size(249, 31);
+            txtSearchTutor2.TabIndex = 54;
+            txtSearchTutor2.Click += txtSearchTutor2_TextChanged;
             // 
             // lblSearchTutor2
             // 
@@ -952,7 +954,7 @@
             btnSubmitSession2.TabIndex = 44;
             btnSubmitSession2.Text = "Create Session";
             btnSubmitSession2.UseVisualStyleBackColor = true;
-            btnSubmitSession2.Click += lblSubmitSession2_Click;
+            btnSubmitSession2.Click += btnSubmitSession2_Click;
             // 
             // txtTopic3
             // 
