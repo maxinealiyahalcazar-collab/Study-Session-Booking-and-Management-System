@@ -39,6 +39,7 @@ namespace Study_Session
             this.isTutor = isTutor;
             this.sessionData = sessionData;
             editSessionCallback = editCallback;
+            LoadConfirmedTutors();
 
             btnRateTutor.Visible = category == "Completed";
             btnUploadMaterials.Visible = category == "Completed";
@@ -75,15 +76,13 @@ namespace Study_Session
             if (sessionCategory == "Upcoming")
             {
                 btnEditSession.Visible = isCreator;
+                btnCancelSession.Visible = isCreator;
+                btnReadExpectations.Visible = isTutor;
 
                 if (isTutor)
                     btnWithdraw.Visible = !isCreator;
-
                 else
-                {
-                    btnCancelSession.Visible = isCreator;
                     btnCancelBooking.Visible = !isCreator;
-                }
             }
 
             else if (sessionCategory == "Ongoing")
@@ -131,7 +130,7 @@ namespace Study_Session
 
         private void btnCancelSession_Click(object sender, EventArgs e)
         {
-            DialogResult confirm = MessageBox.Show("Are you sure you want to cancel this session?", "Cancel Booking",
+            DialogResult confirm = MessageBox.Show("Are you sure you want to cancel this session?", "Cancel Session",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Question);
 
@@ -230,23 +229,115 @@ namespace Study_Session
 
         private void btnViewMaterials_Click(object sender, EventArgs e)
         {
-            UserRepository repository = new UserRepository();
+            UserRepository userRepository = new UserRepository();
 
-            int studentId = repository.GetStudentIdByUserId(loggedInUserId);
+            int userId;
 
-            if (studentId <= 0)
+            if (isTutor)
             {
-                MessageBox.Show("Student record not found.");
+                userId = userRepository.GetTutorIdByUserId(loggedInUserId);
+            }
+
+            else
+            {
+                userId = userRepository.GetStudentIdByUserId(loggedInUserId);
+            }
+
+            if (userId <= 0)
+            {
+                MessageBox.Show("User record not found.");
                 return;
             }
 
-            SessionActivityForm activityForm = new SessionActivityForm(sessionData, studentId, "View");
+            SessionActivityForm activityForm = new SessionActivityForm(sessionData, userId, "View");
             activityForm.ShowDialog();
         }
 
         private void btnWithdraw_Click(object sender, EventArgs e)
         {
+            DialogResult confirm = MessageBox.Show("Are you sure you want to withdraw from this session?",
+            "Withdraw Session", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
+            if (confirm == DialogResult.Yes)
+            {
+                int tutorId = userRepository.GetTutorIdByUserId(loggedInUserId);
+
+                bool success = sessionRepository.WithdrawTutorRequest(sessionId, tutorId);
+
+                if (success)
+                {
+                    MessageBox.Show("You have successfully withdrawn from the session.");
+
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+
+                else
+                {
+                    MessageBox.Show("Unable to withdraw from the session.");
+                }
+            }
+        }
+
+        private void LoadConfirmedTutors()
+        {
+            List<Tutor> confirmedTutors = sessionRepository.GetConfirmedSessionTutors(sessionId);
+
+            flpConfirmedTutors.Controls.Clear();
+
+            if (confirmedTutors.Count == 0)
+            {
+                Label lblNoTutors = new Label();
+                lblNoTutors.Text = "No confirmed tutors yet.";
+                lblNoTutors.AutoSize = true;
+                lblNoTutors.Margin = new Padding(5);
+
+                flpConfirmedTutors.Controls.Add(lblNoTutors);
+                return;
+            }
+
+            foreach (Tutor tutor in confirmedTutors)
+            {
+                Panel tutorPanel = new Panel();
+                tutorPanel.Width = flpConfirmedTutors.ClientSize.Width - 25;
+                tutorPanel.Height = 40;
+                tutorPanel.Margin = new Padding(5);
+
+                Label lblTutorName = new Label();
+                lblTutorName.Text = tutor.FullName;
+                lblTutorName.AutoSize = true;
+                lblTutorName.Location = new Point(10, 10);
+
+                Button btnViewProfile = new Button();
+                btnViewProfile.Text = "View Profile";
+                btnViewProfile.Size = new Size(100, 30);
+                btnViewProfile.Location = new Point(tutorPanel.Width - 110, 5);
+
+                btnViewProfile.Click += (sender, e) =>
+                {
+                    User profileUser = userRepository.GetUserProfile(tutor.UserId);
+
+                    if (profileUser != null)
+                    {
+                        UserProfile profileForm = new UserProfile(profileUser);
+                        profileForm.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Profile not found.");
+                    }
+                };
+
+                tutorPanel.Controls.Add(lblTutorName);
+                tutorPanel.Controls.Add(btnViewProfile);
+                flpConfirmedTutors.Controls.Add(tutorPanel);
+            }
+        }
+
+        private void btnReadExpectations_Click(object sender, EventArgs e)
+        {
+            SessionActivityForm activityForm = new SessionActivityForm(sessionData, loggedInUserId, "Expectations");
+            activityForm.ShowDialog();
         }
     }
 }

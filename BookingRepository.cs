@@ -9,34 +9,6 @@ namespace Study_Session
     public class BookingRepository
     {
 
-        public Booking GetBookingById(int bookingId)
-        {
-            using (MySqlConnection connection = Database.GetConnection())
-            {
-                connection.Open();
-
-                string query = @"SELECT bookingId, sessionId, studentId, expectation, bookingStatus, paymentStatus, waitlistPosition
-                FROM booking WHERE bookingId = @bookingId";
-
-                using (MySqlCommand command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@bookingId", bookingId);
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return new Booking(
-                                Convert.ToInt32(reader["bookingId"]), Convert.ToInt32(reader["sessionId"]), Convert.ToInt32(reader["studentId"]),
-                                reader["expectation"].ToString(), reader["bookingStatus"].ToString(), reader["paymentStatus"].ToString(),
-                                reader["waitlistPosition"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["waitlistPosition"]));
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
         public string JoinSession(int userId, int sessionId, string expectation)
         {
             int studentId;
@@ -413,6 +385,34 @@ namespace Study_Session
             }
 
             return bookings;
+        }
+
+        public List<string> GetStudentExpectations(int sessionId)
+        {
+            List<string> expectations = new List<string>();
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT expectation FROM booking WHERE sessionId = @sessionId AND bookingStatus = 'Accepted'
+                AND expectation IS NOT NULL AND expectation <> ''";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@sessionId", sessionId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            expectations.Add(reader["expectation"].ToString());
+                        }
+                    }
+                }
+            }
+
+            return expectations;
         }
     }
 }

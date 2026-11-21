@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Study_Session
 {
@@ -89,5 +91,48 @@ namespace Study_Session
             return new Session(0, null, this.TutorId, requiredTutors, subject, topic, startDateTime, endDateTime, slots, location,
             "Open", 0, slots, 0);
         }
+
+        public void browseSession(Session session)
+        {
+            if (session == null)
+            {
+                MessageBox.Show("Study session not found.");
+                return;
+            }
+        }
+
+        public bool takeSession(Session session, SessionRepository sessionRepository)
+        {
+            if (session == null)
+            {
+                MessageBox.Show("Study session not found.");
+                return false;
+            }
+
+            return sessionRepository.TakeTutorSession(session, this);
+        }
+
+        public DataTable viewRequests(UserRepository userRepository)
+        {
+            if (userRepository == null) return new DataTable();
+
+            return userRepository.GetPendingTutorRequests(this);
+        }
+        public bool acceptTutorRequest(int sessionTutorId, UserRepository userRepository)
+        {
+            if (sessionTutorId <= 0 || userRepository == null)
+                return false;
+
+            return userRepository.RespondToTutorRequest(sessionTutorId, this, "Accepted");
+        }
+
+        public bool declineTutorRequest(int sessionTutorId, UserRepository userRepository)
+        {
+            if (sessionTutorId <= 0 || userRepository == null)
+                return false;
+
+            return userRepository.RespondToTutorRequest(sessionTutorId, this, "Declined");
+        }
+
     }
 }

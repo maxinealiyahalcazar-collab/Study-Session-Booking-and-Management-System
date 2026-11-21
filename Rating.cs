@@ -57,5 +57,16 @@ namespace Study_Session
             this.ratingValue = ratingValue;
             this.reviewText = reviewText;
         }
+
+        public bool submitRating(UserRepository userRepository)
+        {
+            if (userRepository == null)
+                return false;
+
+            if (ratingValue < 1.0 || ratingValue > 5.0)
+                return false;
+
+            return userRepository.SubmitRating(this);
+        }
     }
 }

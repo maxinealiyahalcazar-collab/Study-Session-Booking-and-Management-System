@@ -22,6 +22,7 @@ namespace Study_Session
         private Session sessionData;
         private UserRepository userRepository = new UserRepository();
         private SessionRepository sessionRepository = new SessionRepository();
+        private BookingRepository bookingRepository = new BookingRepository();
         private List<Tutor> sessionTutors = new List<Tutor>();
         public SessionActivityForm(Session session, int studentId, string mode)
         {
@@ -36,6 +37,7 @@ namespace Study_Session
             pnlRateTutor.Visible = false;
             pnlUploadMaterials.Visible = false;
             pnlViewMaterials.Visible = false;
+            pnlExpectations.Visible = false;
 
             if (activityMode == "Rate")
             {
@@ -51,8 +53,11 @@ namespace Study_Session
                 pnlViewMaterials.Visible = true;
                 LoadMaterials();
             }
-
-            LoadSessionTutors();
+            else if (activityMode == "Expectations")
+            {
+                pnlExpectations.Visible = true;
+                LoadStudentExpectations();
+            }
         }
 
         private void LoadSessionTutors()
@@ -88,7 +93,7 @@ namespace Study_Session
                     lblSelectedTutor.Text = "Selected Tutor: " + tutorName;
                 };
 
-                bool alreadyRated = userRepository.HasAlreadyRated(studentId, tutorId, sessionId);
+                bool alreadyRated = userRepository.HasAlreadyRated(loggedInStudent, tutor, sessionData);
 
                 if (alreadyRated)
                 {
@@ -117,12 +122,6 @@ namespace Study_Session
                 return;
             }
 
-            if (userRepository.HasAlreadyRated(studentId, selectedTutorId, sessionId))
-            {
-                MessageBox.Show("You have already rated this tutor for this session.");
-                return;
-            }
-
             Tutor tutor = userRepository.GetTutorById(selectedTutorId);
 
             if (tutor == null)
@@ -131,8 +130,14 @@ namespace Study_Session
                 return;
             }
 
-            Rating rating = new Rating(0, sessionId, studentId, selectedTutorId, (double)numRating.Value,
-            txtReview.Text.Trim());
+            if (userRepository.HasAlreadyRated(loggedInStudent, tutor, sessionData))
+            {
+                MessageBox.Show("You have already rated this tutor for this session.");
+                return;
+            }
+
+            Rating rating = new Rating(0, sessionId, studentId, selectedTutorId,
+                (double)numRating.Value, txtReview.Text.Trim());
 
             bool success = loggedInStudent.rateTutor(tutor, rating);
 
@@ -294,6 +299,42 @@ namespace Study_Session
                 materialCard.Controls.Add(btnOpen);
 
                 flpMaterials.Controls.Add(materialCard);
+            }
+        }
+
+        private void LoadStudentExpectations()
+        {
+            List<string> expectations = bookingRepository.GetStudentExpectations(sessionId);
+
+            flpExpectations.Controls.Clear();
+
+            if (expectations.Count == 0)
+            {
+                Label lblNoExpectations = new Label();
+                lblNoExpectations.Text = "No student expectations have been submitted yet.";
+                lblNoExpectations.AutoSize = true;
+                lblNoExpectations.Margin = new Padding(10);
+
+                flpExpectations.Controls.Add(lblNoExpectations);
+                return;
+            }
+
+            foreach (string expectation in expectations)
+            {
+                Panel expectationPanel = new Panel();
+                expectationPanel.Width = flpExpectations.ClientSize.Width - 25;
+                expectationPanel.Height = 80;
+                expectationPanel.BorderStyle = BorderStyle.FixedSingle;
+                expectationPanel.Margin = new Padding(5);
+
+                Label lblExpectation = new Label();
+                lblExpectation.Text = expectation;
+                lblExpectation.Location = new Point(10, 10);
+                lblExpectation.AutoSize = true;
+                lblExpectation.MaximumSize = new Size(expectationPanel.Width - 20, 0);
+
+                expectationPanel.Controls.Add(lblExpectation);
+                flpExpectations.Controls.Add(expectationPanel);
             }
         }
     }

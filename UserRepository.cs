@@ -170,7 +170,7 @@ namespace Study_Session
             using (MySqlConnection connection = Database.GetConnection())
             {
                 connection.Open();
-                string userQuery4 = @"SELECT COUNT(*) FROM booking b INNER JOIN student s ON b.studentId = s.studentId WHERE s.userId = @userId AND b.bookingStatus = 'Booked'";
+                string userQuery4 = @"SELECT COUNT(*) FROM booking b INNER JOIN student s ON b.studentId = s.studentId WHERE s.userId = @userId AND b.bookingStatus = 'Accepted'";
 
                 using (MySqlCommand command = new MySqlCommand(userQuery4, connection))
                 {
@@ -357,8 +357,8 @@ namespace Study_Session
                     while (reader.Read())
                     {
                         Tutor tutor = new Tutor(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["tutorId"]),
-                        reader["fullName"].ToString(),reader["studentNumber"].ToString(), reader["ueGmail"].ToString(), reader["year"].ToString(),
-                        reader["program"].ToString(), string.Empty, reader["subjects"].ToString(),reader["availability"].ToString(),
+                        reader["fullName"].ToString(), reader["studentNumber"].ToString(), reader["ueGmail"].ToString(), reader["year"].ToString(),
+                        reader["program"].ToString(), string.Empty, reader["subjects"].ToString(), reader["availability"].ToString(),
                         reader["credentials"].ToString(), Convert.ToDouble(reader["rating"]));
 
                         tutors.Add(tutor);
@@ -369,29 +369,7 @@ namespace Study_Session
             return tutors;
         }
 
-
-        public bool AddRating(int tutorId, int studentId, int sessionId, decimal rating, string reviewText)
-        {
-            using (MySqlConnection connection = Database.GetConnection())
-            {
-                string query = @"INSERT INTO rating (tutorId, studentId, sessionId, rating, reviewText) VALUES (@tutorId, @studentId, @sessionId, @rating, @reviewText)";
-
-                using (MySqlCommand command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@tutorId", tutorId);
-                    command.Parameters.AddWithValue("@studentId", studentId);
-                    command.Parameters.AddWithValue("@sessionId", sessionId);
-                    command.Parameters.AddWithValue("@rating", rating);
-                    command.Parameters.AddWithValue("@reviewText", reviewText);
-
-                    connection.Open();
-
-                    return command.ExecuteNonQuery() > 0;
-                }
-            }
-        }
-
-        public bool HasAlreadyRated(int studentId, int tutorId, int sessionId)
+        public bool HasAlreadyRated(Student student, Tutor tutor, Session session)
         {
             using (MySqlConnection connection = Database.GetConnection())
             {
@@ -399,13 +377,69 @@ namespace Study_Session
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@studentId", studentId);
-                    command.Parameters.AddWithValue("@tutorId", tutorId);
-                    command.Parameters.AddWithValue("@sessionId", sessionId);
+                    command.Parameters.AddWithValue("@studentId", student.StudentId);
+                    command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
+                    command.Parameters.AddWithValue("@sessionId", session.SessionId);
 
                     connection.Open();
 
                     return Convert.ToInt32(command.ExecuteScalar()) > 0;
+                }
+            }
+        }
+
+        public bool SubmitRating(Rating rating)
+        {
+            if (rating == null)
+                return false;
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"INSERT INTO rating (reviewText, rating, tutorId, studentId, sessionId)
+                VALUES (@reviewText, @rating, @tutorId, @studentId, @sessionId)";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@reviewText", string.IsNullOrWhiteSpace(rating.ReviewText) ? (object)DBNull.Value : rating.ReviewText);
+
+                    command.Parameters.AddWithValue("@rating", rating.RatingValue);
+                    command.Parameters.AddWithValue("@tutorId", rating.TutorId);
+                    command.Parameters.AddWithValue("@studentId", rating.StudentId);
+                    command.Parameters.AddWithValue("@sessionId", rating.SessionId);
+
+                    return command.ExecuteNonQuery() > 0;
+
+                    bool success = command.ExecuteNonQuery() > 0;
+
+                    if (success)
+                    {
+                        Tutor tutor = new UserRepository().GetTutorById(rating.TutorId);
+                        return UpdateTutorRating(tutor);
+                    }
+
+                    return false;
+                }
+            }
+        }
+
+        public bool UpdateTutorRating(Tutor tutor)
+        {
+            if (tutor == null) return false;
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"UPDATE tutor SET rating = (SELECT COALESCE(AVG(rating), 0)
+                FROM rating WHERE tutorId = @tutorId) WHERE tutorId = @tutorId";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
+
+                    return command.ExecuteNonQuery() > 0;
                 }
             }
         }
@@ -439,5 +473,101 @@ namespace Study_Session
                 }
             }
         }
+
+        public DataTable GetPendingTutorRequests(Tutor tutor)
+        {
+            DataTable requests = new DataTable();
+
+            if (tutor == null)
+                return requests;
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT st.sessionTutorId, st.sessionId, st.tutorId, st.requestStatus, s.subject, s.topic,
+                s.startDateTime, s.endDateTime, s.location, u.fullName AS creatorName, u.userId AS creatorUserId
+                FROM sessionTutor st INNER JOIN session s ON st.sessionId = s.sessionId LEFT JOIN `user` u ON
+                (s.creatorStudentId IS NOT NULL AND u.userId = (SELECT userId FROM student WHERE studentId = s.creatorStudentId))
+                OR (s.creatorTutorId IS NOT NULL AND u.userId = (SELECT userId FROM tutor WHERE tutorId = s.creatorTutorId))
+                WHERE st.tutorId = @tutorId AND st.requestStatus = 'Pending' ORDER BY s.startDateTime ASC";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
+
+                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+                    {
+                        adapter.Fill(requests);
+                    }
+                }
+            }
+
+            return requests;
+        }
+
+        public bool RespondToTutorRequest(int sessionTutorId, Tutor tutor, string response)
+        {
+            if (tutor == null ||
+                (response != "Accepted" && response != "Declined"))
+                return false;
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"UPDATE sessionTutor SET requestStatus = @response WHERE sessionTutorId = @sessionTutorId
+                AND tutorId = @tutorId AND requestStatus = 'Pending'";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@response", response);
+                    command.Parameters.AddWithValue("@sessionTutorId", sessionTutorId);
+                    command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
+
+                    return command.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        public List<Rating> GetTutorReviews(Tutor tutor)
+        {
+            List<Rating> reviews = new List<Rating>();
+
+            if (tutor == null)
+                return reviews;
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT ratingId, sessionId, studentId, tutorId, rating, reviewText
+                FROM rating WHERE tutorId = @tutorId ORDER BY ratingId DESC";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Rating rating = new Rating(
+                                Convert.ToInt32(reader["ratingId"]),
+                                Convert.ToInt32(reader["sessionId"]),
+                                Convert.ToInt32(reader["studentId"]),
+                                Convert.ToInt32(reader["tutorId"]),
+                                Convert.ToDouble(reader["rating"]),
+                                reader["reviewText"] == DBNull.Value ? "" : reader["reviewText"].ToString()
+                            );
+
+                            reviews.Add(rating);
+                        }
+                    }
+                }
+            }
+
+            return reviews;
+        }
     }
-} 
+}

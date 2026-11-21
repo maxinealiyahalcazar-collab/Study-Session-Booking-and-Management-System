@@ -499,6 +499,19 @@ namespace Study_Session
                 btnJoinWaitlist.Height = 30;
                 btnJoinWaitlist.Location = new Point(10, 145);
                 btnJoinWaitlist.Visible = availableSlots <= 0 && waitlistedCount < 5;
+                
+                Button btnViewDetails = new Button();
+                btnViewDetails.Text = "View Details";
+                btnViewDetails.Width = 110;
+                btnViewDetails.Height = 30;
+                btnViewDetails.Location = new Point(135, 145);
+
+                btnViewDetails.Click += (sender, e) =>
+                {
+                    SessionDetails detailsForm = new SessionDetails(session, "Browse", loggedInUserId, null);
+
+                    detailsForm.ShowDialog();
+                };
 
                 btnJoinSession.Click += (sender, e) =>
                 {
@@ -546,6 +559,7 @@ namespace Study_Session
                 sessionCard.Controls.Add(lblLocation);
                 sessionCard.Controls.Add(btnJoinSession);
                 sessionCard.Controls.Add(btnJoinWaitlist);
+                sessionCard.Controls.Add(btnViewDetails);
 
                 flpBrowseSessions.Controls.Add(sessionCard);
             }

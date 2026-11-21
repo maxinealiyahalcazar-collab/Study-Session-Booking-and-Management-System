@@ -75,26 +75,20 @@ namespace Study_Session
             }
 
             SessionRepository sessionRepository = new SessionRepository();
-
             return sessionRepository.AddMaterial(session.SessionId, materialName, description, fileLink);
         }
 
         public bool rateTutor(Tutor tutor, Rating rating)
         {
             if (tutor == null || rating == null)
-            {
                 return false;
-            }
 
             if (rating.TutorId != tutor.TutorId ||
                 rating.StudentId != this.StudentId)
-            {
                 return false;
-            }
 
             UserRepository userRepository = new UserRepository();
-
-            return userRepository.AddRating(rating.TutorId, rating.StudentId, rating.SessionId, (decimal)rating.RatingValue, rating.ReviewText);
+            return rating.submitRating(userRepository);
         }
 
         public Tutor becomeTutor()

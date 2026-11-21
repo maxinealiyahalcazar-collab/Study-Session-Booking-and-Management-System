@@ -108,6 +108,7 @@
             lblUpcoming = new Label();
             lblMySessionsDescription = new Label();
             lblMySessions = new Label();
+            pnlMain = new Panel();
             pnlSidebar.SuspendLayout();
             pnlBookedSessions.SuspendLayout();
             pnlWaitlistedSessions.SuspendLayout();
@@ -119,6 +120,7 @@
             ((System.ComponentModel.ISupportInitialize)numRequiredTutors).BeginInit();
             pnlBrowseSession.SuspendLayout();
             pnlMySession.SuspendLayout();
+            pnlMain.SuspendLayout();
             SuspendLayout();
             // 
             // pnlSidebar
@@ -143,7 +145,7 @@
             btnSwitchTutorMode.Location = new Point(15, 748);
             btnSwitchTutorMode.Margin = new Padding(4);
             btnSwitchTutorMode.Name = "btnSwitchTutorMode";
-            btnSwitchTutorMode.Size = new Size(255, 42);
+            btnSwitchTutorMode.Size = new Size(211, 42);
             btnSwitchTutorMode.TabIndex = 8;
             btnSwitchTutorMode.Text = "Switch to Tutor Mode";
             btnSwitchTutorMode.UseVisualStyleBackColor = true;
@@ -226,7 +228,7 @@
             // lblWelcome
             // 
             lblWelcome.AutoSize = true;
-            lblWelcome.Location = new Point(258, 62);
+            lblWelcome.Location = new Point(0, 0);
             lblWelcome.Margin = new Padding(2, 0, 2, 0);
             lblWelcome.Name = "lblWelcome";
             lblWelcome.Size = new Size(132, 25);
@@ -238,7 +240,7 @@
             pnlBookedSessions.BorderStyle = BorderStyle.FixedSingle;
             pnlBookedSessions.Controls.Add(lblBookedCount);
             pnlBookedSessions.Controls.Add(lblBookedTitle);
-            pnlBookedSessions.Location = new Point(258, 129);
+            pnlBookedSessions.Location = new Point(355, 115);
             pnlBookedSessions.Margin = new Padding(2);
             pnlBookedSessions.Name = "pnlBookedSessions";
             pnlBookedSessions.Size = new Size(363, 150);
@@ -270,7 +272,7 @@
             pnlWaitlistedSessions.BorderStyle = BorderStyle.FixedSingle;
             pnlWaitlistedSessions.Controls.Add(lblWaitlistedCount);
             pnlWaitlistedSessions.Controls.Add(lblWaitlistedTitle);
-            pnlWaitlistedSessions.Location = new Point(258, 300);
+            pnlWaitlistedSessions.Location = new Point(355, 307);
             pnlWaitlistedSessions.Margin = new Padding(2);
             pnlWaitlistedSessions.Name = "pnlWaitlistedSessions";
             pnlWaitlistedSessions.Size = new Size(363, 150);
@@ -302,7 +304,7 @@
             pnlCompletedSessions.BorderStyle = BorderStyle.FixedSingle;
             pnlCompletedSessions.Controls.Add(lblCompletedCount);
             pnlCompletedSessions.Controls.Add(lblCompletedTitle);
-            pnlCompletedSessions.Location = new Point(258, 469);
+            pnlCompletedSessions.Location = new Point(355, 504);
             pnlCompletedSessions.Margin = new Padding(2);
             pnlCompletedSessions.Name = "pnlCompletedSessions";
             pnlCompletedSessions.Size = new Size(363, 150);
@@ -334,7 +336,7 @@
             pnlNotification.BorderStyle = BorderStyle.FixedSingle;
             pnlNotification.Controls.Add(lblNotificationsTitle);
             pnlNotification.Controls.Add(flpNotifications);
-            pnlNotification.Location = new Point(646, 129);
+            pnlNotification.Location = new Point(1201, 164);
             pnlNotification.Margin = new Padding(2);
             pnlNotification.Name = "pnlNotification";
             pnlNotification.Size = new Size(503, 490);
@@ -996,22 +998,30 @@
             lblMySessions.TabIndex = 3;
             lblMySessions.Text = "My Sessions";
             // 
+            // pnlMain
+            // 
+            pnlMain.Controls.Add(lblWelcome);
+            pnlMain.Controls.Add(lblDashboardTitle);
+            pnlMain.Controls.Add(pnlWaitlistedSessions);
+            pnlMain.Controls.Add(pnlBookedSessions);
+            pnlMain.Controls.Add(pnlCompletedSessions);
+            pnlMain.Controls.Add(pnlNotification);
+            pnlMain.Location = new Point(0, 0);
+            pnlMain.Name = "pnlMain";
+            pnlMain.Size = new Size(1769, 805);
+            pnlMain.TabIndex = 18;
+            // 
             // StudentDashboard
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1766, 805);
             Controls.Add(pnlSidebar);
+            Controls.Add(pnlMain);
             Controls.Add(pnlMyProfile);
             Controls.Add(pnlCreateSession);
             Controls.Add(pnlMySession);
             Controls.Add(pnlBrowseSession);
-            Controls.Add(pnlNotification);
-            Controls.Add(pnlCompletedSessions);
-            Controls.Add(pnlWaitlistedSessions);
-            Controls.Add(pnlBookedSessions);
-            Controls.Add(lblWelcome);
-            Controls.Add(lblDashboardTitle);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Margin = new Padding(2);
             Name = "StudentDashboard";
@@ -1036,8 +1046,9 @@
             pnlBrowseSession.PerformLayout();
             pnlMySession.ResumeLayout(false);
             pnlMySession.PerformLayout();
+            pnlMain.ResumeLayout(false);
+            pnlMain.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -1123,5 +1134,6 @@
         private Button btnSwitchTutorMode;
         private FlowLayoutPanel flpWaitlistedSessions;
         private Label lblWaitlist;
+        private Panel pnlMain;
     }
 }

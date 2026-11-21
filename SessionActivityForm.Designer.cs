@@ -48,13 +48,17 @@
             lblUploadMaterial = new Label();
             pnlRateTutor = new Panel();
             pnlViewMaterials = new Panel();
+            pnlExpectations = new Panel();
+            lblReadExpectations = new Label();
+            flpExpectations = new FlowLayoutPanel();
+            lblViewMaterialsTitle = new Label();
             flpMaterials = new FlowLayoutPanel();
             lblNoMaterials = new Label();
-            lblViewMaterialsTitle = new Label();
             ((System.ComponentModel.ISupportInitialize)numRating).BeginInit();
             pnlUploadMaterials.SuspendLayout();
             pnlRateTutor.SuspendLayout();
             pnlViewMaterials.SuspendLayout();
+            pnlExpectations.SuspendLayout();
             flpMaterials.SuspendLayout();
             SuspendLayout();
             // 
@@ -244,12 +248,49 @@
             // 
             // pnlViewMaterials
             // 
+            pnlViewMaterials.Controls.Add(pnlExpectations);
             pnlViewMaterials.Controls.Add(lblViewMaterialsTitle);
             pnlViewMaterials.Controls.Add(flpMaterials);
             pnlViewMaterials.Location = new Point(0, 0);
             pnlViewMaterials.Name = "pnlViewMaterials";
             pnlViewMaterials.Size = new Size(506, 609);
             pnlViewMaterials.TabIndex = 11;
+            // 
+            // pnlExpectations
+            // 
+            pnlExpectations.Controls.Add(lblReadExpectations);
+            pnlExpectations.Controls.Add(flpExpectations);
+            pnlExpectations.Location = new Point(3, 3);
+            pnlExpectations.Name = "pnlExpectations";
+            pnlExpectations.Size = new Size(506, 609);
+            pnlExpectations.TabIndex = 12;
+            // 
+            // lblReadExpectations
+            // 
+            lblReadExpectations.AutoSize = true;
+            lblReadExpectations.Location = new Point(41, 43);
+            lblReadExpectations.Name = "lblReadExpectations";
+            lblReadExpectations.Size = new Size(155, 25);
+            lblReadExpectations.TabIndex = 0;
+            lblReadExpectations.Text = "Read Expectations";
+            // 
+            // flpExpectations
+            // 
+            flpExpectations.AutoScroll = true;
+            flpExpectations.Location = new Point(41, 91);
+            flpExpectations.Name = "flpExpectations";
+            flpExpectations.Size = new Size(415, 476);
+            flpExpectations.TabIndex = 1;
+            flpExpectations.WrapContents = false;
+            // 
+            // lblViewMaterialsTitle
+            // 
+            lblViewMaterialsTitle.AutoSize = true;
+            lblViewMaterialsTitle.Location = new Point(41, 43);
+            lblViewMaterialsTitle.Name = "lblViewMaterialsTitle";
+            lblViewMaterialsTitle.Size = new Size(125, 25);
+            lblViewMaterialsTitle.TabIndex = 0;
+            lblViewMaterialsTitle.Text = "View Materials";
             // 
             // flpMaterials
             // 
@@ -270,15 +311,6 @@
             lblNoMaterials.TabIndex = 2;
             lblNoMaterials.Text = "No materials have been uploaded for this session.";
             // 
-            // lblViewMaterialsTitle
-            // 
-            lblViewMaterialsTitle.AutoSize = true;
-            lblViewMaterialsTitle.Location = new Point(41, 43);
-            lblViewMaterialsTitle.Name = "lblViewMaterialsTitle";
-            lblViewMaterialsTitle.Size = new Size(125, 25);
-            lblViewMaterialsTitle.TabIndex = 0;
-            lblViewMaterialsTitle.Text = "View Materials";
-            // 
             // SessionActivityForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -296,6 +328,8 @@
             pnlRateTutor.PerformLayout();
             pnlViewMaterials.ResumeLayout(false);
             pnlViewMaterials.PerformLayout();
+            pnlExpectations.ResumeLayout(false);
+            pnlExpectations.PerformLayout();
             flpMaterials.ResumeLayout(false);
             flpMaterials.PerformLayout();
             ResumeLayout(false);
@@ -325,5 +359,8 @@
         private FlowLayoutPanel flpMaterials;
         private Label lblViewMaterialsTitle;
         private Label lblNoMaterials;
+        private Panel pnlExpectations;
+        private Label lblReadExpectations;
+        private FlowLayoutPanel flpExpectations;
     }
 }

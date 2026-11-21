@@ -43,12 +43,15 @@
             btnViewMaterials = new Button();
             btnRateTutor = new Button();
             btnWithdraw = new Button();
+            lblTutors = new Label();
+            flpConfirmedTutors = new FlowLayoutPanel();
+            btnReadExpectations = new Button();
             SuspendLayout();
             // 
             // lblSubject
             // 
             lblSubject.AutoSize = true;
-            lblSubject.Location = new Point(42, 67);
+            lblSubject.Location = new Point(42, 49);
             lblSubject.Name = "lblSubject";
             lblSubject.Size = new Size(70, 25);
             lblSubject.TabIndex = 0;
@@ -57,7 +60,7 @@
             // lblTopic
             // 
             lblTopic.AutoSize = true;
-            lblTopic.Location = new Point(42, 117);
+            lblTopic.Location = new Point(44, 87);
             lblTopic.Name = "lblTopic";
             lblTopic.Size = new Size(53, 25);
             lblTopic.TabIndex = 1;
@@ -66,7 +69,7 @@
             // lblDate
             // 
             lblDate.AutoSize = true;
-            lblDate.Location = new Point(42, 175);
+            lblDate.Location = new Point(44, 135);
             lblDate.Name = "lblDate";
             lblDate.Size = new Size(49, 25);
             lblDate.TabIndex = 2;
@@ -75,7 +78,7 @@
             // lblTime
             // 
             lblTime.AutoSize = true;
-            lblTime.Location = new Point(42, 227);
+            lblTime.Location = new Point(44, 175);
             lblTime.Name = "lblTime";
             lblTime.Size = new Size(50, 25);
             lblTime.TabIndex = 3;
@@ -84,7 +87,7 @@
             // lblLocation
             // 
             lblLocation.AutoSize = true;
-            lblLocation.Location = new Point(42, 275);
+            lblLocation.Location = new Point(42, 425);
             lblLocation.Name = "lblLocation";
             lblLocation.Size = new Size(79, 25);
             lblLocation.TabIndex = 4;
@@ -93,7 +96,7 @@
             // lblSlots
             // 
             lblSlots.AutoSize = true;
-            lblSlots.Location = new Point(42, 321);
+            lblSlots.Location = new Point(44, 450);
             lblSlots.Name = "lblSlots";
             lblSlots.Size = new Size(51, 25);
             lblSlots.TabIndex = 5;
@@ -102,7 +105,7 @@
             // lblStatus
             // 
             lblStatus.AutoSize = true;
-            lblStatus.Location = new Point(42, 377);
+            lblStatus.Location = new Point(42, 475);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(60, 25);
             lblStatus.TabIndex = 6;
@@ -110,7 +113,7 @@
             // 
             // btnCancelBooking
             // 
-            btnCancelBooking.Location = new Point(120, 452);
+            btnCancelBooking.Location = new Point(42, 536);
             btnCancelBooking.Name = "btnCancelBooking";
             btnCancelBooking.Size = new Size(112, 34);
             btnCancelBooking.TabIndex = 7;
@@ -120,7 +123,7 @@
             // 
             // btnEditSession
             // 
-            btnEditSession.Location = new Point(238, 452);
+            btnEditSession.Location = new Point(160, 536);
             btnEditSession.Name = "btnEditSession";
             btnEditSession.Size = new Size(112, 34);
             btnEditSession.TabIndex = 8;
@@ -130,9 +133,9 @@
             // 
             // btnCancelSession
             // 
-            btnCancelSession.Location = new Point(356, 452);
+            btnCancelSession.Location = new Point(411, 536);
             btnCancelSession.Name = "btnCancelSession";
-            btnCancelSession.Size = new Size(112, 34);
+            btnCancelSession.Size = new Size(149, 34);
             btnCancelSession.TabIndex = 9;
             btnCancelSession.Text = "Cancel Session";
             btnCancelSession.UseVisualStyleBackColor = true;
@@ -140,7 +143,7 @@
             // 
             // btnCompleteSession
             // 
-            btnCompleteSession.Location = new Point(186, 492);
+            btnCompleteSession.Location = new Point(42, 576);
             btnCompleteSession.Name = "btnCompleteSession";
             btnCompleteSession.Size = new Size(112, 34);
             btnCompleteSession.TabIndex = 10;
@@ -150,7 +153,7 @@
             // 
             // btnUploadMaterials
             // 
-            btnUploadMaterials.Location = new Point(304, 492);
+            btnUploadMaterials.Location = new Point(212, 576);
             btnUploadMaterials.Name = "btnUploadMaterials";
             btnUploadMaterials.Size = new Size(112, 34);
             btnUploadMaterials.TabIndex = 11;
@@ -160,7 +163,7 @@
             // 
             // btnViewMaterials
             // 
-            btnViewMaterials.Location = new Point(186, 545);
+            btnViewMaterials.Location = new Point(330, 576);
             btnViewMaterials.Name = "btnViewMaterials";
             btnViewMaterials.Size = new Size(112, 34);
             btnViewMaterials.TabIndex = 12;
@@ -170,7 +173,7 @@
             // 
             // btnRateTutor
             // 
-            btnRateTutor.Location = new Point(304, 545);
+            btnRateTutor.Location = new Point(448, 576);
             btnRateTutor.Name = "btnRateTutor";
             btnRateTutor.Size = new Size(112, 34);
             btnRateTutor.TabIndex = 13;
@@ -180,7 +183,7 @@
             // 
             // btnWithdraw
             // 
-            btnWithdraw.Location = new Point(356, 400);
+            btnWithdraw.Location = new Point(293, 536);
             btnWithdraw.Name = "btnWithdraw";
             btnWithdraw.Size = new Size(112, 34);
             btnWithdraw.TabIndex = 14;
@@ -188,11 +191,42 @@
             btnWithdraw.UseVisualStyleBackColor = true;
             btnWithdraw.Click += btnWithdraw_Click;
             // 
+            // lblTutors
+            // 
+            lblTutors.AutoSize = true;
+            lblTutors.Location = new Point(44, 214);
+            lblTutors.Name = "lblTutors";
+            lblTutors.Size = new Size(62, 25);
+            lblTutors.TabIndex = 15;
+            lblTutors.Text = "Tutors";
+            // 
+            // flpConfirmedTutors
+            // 
+            flpConfirmedTutors.AutoScroll = true;
+            flpConfirmedTutors.Location = new Point(44, 263);
+            flpConfirmedTutors.Name = "flpConfirmedTutors";
+            flpConfirmedTutors.Size = new Size(516, 128);
+            flpConfirmedTutors.TabIndex = 16;
+            flpConfirmedTutors.WrapContents = false;
+            // 
+            // btnReadExpectations
+            // 
+            btnReadExpectations.Location = new Point(411, 496);
+            btnReadExpectations.Name = "btnReadExpectations";
+            btnReadExpectations.Size = new Size(149, 34);
+            btnReadExpectations.TabIndex = 17;
+            btnReadExpectations.Text = "Read Expectations";
+            btnReadExpectations.UseVisualStyleBackColor = true;
+            btnReadExpectations.Click += btnReadExpectations_Click;
+            // 
             // SessionDetails
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(630, 660);
+            Controls.Add(btnReadExpectations);
+            Controls.Add(flpConfirmedTutors);
+            Controls.Add(lblTutors);
             Controls.Add(btnWithdraw);
             Controls.Add(btnRateTutor);
             Controls.Add(btnViewMaterials);
@@ -231,5 +265,8 @@
         private Button btnViewMaterials;
         private Button btnRateTutor;
         private Button btnWithdraw;
+        private Label lblTutors;
+        private FlowLayoutPanel flpConfirmedTutors;
+        private Button btnReadExpectations;
     }
 }

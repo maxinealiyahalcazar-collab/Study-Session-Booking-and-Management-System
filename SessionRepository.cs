@@ -1,4 +1,6 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using MySql.Data.MySqlClient;
+using Mysqlx.Crud;
 using MySqlX.XDevAPI;
 using System;
 using System.Collections.Generic;
@@ -369,9 +371,10 @@ namespace Study_Session
             {
                 conn.Open();
 
-                string query = @"SELECT t.tutorId, u.userId, u.fullName, u.studentNumber, u.ueGmail, u.year, u.program, t.credentials,
-                t.subjects, t.availability, t.rating FROM sessionTutor st INNER JOIN tutor t ON st.tutorId = t.tutorId INNER JOIN `user` u ON t.userId = u.userId
-                WHERE st.sessionId = @sessionId AND st.requestStatus = 'Accepted' ORDER BY u.fullName ASC";
+                string query = @"SELECT t.tutorId, u.userId, u.fullName, u.studentNumber, u.ueGmail, u.year, u.program, t.credentials, t.subjects, t.availability, t.rating FROM tutor t
+                INNER JOIN user u ON t.userId = u.userId WHERE t.tutorId = (SELECT creatorTutorId FROM session WHERE sessionId = @sessionId) UNION SELECT t.tutorId, u.userId, u.fullName, u.studentNumber,
+                u.ueGmail, u.year, u.program, t.credentials, t.subjects, t.availability, t.rating FROM sessionTutor st INNER JOIN tutor t ON st.tutorId = t.tutorId
+                INNER JOIN user u ON t.userId = u.userId WHERE st.sessionId = @sessionId AND st.requestStatus = 'Accepted' ORDER BY fullName ASC";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
@@ -572,6 +575,123 @@ namespace Study_Session
                     return sessionId;
                 }
             }
+        }
+
+        public bool WithdrawTutorRequest(int sessionId, int tutorId)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"UPDATE sessionTutor SET requestStatus = 'Withdrawn' WHERE sessionId = @sessionId
+                AND tutorId = @tutorId AND requestStatus = 'Accepted'";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@sessionId", sessionId);
+                    command.Parameters.AddWithValue("@tutorId", tutorId);
+
+                    return command.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        public bool TakeTutorSession(Session session, Tutor tutor)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                using (MySqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string checkQuery = @"SELECT requiredTutors, (SELECT COUNT(*) FROM sessionTutor WHERE sessionId = s.sessionId
+                        AND requestStatus = 'Accepted') AS acceptedTutors FROM session s WHERE sessionId = @sessionId AND sessionStatus != 'Cancelled'
+                        FOR UPDATE";
+
+                        int requiredTutors;
+                        int acceptedTutors;
+
+                        using (MySqlCommand command = new MySqlCommand(checkQuery, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@sessionId", session.SessionId);
+
+                            using (MySqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (!reader.Read())
+                                {
+                                    transaction.Rollback();
+                                    return false;
+                                }
+
+                                requiredTutors = Convert.ToInt32(reader["requiredTutors"]);
+                                acceptedTutors = Convert.ToInt32(reader["acceptedTutors"]);
+                            }
+                        }
+
+                        if (acceptedTutors >= requiredTutors)
+                        {
+                            transaction.Rollback();
+                            return false;
+                        }
+
+                        string insertQuery = @"INSERT INTO sessionTutor (sessionId, tutorId, requestStatus) VALUES (@sessionId, @tutorId, 'Accepted')";
+
+                        using (MySqlCommand command = new MySqlCommand(insertQuery, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@sessionId", session.SessionId);
+                            command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
+                            command.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                        return true;
+                    }
+
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
+
+        public List<Session> GetTutorBrowseSessions(int userId)
+        {
+            List<Session> sessions = new List<Session>();
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT s.sessionId, s.creatorStudentId, s.creatorTutorId, s.requiredTutors, s.subject, s.topic, s.startDateTime, s.endDateTime, s.slots,
+                s.location, s.sessionStatus, (SELECT COUNT(*) FROM sessionTutor st WHERE st.sessionId = s.sessionId AND st.requestStatus = 'Accepted') AS acceptedTutors FROM session s 
+                WHERE s.requiredTutors > 0 AND s.sessionStatus IN ('Open', 'Full') AND s.startDateTime > NOW()
+                AND (s.creatorTutorId IS NULL OR s.creatorTutorId != (SELECT tutorId FROM tutor WHERE userId = @userId)) HAVING acceptedTutors < requiredTutors
+                ORDER BY s.startDateTime ASC";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@userId", userId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Session session = new Session(Convert.ToInt32(reader["sessionId"]), reader["creatorStudentId"] == DBNull.Value ? null : Convert.ToInt32(reader["creatorStudentId"]),
+                                reader["creatorTutorId"] == DBNull.Value ? null : Convert.ToInt32(reader["creatorTutorId"]), Convert.ToInt32(reader["requiredTutors"]),
+                                reader["subject"].ToString(), reader["topic"].ToString(), Convert.ToDateTime(reader["startDateTime"]), Convert.ToDateTime(reader["endDateTime"]),
+                                Convert.ToInt32(reader["slots"]), reader["location"].ToString(), reader["sessionStatus"].ToString(), 0, 0, 0);
+
+                            sessions.Add(session);
+                        }
+                    }
+                }
+            }
+
+            return sessions;
         }
     }
 } 
