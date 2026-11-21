@@ -196,7 +196,7 @@ namespace Study_Session
 
             else
                 category = "Completed";
-            
+
             btnView.Click += (sender, e) =>
             {
                 SessionDetails detailsForm = new SessionDetails(
@@ -221,6 +221,11 @@ namespace Study_Session
             card.Controls.Add(btnView);
 
             return card;
+        }
+
+        private void lblSubmitSession2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

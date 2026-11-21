@@ -85,6 +85,29 @@
             pnlMyProfile = new Panel();
             btnViewProfile = new Button();
             pnlMySessions = new Panel();
+            panel1 = new Panel();
+            this.txtSearchTutor2 = new TextBox();
+            lblSearchTutor2 = new Label();
+            lblCreateSessionTitle2 = new Label();
+            lblSelectedTutors2 = new Label();
+            lblCreateSessionDescription2 = new Label();
+            lblSubject3 = new Label();
+            flpTutorList2 = new FlowLayoutPanel();
+            lblTopic3 = new Label();
+            label3 = new Label();
+            label4 = new Label();
+            label7 = new Label();
+            dtpEndTime2 = new DateTimePicker();
+            label6 = new Label();
+            dtpStartTime2 = new DateTimePicker();
+            label5 = new Label();
+            dtpSessionDate2 = new DateTimePicker();
+            txtSubject3 = new TextBox();
+            btnSubmitSession2 = new Button();
+            txtTopic3 = new TextBox();
+            numSlots2 = new NumericUpDown();
+            txtLocation2 = new TextBox();
+            numRequiredTutors2 = new NumericUpDown();
             flpOngoingSessions = new FlowLayoutPanel();
             flpCompletedSessions = new FlowLayoutPanel();
             flpUpcomingSessions = new FlowLayoutPanel();
@@ -93,7 +116,6 @@
             lblUpcomingSessions = new Label();
             lblMySessionsDescription = new Label();
             lblMySessionsTitle = new Label();
-            panel1 = new Panel();
             pnlSideBar.SuspendLayout();
             pnlCreateSession.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numSlots).BeginInit();
@@ -101,6 +123,9 @@
             pnlMain.SuspendLayout();
             pnlMyProfile.SuspendLayout();
             pnlMySessions.SuspendLayout();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numSlots2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numRequiredTutors2).BeginInit();
             SuspendLayout();
             // 
             // pnlSideBar
@@ -718,6 +743,253 @@
             pnlMySessions.Size = new Size(1178, 644);
             pnlMySessions.TabIndex = 30;
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(this.txtSearchTutor2);
+            panel1.Controls.Add(lblSearchTutor2);
+            panel1.Controls.Add(lblCreateSessionTitle2);
+            panel1.Controls.Add(lblSelectedTutors2);
+            panel1.Controls.Add(lblCreateSessionDescription2);
+            panel1.Controls.Add(lblSubject3);
+            panel1.Controls.Add(flpTutorList2);
+            panel1.Controls.Add(lblTopic3);
+            panel1.Controls.Add(label3);
+            panel1.Controls.Add(label4);
+            panel1.Controls.Add(label7);
+            panel1.Controls.Add(dtpEndTime2);
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(dtpStartTime2);
+            panel1.Controls.Add(label5);
+            panel1.Controls.Add(dtpSessionDate2);
+            panel1.Controls.Add(txtSubject3);
+            panel1.Controls.Add(btnSubmitSession2);
+            panel1.Controls.Add(txtTopic3);
+            panel1.Controls.Add(numSlots2);
+            panel1.Controls.Add(txtLocation2);
+            panel1.Controls.Add(numRequiredTutors2);
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1178, 644);
+            panel1.TabIndex = 7;
+            // 
+            // txtSearchTutor2
+            // 
+            this.txtSearchTutor2.BackColor = SystemColors.HighlightText;
+            this.txtSearchTutor2.Location = new Point(870, 132);
+            this.txtSearchTutor2.Margin = new Padding(2);
+            this.txtSearchTutor2.Name = "txtSearchTutor2";
+            this.txtSearchTutor2.Size = new Size(249, 31);
+            this.txtSearchTutor2.TabIndex = 54;
+            // 
+            // lblSearchTutor2
+            // 
+            lblSearchTutor2.AutoSize = true;
+            lblSearchTutor2.Location = new Point(740, 138);
+            lblSearchTutor2.Margin = new Padding(2, 0, 2, 0);
+            lblSearchTutor2.Name = "lblSearchTutor2";
+            lblSearchTutor2.Size = new Size(111, 25);
+            lblSearchTutor2.TabIndex = 53;
+            lblSearchTutor2.Text = "Search Tutor";
+            // 
+            // lblCreateSessionTitle2
+            // 
+            lblCreateSessionTitle2.AutoSize = true;
+            lblCreateSessionTitle2.Location = new Point(261, 38);
+            lblCreateSessionTitle2.Margin = new Padding(2, 0, 2, 0);
+            lblCreateSessionTitle2.Name = "lblCreateSessionTitle2";
+            lblCreateSessionTitle2.Size = new Size(127, 25);
+            lblCreateSessionTitle2.TabIndex = 31;
+            lblCreateSessionTitle2.Text = "Create Session";
+            // 
+            // lblSelectedTutors2
+            // 
+            lblSelectedTutors2.AutoSize = true;
+            lblSelectedTutors2.Location = new Point(740, 542);
+            lblSelectedTutors2.Margin = new Padding(2, 0, 2, 0);
+            lblSelectedTutors2.Name = "lblSelectedTutors2";
+            lblSelectedTutors2.Size = new Size(137, 25);
+            lblSelectedTutors2.TabIndex = 52;
+            lblSelectedTutors2.Text = "Selected Tutors:";
+            // 
+            // lblCreateSessionDescription2
+            // 
+            lblCreateSessionDescription2.AutoSize = true;
+            lblCreateSessionDescription2.Location = new Point(261, 88);
+            lblCreateSessionDescription2.Margin = new Padding(2, 0, 2, 0);
+            lblCreateSessionDescription2.Name = "lblCreateSessionDescription2";
+            lblCreateSessionDescription2.Size = new Size(334, 25);
+            lblCreateSessionDescription2.TabIndex = 32;
+            lblCreateSessionDescription2.Text = "Set-up a study session for others to join.";
+            // 
+            // lblSubject3
+            // 
+            lblSubject3.AutoSize = true;
+            lblSubject3.Location = new Point(311, 196);
+            lblSubject3.Margin = new Padding(2, 0, 2, 0);
+            lblSubject3.Name = "lblSubject3";
+            lblSubject3.Size = new Size(74, 25);
+            lblSubject3.TabIndex = 33;
+            lblSubject3.Text = "Subject:";
+            // 
+            // flpTutorList2
+            // 
+            flpTutorList2.AutoScroll = true;
+            flpTutorList2.BorderStyle = BorderStyle.FixedSingle;
+            flpTutorList2.FlowDirection = FlowDirection.TopDown;
+            flpTutorList2.Location = new Point(740, 182);
+            flpTutorList2.Margin = new Padding(2);
+            flpTutorList2.Name = "flpTutorList2";
+            flpTutorList2.Size = new Size(381, 343);
+            flpTutorList2.TabIndex = 50;
+            flpTutorList2.WrapContents = false;
+            // 
+            // lblTopic3
+            // 
+            lblTopic3.AutoSize = true;
+            lblTopic3.Location = new Point(311, 246);
+            lblTopic3.Margin = new Padding(2, 0, 2, 0);
+            lblTopic3.Name = "lblTopic3";
+            lblTopic3.Size = new Size(57, 25);
+            lblTopic3.TabIndex = 34;
+            lblTopic3.Text = "Topic:";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(313, 390);
+            label3.Margin = new Padding(2, 0, 2, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(46, 25);
+            label3.TabIndex = 49;
+            label3.Text = "End:";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(311, 342);
+            label4.Margin = new Padding(2, 0, 2, 0);
+            label4.Name = "label4";
+            label4.Size = new Size(52, 25);
+            label4.TabIndex = 48;
+            label4.Text = "Start:";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(311, 432);
+            label7.Margin = new Padding(2, 0, 2, 0);
+            label7.Name = "label7";
+            label7.Size = new Size(141, 25);
+            label7.TabIndex = 36;
+            label7.Text = "Required Tutors:";
+            // 
+            // dtpEndTime2
+            // 
+            dtpEndTime2.CustomFormat = "hh:mm tt";
+            dtpEndTime2.Format = DateTimePickerFormat.Custom;
+            dtpEndTime2.Location = new Point(398, 384);
+            dtpEndTime2.Margin = new Padding(2);
+            dtpEndTime2.Name = "dtpEndTime2";
+            dtpEndTime2.ShowUpDown = true;
+            dtpEndTime2.Size = new Size(265, 31);
+            dtpEndTime2.TabIndex = 47;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(313, 488);
+            label6.Margin = new Padding(2, 0, 2, 0);
+            label6.Name = "label6";
+            label6.Size = new Size(55, 25);
+            label6.TabIndex = 37;
+            label6.Text = "Slots:";
+            // 
+            // dtpStartTime2
+            // 
+            dtpStartTime2.CustomFormat = "hh:mm tt";
+            dtpStartTime2.Format = DateTimePickerFormat.Custom;
+            dtpStartTime2.Location = new Point(398, 342);
+            dtpStartTime2.Margin = new Padding(2);
+            dtpStartTime2.Name = "dtpStartTime2";
+            dtpStartTime2.ShowUpDown = true;
+            dtpStartTime2.Size = new Size(265, 31);
+            dtpStartTime2.TabIndex = 46;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(311, 534);
+            label5.Margin = new Padding(2, 0, 2, 0);
+            label5.Name = "label5";
+            label5.Size = new Size(83, 25);
+            label5.TabIndex = 38;
+            label5.Text = "Location:";
+            // 
+            // dtpSessionDate2
+            // 
+            dtpSessionDate2.CustomFormat = "MMMM dd, yyyy";
+            dtpSessionDate2.Format = DateTimePickerFormat.Custom;
+            dtpSessionDate2.Location = new Point(398, 300);
+            dtpSessionDate2.Margin = new Padding(2);
+            dtpSessionDate2.Name = "dtpSessionDate2";
+            dtpSessionDate2.Size = new Size(265, 31);
+            dtpSessionDate2.TabIndex = 45;
+            // 
+            // txtSubject3
+            // 
+            txtSubject3.Location = new Point(414, 192);
+            txtSubject3.Margin = new Padding(2);
+            txtSubject3.Name = "txtSubject3";
+            txtSubject3.Size = new Size(249, 31);
+            txtSubject3.TabIndex = 39;
+            // 
+            // btnSubmitSession2
+            // 
+            btnSubmitSession2.Location = new Point(933, 568);
+            btnSubmitSession2.Margin = new Padding(2);
+            btnSubmitSession2.Name = "btnSubmitSession2";
+            btnSubmitSession2.Size = new Size(188, 34);
+            btnSubmitSession2.TabIndex = 44;
+            btnSubmitSession2.Text = "Create Session";
+            btnSubmitSession2.UseVisualStyleBackColor = true;
+            btnSubmitSession2.Click += lblSubmitSession2_Click;
+            // 
+            // txtTopic3
+            // 
+            txtTopic3.Location = new Point(414, 248);
+            txtTopic3.Margin = new Padding(2);
+            txtTopic3.Name = "txtTopic3";
+            txtTopic3.Size = new Size(249, 31);
+            txtTopic3.TabIndex = 40;
+            // 
+            // numSlots2
+            // 
+            numSlots2.Location = new Point(483, 488);
+            numSlots2.Margin = new Padding(2);
+            numSlots2.Maximum = new decimal(new int[] { 30, 0, 0, 0 });
+            numSlots2.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numSlots2.Name = "numSlots2";
+            numSlots2.Size = new Size(180, 31);
+            numSlots2.TabIndex = 43;
+            numSlots2.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // txtLocation2
+            // 
+            txtLocation2.Location = new Point(483, 528);
+            txtLocation2.Margin = new Padding(2);
+            txtLocation2.Name = "txtLocation2";
+            txtLocation2.Size = new Size(180, 31);
+            txtLocation2.TabIndex = 41;
+            // 
+            // numRequiredTutors2
+            // 
+            numRequiredTutors2.Location = new Point(483, 432);
+            numRequiredTutors2.Margin = new Padding(2);
+            numRequiredTutors2.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
+            numRequiredTutors2.Name = "numRequiredTutors2";
+            numRequiredTutors2.Size = new Size(180, 31);
+            numRequiredTutors2.TabIndex = 42;
+            // 
             // flpOngoingSessions
             // 
             flpOngoingSessions.Location = new Point(543, 199);
@@ -784,13 +1056,6 @@
             lblMySessionsTitle.TabIndex = 0;
             lblMySessionsTitle.Text = "My Sessions";
             // 
-            // panel1
-            // 
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1178, 644);
-            panel1.TabIndex = 7;
-            // 
             // TutorDashboard
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -818,6 +1083,10 @@
             pnlMyProfile.PerformLayout();
             pnlMySessions.ResumeLayout(false);
             pnlMySessions.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numSlots2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numRequiredTutors2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -890,5 +1159,31 @@
         private Label lblCompletedSessions;
         private Label lblOngoingSessions;
         private Panel panel1;
+        private TextBox textBox1;
+        private Label lblCreateSessionTitle2;
+        private Label label1;
+        private Label lblCreateSessionDescription2;
+        private Label label2;
+        private Label lblSubject3;
+        private FlowLayoutPanel flpTutorList2;
+        private Label lblTopic3;
+        private Label label3;
+        private Label lblSelectedTutors2;
+        private Label label4;
+        private Label label7;
+        private DateTimePicker dtpEndTime2;
+        private Label label6;
+        private DateTimePicker dtpStartTime2;
+        private Label label5;
+        private DateTimePicker dtpSessionDate2;
+        private TextBox txtSubject3;
+        private Button btnSubmitSession2;
+        private TextBox txtTopic3;
+        private NumericUpDown numSlots2;
+        private TextBox txtLocation2;
+        private NumericUpDown numRequiredTutors2;
+        private TextBox txtSearchTutor2
+            ;
+        private Label lblSearchTutor2;
     }
 }
