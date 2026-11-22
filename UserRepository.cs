@@ -369,7 +369,7 @@ namespace Study_Session
             return tutors;
         }
 
-        public bool HasAlreadyRated(Student student, Tutor tutor, Session session)
+        public bool HasAlreadyRated(int studentId, int tutorId, int sessionId)
         {
             using (MySqlConnection connection = Database.GetConnection())
             {
@@ -377,9 +377,9 @@ namespace Study_Session
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@studentId", student.StudentId);
-                    command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
-                    command.Parameters.AddWithValue("@sessionId", session.SessionId);
+                    command.Parameters.AddWithValue("@studentId", studentId);
+                    command.Parameters.AddWithValue("@tutorId", tutorId);
+                    command.Parameters.AddWithValue("@sessionId", sessionId);
 
                     connection.Open();
 
@@ -568,6 +568,34 @@ namespace Study_Session
             }
 
             return reviews;
+        }
+
+        public void NotifyAllUsers(string message)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = "SELECT userId FROM `user`";
+
+                List<int> userIds = new List<int>();
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            userIds.Add(Convert.ToInt32(reader["userId"]));
+                        }
+                    }
+                }
+
+                foreach (int userId in userIds)
+                {
+                    AddNotification(userId, message);
+                }
+            }
         }
     }
 }

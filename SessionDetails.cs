@@ -14,12 +14,11 @@ namespace Study_Session
         private int loggedInUserId;
         private bool isTutor;
         private int sessionId;
+        private Session sessionData;
         private Action<Session> editSessionCallback;
         private UserRepository userRepository = new UserRepository();
         private SessionRepository sessionRepository = new SessionRepository();
         private BookingRepository bookingRepository = new BookingRepository();
-
-        private Session sessionData;
 
         public SessionDetails(Session sessionData, string category, int userId, Action<Session> editCallback, bool isTutor = false)
         {
@@ -116,7 +115,13 @@ namespace Study_Session
                 if (success)
                 {
                     MessageBox.Show("Your booking has been cancelled successfully.");
+                    
+                    int creatorUserId = sessionRepository.GetSessionCreatorUserId(sessionId);
 
+                    if (creatorUserId > 0)
+                    {
+                        userRepository.AddNotification(creatorUserId, "A student has cancelled their booking for your session.");
+                    }
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
@@ -140,9 +145,18 @@ namespace Study_Session
                 sessionData.CancelSession();
                 bool success = sessionRepository.CancelSession(sessionData);
 
+
                 if (success)
                 {
+                    List<int> participantUserIds = sessionRepository.GetSessionParticipantUserIds(sessionId);
+
+                    foreach (int userId in participantUserIds)
+                    {
+                        userRepository.AddNotification(userId, "The session '" + sessionData.Topic + "' has been cancelled.");
+                    }
                     MessageBox.Show("Your session has been cancelled successfully.");
+
+
 
                     this.DialogResult = DialogResult.OK;
                     this.Close();
@@ -167,11 +181,8 @@ namespace Study_Session
 
         private void btnCompleteSession_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show(
-                "Are you sure you want to mark this session as completed?",
-                "Complete Session",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show("Are you sure you want to mark this session as completed?", "Complete Session",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
@@ -268,6 +279,16 @@ namespace Study_Session
                 {
                     MessageBox.Show("You have successfully withdrawn from the session.");
 
+                    int creatorUserId = sessionRepository.GetSessionCreatorUserId(sessionId);
+
+                    Tutor withdrawingTutor = userRepository.GetTutorById(tutorId);
+                    if (creatorUserId > 0 && withdrawingTutor != null)
+                    {
+                        userRepository.AddNotification(
+                            creatorUserId,
+                            withdrawingTutor.FullName + " has withdrawn from your session."
+                        );
+                    }
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }

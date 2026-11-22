@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             pnlSideBar = new Panel();
+            btnLogout = new Button();
             btnStudentMode = new Button();
             btnReadReviews = new Button();
             btnBrowseSession = new Button();
@@ -37,9 +38,6 @@
             btnMySession = new Button();
             btnMyProfile = new Button();
             btnMain = new Button();
-            lblSearchSessions = new Label();
-            txtSearchSessions = new TextBox();
-            flpBrowseSessions = new FlowLayoutPanel();
             pnlCreateSession = new Panel();
             txtSearchTutor = new TextBox();
             lblSelectedTutors = new Label();
@@ -94,27 +92,27 @@
             lblMySessionsDescription = new Label();
             lblMySessionsTitle = new Label();
             pnlBrowseSession = new Panel();
-            pnlReviews = new Panel();
-            flpTutorRequestList = new FlowLayoutPanel();
-            lblTutorRequestDescription = new Label();
-            lblTutorRequestsTitle = new Label();
             txtSearch = new TextBox();
             lblSearch = new Label();
             flpBrowseSession = new FlowLayoutPanel();
-            lblReviews = new Label();
-            lblReviewsDescription = new Label();
+            pnlRequests = new Panel();
+            flpTutorRequestList = new FlowLayoutPanel();
+            lblTutorRequestDescription = new Label();
+            lblTutorRequestsTitle = new Label();
+            pnlReviews = new Panel();
             flpTutorReviews = new FlowLayoutPanel();
-            panel4 = new Panel();
-            pnlTutorRating = new Panel();
-            lblTutorRating = new Label();
-            lblTutorRatingValue = new Label();
-            pnlNotifications = new Panel();
-            flpNotifications = new FlowLayoutPanel();
-            lblNotificationsTitle = new Label();
+            lblReviewsDescription = new Label();
+            lblReviews = new Label();
+            pnlMainMenu = new Panel();
             pnlTutorRequests = new Panel();
-            lblTutorRequests = new Label();
             lblTutorRequestsValue = new Label();
-            panel3 = new Panel();
+            lblTutorRequests = new Label();
+            pnlNotifications = new Panel();
+            lblNotificationsTitle = new Label();
+            flpNotifications = new FlowLayoutPanel();
+            pnlTutorRating = new Panel();
+            lblTutorRatingValue = new Label();
+            lblTutorRating = new Label();
             pnlSideBar.SuspendLayout();
             pnlCreateSession.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numSlots).BeginInit();
@@ -123,17 +121,18 @@
             pnlMyProfile.SuspendLayout();
             pnlMySessions.SuspendLayout();
             pnlBrowseSession.SuspendLayout();
+            pnlRequests.SuspendLayout();
             pnlReviews.SuspendLayout();
-            panel4.SuspendLayout();
-            pnlTutorRating.SuspendLayout();
-            pnlNotifications.SuspendLayout();
+            pnlMainMenu.SuspendLayout();
             pnlTutorRequests.SuspendLayout();
-            panel3.SuspendLayout();
+            pnlNotifications.SuspendLayout();
+            pnlTutorRating.SuspendLayout();
             SuspendLayout();
             // 
             // pnlSideBar
             // 
             pnlSideBar.BackColor = Color.MediumSlateBlue;
+            pnlSideBar.Controls.Add(btnLogout);
             pnlSideBar.Controls.Add(btnStudentMode);
             pnlSideBar.Controls.Add(btnReadReviews);
             pnlSideBar.Controls.Add(btnBrowseSession);
@@ -148,6 +147,17 @@
             pnlSideBar.Size = new Size(230, 644);
             pnlSideBar.TabIndex = 0;
             // 
+            // btnLogout
+            // 
+            btnLogout.Location = new Point(13, 305);
+            btnLogout.Margin = new Padding(4);
+            btnLogout.Name = "btnLogout";
+            btnLogout.Size = new Size(204, 34);
+            btnLogout.TabIndex = 8;
+            btnLogout.Text = "Logout";
+            btnLogout.UseVisualStyleBackColor = true;
+            btnLogout.Click += btnLogout_Click;
+            // 
             // btnStudentMode
             // 
             btnStudentMode.Location = new Point(13, 597);
@@ -157,6 +167,7 @@
             btnStudentMode.TabIndex = 7;
             btnStudentMode.Text = "Student Mode";
             btnStudentMode.UseVisualStyleBackColor = true;
+            btnStudentMode.Click += btnStudentMode_Click;
             // 
             // btnReadReviews
             // 
@@ -200,6 +211,7 @@
             btnTutorRequests.TabIndex = 3;
             btnTutorRequests.Text = "Tutor Requests";
             btnTutorRequests.UseVisualStyleBackColor = true;
+            btnTutorRequests.Click += btnTutorRequests_Click;
             // 
             // btnMySession
             // 
@@ -232,36 +244,6 @@
             btnMain.TabIndex = 0;
             btnMain.Text = "Main";
             btnMain.UseVisualStyleBackColor = true;
-            // 
-            // lblSearchSessions
-            // 
-            lblSearchSessions.AutoSize = true;
-            lblSearchSessions.Location = new Point(258, 51);
-            lblSearchSessions.Margin = new Padding(2, 0, 2, 0);
-            lblSearchSessions.Name = "lblSearchSessions";
-            lblSearchSessions.Size = new Size(141, 25);
-            lblSearchSessions.TabIndex = 2;
-            lblSearchSessions.Text = "Search Sessions:";
-            // 
-            // txtSearchSessions
-            // 
-            txtSearchSessions.Location = new Point(409, 48);
-            txtSearchSessions.Margin = new Padding(2);
-            txtSearchSessions.Name = "txtSearchSessions";
-            txtSearchSessions.Size = new Size(736, 31);
-            txtSearchSessions.TabIndex = 3;
-            // 
-            // flpBrowseSessions
-            // 
-            flpBrowseSessions.AutoScroll = true;
-            flpBrowseSessions.FlowDirection = FlowDirection.TopDown;
-            flpBrowseSessions.Location = new Point(261, 98);
-            flpBrowseSessions.Margin = new Padding(2);
-            flpBrowseSessions.Name = "flpBrowseSessions";
-            flpBrowseSessions.Padding = new Padding(10);
-            flpBrowseSessions.Size = new Size(884, 518);
-            flpBrowseSessions.TabIndex = 4;
-            flpBrowseSessions.WrapContents = false;
             // 
             // pnlCreateSession
             // 
@@ -829,16 +811,39 @@
             pnlBrowseSession.Size = new Size(1178, 644);
             pnlBrowseSession.TabIndex = 24;
             // 
-            // pnlReviews
+            // txtSearch
             // 
-            pnlReviews.Controls.Add(panel3);
-            pnlReviews.Controls.Add(flpTutorRequestList);
-            pnlReviews.Controls.Add(lblTutorRequestDescription);
-            pnlReviews.Controls.Add(lblTutorRequestsTitle);
-            pnlReviews.Location = new Point(0, 0);
-            pnlReviews.Name = "pnlReviews";
-            pnlReviews.Size = new Size(1178, 644);
-            pnlReviews.TabIndex = 3;
+            txtSearch.Location = new Point(370, 71);
+            txtSearch.Name = "txtSearch";
+            txtSearch.Size = new Size(775, 31);
+            txtSearch.TabIndex = 2;
+            txtSearch.TextChanged += txtSearch_TextChanged;
+            // 
+            // lblSearch
+            // 
+            lblSearch.AutoSize = true;
+            lblSearch.Location = new Point(252, 71);
+            lblSearch.Name = "lblSearch";
+            lblSearch.Size = new Size(64, 25);
+            lblSearch.TabIndex = 1;
+            lblSearch.Text = "Search";
+            // 
+            // flpBrowseSession
+            // 
+            flpBrowseSession.Location = new Point(252, 132);
+            flpBrowseSession.Name = "flpBrowseSession";
+            flpBrowseSession.Size = new Size(893, 499);
+            flpBrowseSession.TabIndex = 0;
+            // 
+            // pnlRequests
+            // 
+            pnlRequests.Controls.Add(flpTutorRequestList);
+            pnlRequests.Controls.Add(lblTutorRequestDescription);
+            pnlRequests.Controls.Add(lblTutorRequestsTitle);
+            pnlRequests.Location = new Point(0, 0);
+            pnlRequests.Name = "pnlRequests";
+            pnlRequests.Size = new Size(1178, 644);
+            pnlRequests.TabIndex = 3;
             // 
             // flpTutorRequestList
             // 
@@ -865,38 +870,22 @@
             lblTutorRequestsTitle.TabIndex = 0;
             lblTutorRequestsTitle.Text = "Tutor Requests";
             // 
-            // txtSearch
+            // pnlReviews
             // 
-            txtSearch.Location = new Point(370, 71);
-            txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(775, 31);
-            txtSearch.TabIndex = 2;
-            txtSearch.TextChanged += txtSearch_TextChanged;
+            pnlReviews.Controls.Add(flpTutorReviews);
+            pnlReviews.Controls.Add(lblReviewsDescription);
+            pnlReviews.Controls.Add(lblReviews);
+            pnlReviews.Location = new Point(0, 0);
+            pnlReviews.Name = "pnlReviews";
+            pnlReviews.Size = new Size(1178, 644);
+            pnlReviews.TabIndex = 3;
             // 
-            // lblSearch
+            // flpTutorReviews
             // 
-            lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(252, 71);
-            lblSearch.Name = "lblSearch";
-            lblSearch.Size = new Size(64, 25);
-            lblSearch.TabIndex = 1;
-            lblSearch.Text = "Search";
-            // 
-            // flpBrowseSession
-            // 
-            flpBrowseSession.Location = new Point(252, 132);
-            flpBrowseSession.Name = "flpBrowseSession";
-            flpBrowseSession.Size = new Size(893, 499);
-            flpBrowseSession.TabIndex = 0;
-            // 
-            // lblReviews
-            // 
-            lblReviews.AutoSize = true;
-            lblReviews.Location = new Point(272, 48);
-            lblReviews.Name = "lblReviews";
-            lblReviews.Size = new Size(74, 25);
-            lblReviews.TabIndex = 0;
-            lblReviews.Text = "Reviews";
+            flpTutorReviews.Location = new Point(261, 142);
+            flpTutorReviews.Name = "flpTutorReviews";
+            flpTutorReviews.Size = new Size(881, 484);
+            flpTutorReviews.TabIndex = 2;
             // 
             // lblReviewsDescription
             // 
@@ -907,86 +896,24 @@
             lblReviewsDescription.TabIndex = 1;
             lblReviewsDescription.Text = "Read student reviews";
             // 
-            // flpTutorReviews
+            // lblReviews
             // 
-            flpTutorReviews.Location = new Point(261, 142);
-            flpTutorReviews.Name = "flpTutorReviews";
-            flpTutorReviews.Size = new Size(881, 484);
-            flpTutorReviews.TabIndex = 2;
+            lblReviews.AutoSize = true;
+            lblReviews.Location = new Point(272, 48);
+            lblReviews.Name = "lblReviews";
+            lblReviews.Size = new Size(74, 25);
+            lblReviews.TabIndex = 0;
+            lblReviews.Text = "Reviews";
             // 
-            // panel4
+            // pnlMainMenu
             // 
-            panel4.Controls.Add(pnlTutorRequests);
-            panel4.Controls.Add(pnlNotifications);
-            panel4.Controls.Add(pnlTutorRating);
-            panel4.Location = new Point(0, 0);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(1178, 644);
-            panel4.TabIndex = 3;
-            // 
-            // pnlTutorRating
-            // 
-            pnlTutorRating.BorderStyle = BorderStyle.FixedSingle;
-            pnlTutorRating.Controls.Add(lblTutorRatingValue);
-            pnlTutorRating.Controls.Add(lblTutorRating);
-            pnlTutorRating.Location = new Point(258, 123);
-            pnlTutorRating.Margin = new Padding(2);
-            pnlTutorRating.Name = "pnlTutorRating";
-            pnlTutorRating.Size = new Size(363, 150);
-            pnlTutorRating.TabIndex = 5;
-            // 
-            // lblTutorRating
-            // 
-            lblTutorRating.AutoSize = true;
-            lblTutorRating.Location = new Point(32, 22);
-            lblTutorRating.Margin = new Padding(2, 0, 2, 0);
-            lblTutorRating.Name = "lblTutorRating";
-            lblTutorRating.Size = new Size(110, 25);
-            lblTutorRating.TabIndex = 3;
-            lblTutorRating.Text = "Tutor Rating";
-            // 
-            // lblTutorRatingValue
-            // 
-            lblTutorRatingValue.AutoSize = true;
-            lblTutorRatingValue.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTutorRatingValue.Location = new Point(32, 72);
-            lblTutorRatingValue.Margin = new Padding(2, 0, 2, 0);
-            lblTutorRatingValue.Name = "lblTutorRatingValue";
-            lblTutorRatingValue.Size = new Size(41, 48);
-            lblTutorRatingValue.TabIndex = 4;
-            lblTutorRatingValue.Text = "0";
-            // 
-            // pnlNotifications
-            // 
-            pnlNotifications.BorderStyle = BorderStyle.FixedSingle;
-            pnlNotifications.Controls.Add(lblNotificationsTitle);
-            pnlNotifications.Controls.Add(flpNotifications);
-            pnlNotifications.Location = new Point(631, 107);
-            pnlNotifications.Margin = new Padding(2);
-            pnlNotifications.Name = "pnlNotifications";
-            pnlNotifications.Size = new Size(503, 490);
-            pnlNotifications.TabIndex = 7;
-            // 
-            // flpNotifications
-            // 
-            flpNotifications.AutoScroll = true;
-            flpNotifications.FlowDirection = FlowDirection.TopDown;
-            flpNotifications.Location = new Point(32, 71);
-            flpNotifications.Margin = new Padding(2);
-            flpNotifications.Name = "flpNotifications";
-            flpNotifications.Size = new Size(432, 390);
-            flpNotifications.TabIndex = 4;
-            flpNotifications.WrapContents = false;
-            // 
-            // lblNotificationsTitle
-            // 
-            lblNotificationsTitle.AutoSize = true;
-            lblNotificationsTitle.Location = new Point(32, 22);
-            lblNotificationsTitle.Margin = new Padding(2, 0, 2, 0);
-            lblNotificationsTitle.Name = "lblNotificationsTitle";
-            lblNotificationsTitle.Size = new Size(112, 25);
-            lblNotificationsTitle.TabIndex = 3;
-            lblNotificationsTitle.Text = "Notifications";
+            pnlMainMenu.Controls.Add(pnlTutorRequests);
+            pnlMainMenu.Controls.Add(pnlNotifications);
+            pnlMainMenu.Controls.Add(pnlTutorRating);
+            pnlMainMenu.Location = new Point(0, 0);
+            pnlMainMenu.Name = "pnlMainMenu";
+            pnlMainMenu.Size = new Size(1178, 644);
+            pnlMainMenu.TabIndex = 3;
             // 
             // pnlTutorRequests
             // 
@@ -999,16 +926,6 @@
             pnlTutorRequests.Size = new Size(363, 150);
             pnlTutorRequests.TabIndex = 6;
             // 
-            // lblTutorRequests
-            // 
-            lblTutorRequests.AutoSize = true;
-            lblTutorRequests.Location = new Point(32, 25);
-            lblTutorRequests.Margin = new Padding(2, 0, 2, 0);
-            lblTutorRequests.Name = "lblTutorRequests";
-            lblTutorRequests.Size = new Size(130, 25);
-            lblTutorRequests.TabIndex = 4;
-            lblTutorRequests.Text = "Tutor Requests";
-            // 
             // lblTutorRequestsValue
             // 
             lblTutorRequestsValue.AutoSize = true;
@@ -1020,32 +937,94 @@
             lblTutorRequestsValue.TabIndex = 5;
             lblTutorRequestsValue.Text = "0";
             // 
-            // panel3
+            // lblTutorRequests
             // 
-            panel3.Controls.Add(flpTutorReviews);
-            panel3.Controls.Add(lblReviewsDescription);
-            panel3.Controls.Add(lblReviews);
-            panel3.Location = new Point(0, 0);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(1178, 644);
-            panel3.TabIndex = 3;
+            lblTutorRequests.AutoSize = true;
+            lblTutorRequests.Location = new Point(32, 25);
+            lblTutorRequests.Margin = new Padding(2, 0, 2, 0);
+            lblTutorRequests.Name = "lblTutorRequests";
+            lblTutorRequests.Size = new Size(130, 25);
+            lblTutorRequests.TabIndex = 4;
+            lblTutorRequests.Text = "Tutor Requests";
+            // 
+            // pnlNotifications
+            // 
+            pnlNotifications.BorderStyle = BorderStyle.FixedSingle;
+            pnlNotifications.Controls.Add(lblNotificationsTitle);
+            pnlNotifications.Controls.Add(flpNotifications);
+            pnlNotifications.Location = new Point(631, 107);
+            pnlNotifications.Margin = new Padding(2);
+            pnlNotifications.Name = "pnlNotifications";
+            pnlNotifications.Size = new Size(503, 490);
+            pnlNotifications.TabIndex = 7;
+            // 
+            // lblNotificationsTitle
+            // 
+            lblNotificationsTitle.AutoSize = true;
+            lblNotificationsTitle.Location = new Point(32, 22);
+            lblNotificationsTitle.Margin = new Padding(2, 0, 2, 0);
+            lblNotificationsTitle.Name = "lblNotificationsTitle";
+            lblNotificationsTitle.Size = new Size(112, 25);
+            lblNotificationsTitle.TabIndex = 3;
+            lblNotificationsTitle.Text = "Notifications";
+            // 
+            // flpNotifications
+            // 
+            flpNotifications.AutoScroll = true;
+            flpNotifications.FlowDirection = FlowDirection.TopDown;
+            flpNotifications.Location = new Point(32, 71);
+            flpNotifications.Margin = new Padding(2);
+            flpNotifications.Name = "flpNotifications";
+            flpNotifications.Size = new Size(432, 390);
+            flpNotifications.TabIndex = 4;
+            flpNotifications.WrapContents = false;
+            // 
+            // pnlTutorRating
+            // 
+            pnlTutorRating.BorderStyle = BorderStyle.FixedSingle;
+            pnlTutorRating.Controls.Add(lblTutorRatingValue);
+            pnlTutorRating.Controls.Add(lblTutorRating);
+            pnlTutorRating.Location = new Point(258, 123);
+            pnlTutorRating.Margin = new Padding(2);
+            pnlTutorRating.Name = "pnlTutorRating";
+            pnlTutorRating.Size = new Size(363, 150);
+            pnlTutorRating.TabIndex = 5;
+            // 
+            // lblTutorRatingValue
+            // 
+            lblTutorRatingValue.AutoSize = true;
+            lblTutorRatingValue.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTutorRatingValue.Location = new Point(32, 72);
+            lblTutorRatingValue.Margin = new Padding(2, 0, 2, 0);
+            lblTutorRatingValue.Name = "lblTutorRatingValue";
+            lblTutorRatingValue.Size = new Size(41, 48);
+            lblTutorRatingValue.TabIndex = 4;
+            lblTutorRatingValue.Text = "0";
+            // 
+            // lblTutorRating
+            // 
+            lblTutorRating.AutoSize = true;
+            lblTutorRating.Location = new Point(32, 22);
+            lblTutorRating.Margin = new Padding(2, 0, 2, 0);
+            lblTutorRating.Name = "lblTutorRating";
+            lblTutorRating.Size = new Size(110, 25);
+            lblTutorRating.TabIndex = 3;
+            lblTutorRating.Text = "Tutor Rating";
             // 
             // TutorDashboard
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1178, 644);
-            Controls.Add(panel4);
-            Controls.Add(pnlReviews);
             Controls.Add(pnlSideBar);
+            Controls.Add(pnlReviews);
+            Controls.Add(pnlMainMenu);
+            Controls.Add(pnlRequests);
             Controls.Add(pnlBrowseSession);
             Controls.Add(pnlCreateSession);
             Controls.Add(pnlMySessions);
             Controls.Add(pnlMyProfile);
             Controls.Add(pnlMain);
-            Controls.Add(flpBrowseSessions);
-            Controls.Add(txtSearchSessions);
-            Controls.Add(lblSearchSessions);
             Margin = new Padding(4);
             Name = "TutorDashboard";
             Text = "TutorDashboard";
@@ -1062,19 +1041,18 @@
             pnlMySessions.PerformLayout();
             pnlBrowseSession.ResumeLayout(false);
             pnlBrowseSession.PerformLayout();
+            pnlRequests.ResumeLayout(false);
+            pnlRequests.PerformLayout();
             pnlReviews.ResumeLayout(false);
             pnlReviews.PerformLayout();
-            panel4.ResumeLayout(false);
-            pnlTutorRating.ResumeLayout(false);
-            pnlTutorRating.PerformLayout();
-            pnlNotifications.ResumeLayout(false);
-            pnlNotifications.PerformLayout();
+            pnlMainMenu.ResumeLayout(false);
             pnlTutorRequests.ResumeLayout(false);
             pnlTutorRequests.PerformLayout();
-            panel3.ResumeLayout(false);
-            panel3.PerformLayout();
+            pnlNotifications.ResumeLayout(false);
+            pnlNotifications.PerformLayout();
+            pnlTutorRating.ResumeLayout(false);
+            pnlTutorRating.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -1144,7 +1122,7 @@
         private FlowLayoutPanel flpUpcomingSessions;
         private Label lblCompletedSessions;
         private Label lblOngoingSessions;
-        private Panel panel1;
+        private Panel pnlRequests;
         private TextBox txtSearch;
         private Label lblSearch;
         private Label label2;
@@ -1154,11 +1132,10 @@
         private FlowLayoutPanel flpTutorRequestList;
         private Label lblTutorRequestDescription;
         private Label lblTutorRequestsTitle;
-        private Panel panel3;
         private FlowLayoutPanel flpTutorReviews;
         private Label lblReviewsDescription;
         private Label lblReviews;
-        private Panel panel4;
+        private Panel pnlMainMenu;
         private Panel pnlTutorRequests;
         private Label lblTutorRequestsValue;
         private Label lblTutorRequests;
@@ -1172,5 +1149,6 @@
         private Panel pnlWaitlistedSessions;
         private Label lblWaitlistedCount;
         private Panel pnlBookedSessions;
+        private Button btnLogout;
     }
 }

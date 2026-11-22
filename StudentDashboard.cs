@@ -14,20 +14,24 @@ namespace Study_Session
     public partial class StudentDashboard : Form
     {
         private int loggedInUserId;
+        private bool isEditMode = false;
+        private int editingSessionId = 0;
         private Student loggedInStudent;
+        private Session editingSession;
+        private List<Tutor> availableTutors = new List<Tutor>();
+        private List<int> selectedTutorIds = new List<int>();
+        private List<Session> browseSessions;
         private UserRepository userRepository = new UserRepository();
         private SessionRepository sessionRepository = new SessionRepository();
         private BookingRepository bookingRepository = new BookingRepository();
-        List<Tutor> availableTutors = new List<Tutor>();
-        private List<Session> browseSessions;
-        private bool isEditMode = false;
-        private int editingSessionId = 0;
-        private Session editingSession;
-        private List<int> selectedTutorIds = new List<int>();
+
 
         public StudentDashboard(Student student)
         {
             InitializeComponent();
+
+            HideAllPanels();
+            pnlMain.Visible = true;
 
             loggedInStudent = student;
             loggedInUserId = student.UserId;
@@ -51,6 +55,16 @@ namespace Study_Session
             dtpSessionDate.MinDate = DateTime.Today;
         }
 
+        private void HideAllPanels()
+        {
+            Panel[] panels = { pnlMyProfile, pnlMain, pnlMySession, pnlCreateSession, pnlBrowseSession };
+
+            foreach (Panel panel in panels)
+            {
+                panel.Visible = false;
+            }
+        }
+
         private void LoadNotifications()
         {
             loggedInStudent.viewNotifications(flpNotifications);
@@ -71,6 +85,7 @@ namespace Study_Session
 
         private void btnMyProfile_Click(object sender, EventArgs e)
         {
+            HideAllPanels();
             pnlMyProfile.Visible = true;
             LoadStudentProfile();
         }
@@ -175,7 +190,7 @@ namespace Study_Session
         }
         private void btnCreateSession_Click(object sender, EventArgs e)
         {
-            pnlMyProfile.Visible = false;
+            HideAllPanels();
             pnlCreateSession.Visible = true;
             isEditMode = false;
         }
@@ -265,7 +280,7 @@ namespace Study_Session
                 if (newSessionId > 0)
                 {
                     MessageBox.Show("Study session created successfully!");
-                    
+
                     txtSubject.Clear();
                     txtTopic.Clear();
                     txtLocation.Clear();
@@ -287,7 +302,7 @@ namespace Study_Session
         }
         private void LoadAvailableTutors()
         {
-            availableTutors = userRepository.GetAvailableTutors();    
+            availableTutors = userRepository.GetAvailableTutors();
             DisplayTutorList(txtSearchTutor.Text);
 
         }
@@ -334,7 +349,7 @@ namespace Study_Session
                 tutorCheckBox.AutoSize = true;
                 tutorCheckBox.Margin = new Padding(5);
                 tutorCheckBox.Checked = selectedTutorIds.Contains(tutorId);
-                
+
                 if (!isAvailable)
                 {
                     tutorCheckBox.Text = tutorName + " (Unavailable)";
@@ -499,7 +514,7 @@ namespace Study_Session
                 btnJoinWaitlist.Height = 30;
                 btnJoinWaitlist.Location = new Point(10, 145);
                 btnJoinWaitlist.Visible = availableSlots <= 0 && waitlistedCount < 5;
-                
+
                 Button btnViewDetails = new Button();
                 btnViewDetails.Text = "View Details";
                 btnViewDetails.Width = 110;
@@ -588,6 +603,8 @@ namespace Study_Session
 
         private void btnMySessions_Click(object sender, EventArgs e)
         {
+            HideAllPanels();
+            pnlMySession.Visible = true;
             LoadMySessions();
         }
 
@@ -715,7 +732,7 @@ namespace Study_Session
             card.Controls.Add(lblTopic);
             card.Controls.Add(lblDate);
             card.Controls.Add(lblStatus);
-            
+
             Button btnView = new Button();
             btnView.Text = "View Details";
             btnView.Size = new Size(110, 35);
@@ -897,7 +914,7 @@ namespace Study_Session
                 existingTutor.LoadDashboard(null);
                 this.Hide();
                 return;
-            }   
+            }
 
             Tutor newTutor = loggedInStudent.becomeTutor();
 
@@ -919,6 +936,12 @@ namespace Study_Session
             {
                 MessageBox.Show("Unable to register as a tutor.");
             }
+        }
+
+        private void btnBrowseSession_Click(object sender, EventArgs e)
+        {
+            HideAllPanels();
+            pnlBrowseSession.Visible = true;
         }
     }
 }

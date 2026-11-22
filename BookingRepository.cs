@@ -289,8 +289,10 @@ namespace Study_Session
 
                         int? nextBookingId = null;
                         int nextPosition = 0;
+                        int nextStudentId = 0;
+                        int nextStudentUserId = 0;
 
-                        string waitlistQuery = @"SELECT bookingId, waitlistPosition FROM booking WHERE sessionId = @sessionId AND bookingStatus = 'Waitlisted'
+                        string waitlistQuery = @"SELECT bookingId, studentId, waitlistPosition FROM booking FROM booking WHERE sessionId = @sessionId AND bookingStatus = 'Waitlisted'
                         ORDER BY waitlistPosition ASC LIMIT 1 FOR UPDATE";
 
                         using (MySqlCommand command = new MySqlCommand(waitlistQuery, connection, transaction))
@@ -302,6 +304,7 @@ namespace Study_Session
                                 if (reader.Read())
                                 {
                                     nextBookingId = Convert.ToInt32(reader["bookingId"]);
+                                    nextStudentId = Convert.ToInt32(reader["studentId"]);
                                     nextPosition = Convert.ToInt32(reader["waitlistPosition"]);
                                 }
                             }
@@ -309,6 +312,17 @@ namespace Study_Session
 
                         if (nextBookingId.HasValue)
                         {
+                            string studentUserQuery = @"SELECT userId FROM student WHERE studentId = @studentId";
+
+                            using (MySqlCommand studentCommand = new MySqlCommand(studentUserQuery, connection, transaction))
+                            {
+                                studentCommand.Parameters.AddWithValue("@studentId", nextStudentId);
+                                object result = studentCommand.ExecuteScalar();
+
+                                if (result != null)
+                                    nextStudentUserId = Convert.ToInt32(result);
+                            }
+
                             string promoteQuery = @"UPDATE booking SET bookingStatus = 'Pending', waitlistPosition = NULL
                             WHERE bookingId = @bookingId";
 
@@ -339,6 +353,16 @@ namespace Study_Session
                                 command.Parameters.AddWithValue("@sessionId", sessionId);
                                 command.ExecuteNonQuery();
                             }
+                        }
+
+                        if (nextBookingId.HasValue && nextStudentUserId > 0)
+                        {
+                            UserRepository userRepository = new UserRepository();
+
+                            userRepository.AddNotification(
+                                nextStudentUserId,
+                                "A slot is now available! Please complete your payment for your waitlisted session."
+                            );
                         }
 
                         transaction.Commit();

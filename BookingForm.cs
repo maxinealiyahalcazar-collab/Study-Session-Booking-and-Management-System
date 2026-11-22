@@ -153,6 +153,17 @@ namespace Study_Session
             {
                 MessageBox.Show("Booking completed successfully!");
 
+                if (!isCreator && !isWaitlist)
+                {
+                    int creatorUserId = sessionRepository.GetSessionCreatorUserId(sessionId);
+
+                    if (creatorUserId > 0)
+                    {
+                        userRepository.AddNotification(
+                            creatorUserId, "A student has successfully booked your session.");
+                    }
+                }
+
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

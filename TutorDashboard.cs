@@ -12,6 +12,7 @@ namespace Study_Session
     public partial class TutorDashboard : Form
     {
         private Tutor loggedInTutor;
+        private Student loggedInStudent;
         private UserRepository userRepository = new UserRepository();
         private SessionRepository sessionRepository = new SessionRepository();
         private List<int> selectedTutorIds = new List<int>();
@@ -29,10 +30,6 @@ namespace Study_Session
         public TutorDashboard(Tutor tutor)
         {
             InitializeComponent();
-            pnlCreateSession.Visible = false;
-            flpBrowseSessions.Visible = false;
-            pnlMain.Visible = false;
-            pnlMyProfile.Visible = true;
             loggedInTutor = tutor;
             lblWelcome.Text = $"Welcome back, {loggedInTutor.FullName}!";
 
@@ -40,6 +37,16 @@ namespace Study_Session
             LoadTutorRequestCount();
             LoadTutorAverageRating();
             LoadTutorNotifications();
+        }
+
+        private void HideAllPanels()
+        {
+            Panel[] panels = { pnlMyProfile, pnlMain, pnlMySessions, pnlCreateSession, pnlBrowseSession, pnlRequests, pnlReviews };
+
+            foreach (Panel panel in panels)
+            {
+                panel.Visible = false;
+            }
         }
         private void LoadTutorRequestCount()
         {
@@ -126,7 +133,8 @@ namespace Study_Session
 
         private void btnMyProfile_Click(object sender, EventArgs e)
         {
-            pnlMyProfile.BringToFront();
+            HideAllPanels();
+            pnlMyProfile.Visible = true;
         }
 
         private void btnSaveProfile_Click(object sender, EventArgs e)
@@ -344,6 +352,15 @@ namespace Study_Session
 
                 if (success)
                 {
+                    List<int> participantUserIds = sessionRepository.GetSessionParticipantUserIds(editingSessionId);
+
+                    foreach (int userId in participantUserIds)
+                    {
+                        userRepository.AddNotification(
+                            userId,
+                            "The session '" + editingSession.Topic + "' has been updated. Please check the new session details.");
+                    }
+
                     MessageBox.Show("Study session updated successfully!");
 
                     isEditMode = false;
@@ -555,6 +572,7 @@ namespace Study_Session
         }
         private void btnCreateSession_Click(object sender, EventArgs e)
         {
+            HideAllPanels();
             pnlCreateSession.Visible = true;
             LoadAvailableTutors();
         }
@@ -604,9 +622,8 @@ namespace Study_Session
 
         private void btnMySession_Click(object sender, EventArgs e)
         {
+            HideAllPanels();
             pnlMySessions.Visible = true;
-            pnlMain.Visible = false;
-            pnlMyProfile.Visible = false;
             LoadTutorSessions();
         }
 
@@ -618,6 +635,8 @@ namespace Study_Session
         }
         private void btnBrowseSession_Click(object sender, EventArgs e)
         {
+            HideAllPanels();
+            pnlBrowseSession.Visible = true;
             LoadBrowseSessions();
         }
 
@@ -806,6 +825,7 @@ namespace Study_Session
                 btnDecline.Size = new Size(90, 30);
                 btnDecline.Location = new Point(110, 140);
 
+                int sessionId = Convert.ToInt32(row["sessionId"]);
                 int sessionTutorId = Convert.ToInt32(row["sessionTutorId"]);
 
                 btnAccept.Click += (sender, e) =>
@@ -823,6 +843,13 @@ namespace Study_Session
 
                         if (success)
                         {
+                            int creatorUserId = sessionRepository.GetSessionCreatorUserId(sessionId);
+
+                            if (creatorUserId > 0)
+                            {
+                                userRepository.AddNotification(creatorUserId, loggedInTutor.FullName + " accepted your tutor invitation.");
+                            }
+
                             MessageBox.Show("Tutor request accepted!");
                             LoadTutorRequests();
                         }
@@ -848,9 +875,17 @@ namespace Study_Session
 
                         if (success)
                         {
-                            MessageBox.Show("Tutor request declined.");
+                            int creatorUserId = sessionRepository.GetSessionCreatorUserId(sessionId);
+
+                            if (creatorUserId > 0)
+                            {
+                                userRepository.AddNotification(creatorUserId, loggedInTutor.FullName + " declined your tutor invitation.");
+                            }
+
+                            MessageBox.Show("Tutor request declined!");
                             LoadTutorRequests();
                         }
+
                         else
                         {
                             MessageBox.Show("Unable to decline this request.");
@@ -924,7 +959,40 @@ namespace Study_Session
 
         private void btnReadReviews_Click(object sender, EventArgs e)
         {
+            HideAllPanels();
+            pnlReviews.Visible = true;
+            LoadTutorReviews();
+        }
 
+        private void btnStudentMode_Click(object sender, EventArgs e)
+        {
+            StudentDashboard studentDashboard = new StudentDashboard(loggedInStudent);
+            studentDashboard.Show();
+            this.Hide();
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to log-out?", "Confirm Logout",
+            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                loggedInTutor.logout();
+
+                this.Hide();
+
+                Main loginForm = new Main();
+                loginForm.Show();
+
+                this.Close();
+            }
+        }
+
+        private void btnTutorRequests_Click(object sender, EventArgs e)
+        {
+            HideAllPanels();
+            pnlRequests.Visible = true;
             LoadTutorReviews();
         }
     }

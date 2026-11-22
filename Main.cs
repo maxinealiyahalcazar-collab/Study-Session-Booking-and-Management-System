@@ -9,7 +9,18 @@ namespace Study_Session
         private UserRepository userRepository = new UserRepository();
         public Main()
         {
+            HideAllPanels();
             InitializeComponent();
+        }
+
+        private void HideAllPanels()
+        {
+            Panel[] panels = { pnlLogin, pnlSignup, pnlStart };
+
+            foreach (Panel panel in panels)
+            {
+                panel.Visible = false;
+            }
         }
 
         private void btnSignup2_Click(object sender, EventArgs e)
@@ -83,6 +94,18 @@ namespace Study_Session
             {
                 MessageBox.Show($"LoginError: {ex.Message}");
             }
+        }
+
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            HideAllPanels();
+            pnlLogin.Visible = true;
+        }
+
+        private void btnSignup_Click(object sender, EventArgs e)
+        {
+            HideAllPanels();
+            pnlSignup.Visible = true;
         }
     }
 }

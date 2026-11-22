@@ -14,16 +14,17 @@ namespace Study_Session
     {
         private int sessionId;
         private int studentId;
-        private Student loggedInStudent;
         private int selectedTutorId;
         private string selectedTutorName;
         private string selectedFilePath = "";
         private string activityMode;
+        private Student loggedInStudent;
         private Session sessionData;
+        private List<Tutor> sessionTutors = new List<Tutor>();
         private UserRepository userRepository = new UserRepository();
         private SessionRepository sessionRepository = new SessionRepository();
         private BookingRepository bookingRepository = new BookingRepository();
-        private List<Tutor> sessionTutors = new List<Tutor>();
+
         public SessionActivityForm(Session session, int studentId, string mode)
         {
             InitializeComponent();
@@ -93,7 +94,7 @@ namespace Study_Session
                     lblSelectedTutor.Text = "Selected Tutor: " + tutorName;
                 };
 
-                bool alreadyRated = userRepository.HasAlreadyRated(loggedInStudent, tutor, sessionData);
+                bool alreadyRated = userRepository.HasAlreadyRated(studentId, tutor.TutorId, sessionId);
 
                 if (alreadyRated)
                 {
@@ -130,7 +131,7 @@ namespace Study_Session
                 return;
             }
 
-            if (userRepository.HasAlreadyRated(loggedInStudent, tutor, sessionData))
+            if (userRepository.HasAlreadyRated(studentId, tutor.TutorId, sessionId))
             {
                 MessageBox.Show("You have already rated this tutor for this session.");
                 return;

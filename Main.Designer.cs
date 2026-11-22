@@ -38,11 +38,15 @@
             txtStudentNumber = new TextBox();
             txtFullName = new TextBox();
             pnlLogin = new Panel();
+            pnlStart = new Panel();
+            btnSignup = new Button();
+            btnLogin = new Button();
             btnLogin2 = new Button();
             txtPassword2 = new TextBox();
             txtStudentNumber2 = new TextBox();
             pnlSignup.SuspendLayout();
             pnlLogin.SuspendLayout();
+            pnlStart.SuspendLayout();
             SuspendLayout();
             // 
             // pnlSignup
@@ -125,6 +129,7 @@
             // 
             // pnlLogin
             // 
+            pnlLogin.Controls.Add(pnlStart);
             pnlLogin.Controls.Add(btnLogin2);
             pnlLogin.Controls.Add(txtPassword2);
             pnlLogin.Controls.Add(txtStudentNumber2);
@@ -132,6 +137,35 @@
             pnlLogin.Name = "pnlLogin";
             pnlLogin.Size = new Size(1179, 644);
             pnlLogin.TabIndex = 8;
+            // 
+            // pnlStart
+            // 
+            pnlStart.Controls.Add(btnSignup);
+            pnlStart.Controls.Add(btnLogin);
+            pnlStart.Location = new Point(3, 0);
+            pnlStart.Name = "pnlStart";
+            pnlStart.Size = new Size(1179, 644);
+            pnlStart.TabIndex = 9;
+            // 
+            // btnSignup
+            // 
+            btnSignup.Location = new Point(973, 499);
+            btnSignup.Name = "btnSignup";
+            btnSignup.Size = new Size(112, 34);
+            btnSignup.TabIndex = 8;
+            btnSignup.Text = "Signup";
+            btnSignup.UseVisualStyleBackColor = true;
+            btnSignup.Click += btnSignup_Click;
+            // 
+            // btnLogin
+            // 
+            btnLogin.Location = new Point(973, 570);
+            btnLogin.Name = "btnLogin";
+            btnLogin.Size = new Size(112, 34);
+            btnLogin.TabIndex = 7;
+            btnLogin.Text = "Login";
+            btnLogin.UseVisualStyleBackColor = true;
+            btnLogin.Click += btnLogin_Click;
             // 
             // btnLogin2
             // 
@@ -170,6 +204,7 @@
             pnlSignup.PerformLayout();
             pnlLogin.ResumeLayout(false);
             pnlLogin.PerformLayout();
+            pnlStart.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -188,5 +223,8 @@
         private Button btnLogin2;
         private TextBox txtPassword2;
         private TextBox txtStudentNumber2;
+        private Panel pnlStart;
+        private Button btnSignup;
+        private Button btnLogin;
     }
 }

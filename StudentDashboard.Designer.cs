@@ -171,6 +171,7 @@
             btnBrowseSession.TabIndex = 6;
             btnBrowseSession.Text = "Browse Session";
             btnBrowseSession.UseVisualStyleBackColor = true;
+            btnBrowseSession.Click += btnBrowseSession_Click;
             // 
             // btnCreateSession
             // 

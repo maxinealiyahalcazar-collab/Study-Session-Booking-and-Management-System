@@ -351,7 +351,7 @@ namespace Study_Session
                             Tutor tutor = new Tutor(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["tutorId"]),
                             reader["fullName"].ToString(), reader["studentNumber"].ToString(), reader["ueGmail"].ToString(),
                             reader["year"].ToString(), reader["program"].ToString(), string.Empty, reader["subjects"].ToString(),
-                            reader["availability"].ToString(),reader["credentials"].ToString(),
+                            reader["availability"].ToString(), reader["credentials"].ToString(),
                             Convert.ToDouble(reader["rating"]));
 
                             tutors.Add(tutor);
@@ -440,6 +440,17 @@ namespace Study_Session
                             }
                         }
 
+                        List<int> invitedTutorUserIds = new List<int>();
+                       
+                        string topicQuery = "SELECT topic FROM session WHERE sessionId = @sessionId";
+                        string sessionTopic = "";
+
+                        using (MySqlCommand topicCommand = new MySqlCommand(topicQuery, connection, transaction))
+                        {
+                            topicCommand.Parameters.AddWithValue("@sessionId", sessionId);
+                            sessionTopic = topicCommand.ExecuteScalar()?.ToString();
+                        }
+
                         foreach (int selectedTutorId in selectedTutorIds)
                         {
                             bool alreadyActive = false;
@@ -466,11 +477,33 @@ namespace Study_Session
                                     insertCommand.Parameters.AddWithValue("@sessionId", sessionId);
                                     insertCommand.Parameters.AddWithValue("@tutorId", selectedTutorId);
                                     insertCommand.ExecuteNonQuery();
+
+                                    string userQuery = @"SELECT userId FROM tutor WHERE tutorId = @tutorId";
+
+                                    using (MySqlCommand userCommand = new MySqlCommand(userQuery, connection, transaction))
+                                    {
+                                        userCommand.Parameters.AddWithValue("@tutorId", selectedTutorId);
+
+                                        object result = userCommand.ExecuteScalar();
+
+                                        if (result != null)
+                                        {
+                                            invitedTutorUserIds.Add(Convert.ToInt32(result));
+                                        }
+                                    }
                                 }
                             }
                         }
 
                         transaction.Commit();
+
+                        UserRepository userRepository = new UserRepository();
+
+                        foreach (int tutorUserId in invitedTutorUserIds)
+                        {
+                            userRepository.AddNotification(tutorUserId, $"You have been invited to join the study session '{sessionTopic}'.");
+                        }
+
                         return true;
                     }
 
@@ -530,6 +563,8 @@ namespace Study_Session
                         }
                     }
 
+                    UserRepository userRepository = new UserRepository();
+                    userRepository.NotifyAllUsers($"A new study session '{session.Topic}' has been created for you to join!");
                     return sessionId;
                 }
             }
@@ -571,7 +606,9 @@ namespace Study_Session
                             tutorCommand.ExecuteNonQuery();
                         }
                     }
-
+                    
+                    UserRepository userRepository = new UserRepository();
+                    userRepository.NotifyAllUsers($"A new study session '{session.Topic}' has been created for you to join!");
                     return sessionId;
                 }
             }
@@ -693,8 +730,63 @@ namespace Study_Session
 
             return sessions;
         }
+
+
+        public int GetSessionCreatorUserId(int sessionId)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT COALESCE ((SELECT userId FROM student WHERE studentId = s.creatorStudentId),
+                (SELECT userId FROM tutor WHERE tutorId = s.creatorTutorId)) FROM session s WHERE s.sessionId = @sessionId";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@sessionId", sessionId);
+
+                    object result = command.ExecuteScalar();
+
+                    if (result == null || result == DBNull.Value)
+                        return 0;
+
+                    return Convert.ToInt32(result);
+                }
+            }
+        }
+
+        public List<int> GetSessionParticipantUserIds(int sessionId)
+        {
+            List<int> userIds = new List<int>();
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT st.userId FROM booking b INNER JOIN student st ON b.studentId = st.studentId WHERE b.sessionId = @sessionId
+                AND b.bookingStatus = 'Accepted' UNION SELECT t.userId FROM sessionTutor st INNER JOIN tutor t ON st.tutorId = t.tutorId
+                WHERE st.sessionId = @sessionId AND st.requestStatus = 'Accepted' UNION SELECT st.userId FROM session s INNER JOIN student st ON s.creatorStudentId = st.studentId
+                WHERE s.sessionId = @sessionId UNION SELECT t.userId FROM session s INNER JOIN tutor t ON s.creatorTutorId = t.tutorId
+                WHERE s.sessionId = @sessionId";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@sessionId", sessionId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            userIds.Add(Convert.ToInt32(reader["userId"]));
+                        }
+                    }
+                }
+            }
+
+            return userIds;
+        }
     }
-} 
+}
 
     
 
