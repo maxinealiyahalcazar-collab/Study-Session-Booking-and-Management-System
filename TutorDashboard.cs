@@ -12,7 +12,7 @@ namespace Study_Session
     public partial class TutorDashboard : Form
     {
         private Tutor loggedInTutor;
-        private Student loggedInStudent;
+        private int loggedInUserId;
         private UserRepository userRepository = new UserRepository();
         private SessionRepository sessionRepository = new SessionRepository();
         private List<int> selectedTutorIds = new List<int>();
@@ -22,17 +22,17 @@ namespace Study_Session
         private int editingSessionId;
         private List<Session> browseSessions = new List<Session>();
 
-        public TutorDashboard()
-        {
-            InitializeComponent();
-        }
 
         public TutorDashboard(Tutor tutor)
         {
             InitializeComponent();
             loggedInTutor = tutor;
+            loggedInUserId = tutor.UserId;
+
             lblWelcome.Text = $"Welcome back, {loggedInTutor.FullName}!";
 
+            HideAllPanels();
+            pnlMainMenu.Visible = true;
             LoadTutorProfile();
             LoadTutorRequestCount();
             LoadTutorAverageRating();
@@ -41,7 +41,7 @@ namespace Study_Session
 
         private void HideAllPanels()
         {
-            Panel[] panels = { pnlMyProfile, pnlMain, pnlMySessions, pnlCreateSession, pnlBrowseSession, pnlRequests, pnlReviews };
+            Panel[] panels = { pnlMyProfile, pnlMainMenu, pnlMySessions, pnlCreateSession, pnlBrowseSession, pnlRequests, pnlReviews };
 
             foreach (Panel panel in panels)
             {
@@ -121,6 +121,7 @@ namespace Study_Session
             txtEditAvailability.Visible = true;
             txtEditCredential.Visible = true;
 
+            btnViewProfile.Visible = false;
             btnEditProfile.Visible = false;
             btnSaveProfile.Visible = true;
             btnCancelProfile.Visible = true;
@@ -434,7 +435,7 @@ namespace Study_Session
         }
         private void LoadAvailableTutors()
         {
-            availableTutors = userRepository.GetAvailableTutors();
+            availableTutors = userRepository.GetAvailableTutors(loggedInUserId);
             DisplayTutorList(txtSearchTutor.Text);
         }
 
@@ -574,6 +575,7 @@ namespace Study_Session
         {
             HideAllPanels();
             pnlCreateSession.Visible = true;
+
             LoadAvailableTutors();
         }
 
@@ -624,6 +626,7 @@ namespace Study_Session
         {
             HideAllPanels();
             pnlMySessions.Visible = true;
+
             LoadTutorSessions();
         }
 
@@ -637,6 +640,7 @@ namespace Study_Session
         {
             HideAllPanels();
             pnlBrowseSession.Visible = true;
+
             LoadBrowseSessions();
         }
 
@@ -966,7 +970,15 @@ namespace Study_Session
 
         private void btnStudentMode_Click(object sender, EventArgs e)
         {
-            StudentDashboard studentDashboard = new StudentDashboard(loggedInStudent);
+            Student student = userRepository.GetStudentById(loggedInUserId);
+
+            if (student == null)
+            {
+                MessageBox.Show("Student profile not found.");
+                return;
+            }
+
+            StudentDashboard studentDashboard = new StudentDashboard(student);
             studentDashboard.Show();
             this.Hide();
         }
@@ -993,7 +1005,8 @@ namespace Study_Session
         {
             HideAllPanels();
             pnlRequests.Visible = true;
-            LoadTutorReviews();
+
+            LoadTutorRequests();
         }
     }
 }

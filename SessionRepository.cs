@@ -127,8 +127,10 @@ namespace Study_Session
                 string query = @"SELECT s.sessionId, s.subject, s.topic, s.startDateTime, s.endDateTime, s.slots, s.requiredTutors, s.location, s.creatorStudentId, s.creatorTutorId, s.sessionStatus,
                 COUNT(b.bookingId) AS occupiedSlots, (s.slots - COUNT(b.bookingId)) AS availableSlots, (SELECT COUNT(*) FROM booking wb WHERE wb.sessionId = s.sessionId AND wb.bookingStatus = 'Waitlisted') AS waitlistedCount FROM session s LEFT JOIN booking b ON s.sessionId = b.sessionId
                 AND b.bookingStatus = 'Accepted' WHERE s.sessionStatus IN ('Open', 'Full') AND s.startDateTime > NOW() AND NOT (s.slots <= (SELECT COUNT(*) FROM booking ab WHERE ab.sessionId = s.sessionId
-                AND ab.bookingStatus = 'Accepted') AND (SELECT COUNT(*) FROM booking wb WHERE wb.sessionId = s.sessionId AND wb.bookingStatus = 'Waitlisted') >= 5) AND (s.creatorStudentId IS NULL OR s.creatorStudentId != (SELECT studentId FROM student WHERE userId = @userId)) AND s.sessionId 
-                NOT IN (SELECT sessionId FROM booking WHERE studentId = (SELECT studentId FROM student WHERE userId = @userId) AND bookingStatus IN ('Accepted', 'Waitlisted'))
+                AND ab.bookingStatus = 'Accepted') AND (SELECT COUNT(*) FROM booking wb WHERE wb.sessionId = s.sessionId AND wb.bookingStatus = 'Waitlisted') >= 5) AND NOT EXISTS (SELECT 1 FROM student st
+                WHERE st.studentId = s.creatorStudentId AND st.userId = @userId) AND NOT EXISTS (SELECT 1 FROM tutor t WHERE t.tutorId = s.creatorTutorId AND t.userId = @userId) AND NOT EXISTS (SELECT 1
+                FROM booking myBooking INNER JOIN student myStudent ON myBooking.studentId = myStudent.studentId WHERE myBooking.sessionId = s.sessionId AND myStudent.userId = @userId
+                AND myBooking.bookingStatus IN ('Accepted', 'Waitlisted'))
                 GROUP BY s.sessionId, s.subject, s.topic, s.startDateTime, s.endDateTime, s.slots, s.requiredTutors, s.location, s.creatorStudentId, s.creatorTutorId, s.sessionStatus ORDER BY s.startDateTime ASC";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -705,8 +707,9 @@ namespace Study_Session
 
                 string query = @"SELECT s.sessionId, s.creatorStudentId, s.creatorTutorId, s.requiredTutors, s.subject, s.topic, s.startDateTime, s.endDateTime, s.slots,
                 s.location, s.sessionStatus, (SELECT COUNT(*) FROM sessionTutor st WHERE st.sessionId = s.sessionId AND st.requestStatus = 'Accepted') AS acceptedTutors FROM session s 
-                WHERE s.requiredTutors > 0 AND s.sessionStatus IN ('Open', 'Full') AND s.startDateTime > NOW()
-                AND (s.creatorTutorId IS NULL OR s.creatorTutorId != (SELECT tutorId FROM tutor WHERE userId = @userId)) HAVING acceptedTutors < requiredTutors
+                WHERE s.requiredTutors > 0 AND s.sessionStatus IN ('Open', 'Full') AND s.startDateTime > NOW() AND NOT EXISTS (SELECT 1 FROM student st 
+                WHERE st.studentId = s.creatorStudentId AND st.userId = @userId) AND NOT EXISTS (SELECT 1 FROM tutor t WHERE t.tutorId = s.creatorTutorId AND t.userId = @userId) 
+                HAVING acceptedTutors < requiredTutors
                 ORDER BY s.startDateTime ASC";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))

@@ -302,7 +302,7 @@ namespace Study_Session
         }
         private void LoadAvailableTutors()
         {
-            availableTutors = userRepository.GetAvailableTutors();
+            availableTutors = userRepository.GetAvailableTutors(loggedInUserId);
             DisplayTutorList(txtSearchTutor.Text);
 
         }

@@ -62,8 +62,6 @@
             lblSubjects = new Label();
             lblCreateSessionDescription = new Label();
             lblCreateSessionTitle = new Label();
-            pnlMain = new Panel();
-            lblWelcome = new Label();
             lblProfileTitle = new Label();
             lblProfileDescription = new Label();
             btnEditProfile = new Button();
@@ -107,6 +105,7 @@
             pnlTutorRequests = new Panel();
             lblTutorRequestsValue = new Label();
             lblTutorRequests = new Label();
+            lblWelcome = new Label();
             pnlNotifications = new Panel();
             lblNotificationsTitle = new Label();
             flpNotifications = new FlowLayoutPanel();
@@ -117,7 +116,6 @@
             pnlCreateSession.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numSlots).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numRequiredTutors).BeginInit();
-            pnlMain.SuspendLayout();
             pnlMyProfile.SuspendLayout();
             pnlMySessions.SuspendLayout();
             pnlBrowseSession.SuspendLayout();
@@ -507,23 +505,6 @@
             lblCreateSessionTitle.TabIndex = 0;
             lblCreateSessionTitle.Text = "Create Session";
             // 
-            // pnlMain
-            // 
-            pnlMain.Controls.Add(lblWelcome);
-            pnlMain.Location = new Point(0, 0);
-            pnlMain.Name = "pnlMain";
-            pnlMain.Size = new Size(1178, 644);
-            pnlMain.TabIndex = 29;
-            // 
-            // lblWelcome
-            // 
-            lblWelcome.AutoSize = true;
-            lblWelcome.Location = new Point(272, 38);
-            lblWelcome.Name = "lblWelcome";
-            lblWelcome.Size = new Size(85, 25);
-            lblWelcome.TabIndex = 0;
-            lblWelcome.Text = "Welcome";
-            // 
             // lblProfileTitle
             // 
             lblProfileTitle.AutoSize = true;
@@ -546,7 +527,7 @@
             // 
             // btnEditProfile
             // 
-            btnEditProfile.Location = new Point(815, 428);
+            btnEditProfile.Location = new Point(815, 432);
             btnEditProfile.Margin = new Padding(2);
             btnEditProfile.Name = "btnEditProfile";
             btnEditProfile.Size = new Size(131, 34);
@@ -596,6 +577,7 @@
             txtEditCredential.Name = "txtEditCredential";
             txtEditCredential.Size = new Size(444, 95);
             txtEditCredential.TabIndex = 18;
+            txtEditCredential.Visible = false;
             // 
             // lblProfileCredentialValue
             // 
@@ -624,6 +606,7 @@
             txtEditSubject.Name = "txtEditSubject";
             txtEditSubject.Size = new Size(444, 31);
             txtEditSubject.TabIndex = 21;
+            txtEditSubject.Visible = false;
             // 
             // lblProfileSubjectsValue
             // 
@@ -662,6 +645,7 @@
             txtEditAvailability.Name = "txtEditAvailability";
             txtEditAvailability.Size = new Size(444, 31);
             txtEditAvailability.TabIndex = 25;
+            txtEditAvailability.Visible = false;
             // 
             // lblProfileAvailabilityValue
             // 
@@ -908,6 +892,7 @@
             // pnlMainMenu
             // 
             pnlMainMenu.Controls.Add(pnlTutorRequests);
+            pnlMainMenu.Controls.Add(lblWelcome);
             pnlMainMenu.Controls.Add(pnlNotifications);
             pnlMainMenu.Controls.Add(pnlTutorRating);
             pnlMainMenu.Location = new Point(0, 0);
@@ -946,6 +931,15 @@
             lblTutorRequests.Size = new Size(130, 25);
             lblTutorRequests.TabIndex = 4;
             lblTutorRequests.Text = "Tutor Requests";
+            // 
+            // lblWelcome
+            // 
+            lblWelcome.AutoSize = true;
+            lblWelcome.Location = new Point(272, 38);
+            lblWelcome.Name = "lblWelcome";
+            lblWelcome.Size = new Size(85, 25);
+            lblWelcome.TabIndex = 0;
+            lblWelcome.Text = "Welcome";
             // 
             // pnlNotifications
             // 
@@ -1017,14 +1011,13 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1178, 644);
             Controls.Add(pnlSideBar);
+            Controls.Add(pnlMyProfile);
             Controls.Add(pnlReviews);
             Controls.Add(pnlMainMenu);
             Controls.Add(pnlRequests);
             Controls.Add(pnlBrowseSession);
             Controls.Add(pnlCreateSession);
             Controls.Add(pnlMySessions);
-            Controls.Add(pnlMyProfile);
-            Controls.Add(pnlMain);
             Margin = new Padding(4);
             Name = "TutorDashboard";
             Text = "TutorDashboard";
@@ -1033,8 +1026,6 @@
             pnlCreateSession.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numSlots).EndInit();
             ((System.ComponentModel.ISupportInitialize)numRequiredTutors).EndInit();
-            pnlMain.ResumeLayout(false);
-            pnlMain.PerformLayout();
             pnlMyProfile.ResumeLayout(false);
             pnlMyProfile.PerformLayout();
             pnlMySessions.ResumeLayout(false);
@@ -1046,6 +1037,7 @@
             pnlReviews.ResumeLayout(false);
             pnlReviews.PerformLayout();
             pnlMainMenu.ResumeLayout(false);
+            pnlMainMenu.PerformLayout();
             pnlTutorRequests.ResumeLayout(false);
             pnlTutorRequests.PerformLayout();
             pnlNotifications.ResumeLayout(false);
@@ -1093,8 +1085,6 @@
         private Label lblSubjects;
         private Label lblCreateSessionDescription;
         private Label lblCreateSessionTitle;
-        private Panel pnlMain;
-        private Label lblWelcome;
         private Label lblProfileTitle;
         private Label lblProfileDescription;
         private Button btnEditProfile;
@@ -1150,5 +1140,6 @@
         private Label lblWaitlistedCount;
         private Panel pnlBookedSessions;
         private Button btnLogout;
+        private Label lblWelcome;
     }
 }

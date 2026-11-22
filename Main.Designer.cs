@@ -129,7 +129,6 @@
             // 
             // pnlLogin
             // 
-            pnlLogin.Controls.Add(pnlStart);
             pnlLogin.Controls.Add(btnLogin2);
             pnlLogin.Controls.Add(txtPassword2);
             pnlLogin.Controls.Add(txtStudentNumber2);
@@ -142,7 +141,7 @@
             // 
             pnlStart.Controls.Add(btnSignup);
             pnlStart.Controls.Add(btnLogin);
-            pnlStart.Location = new Point(3, 0);
+            pnlStart.Location = new Point(0, 0);
             pnlStart.Name = "pnlStart";
             pnlStart.Size = new Size(1179, 644);
             pnlStart.TabIndex = 9;
@@ -196,6 +195,7 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1178, 644);
+            Controls.Add(pnlStart);
             Controls.Add(pnlLogin);
             Controls.Add(pnlSignup);
             Name = "Main";

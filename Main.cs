@@ -9,8 +9,9 @@ namespace Study_Session
         private UserRepository userRepository = new UserRepository();
         public Main()
         {
-            HideAllPanels();
             InitializeComponent();
+            HideAllPanels();
+            pnlStart.Visible = true;
         }
 
         private void HideAllPanels()

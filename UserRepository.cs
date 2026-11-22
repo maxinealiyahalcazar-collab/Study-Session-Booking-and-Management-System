@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data;
+﻿using Microsoft.VisualBasic.ApplicationServices;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Text;
 
 namespace Study_Session
 {
@@ -136,13 +137,42 @@ namespace Study_Session
             }
         }
 
+
+
+        public Student GetStudentById(int userId)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT s.studentId, u.userId, u.fullName, u.studentNumber, u.ueGmail, u.year, u.program, u.password FROM student s
+                INNER JOIN user u ON s.userId = u.userId WHERE u.userId = @userId";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@userId", userId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Student(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["studentId"]), reader["fullName"].ToString(),
+                            reader["studentNumber"].ToString(), reader["ueGmail"].ToString(), reader["year"].ToString(), reader["program"].ToString(), reader["password"].ToString());
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public Tutor GetTutorById(int tutorId)
         {
             using (MySqlConnection connection = Database.GetConnection())
             {
                 connection.Open();
 
-                string query = @"SELECT t.tutorId, u.userId, u.fullName, u.studentNumber, u.ueGmail, u.year, u.program, t.credentials,
+                string query = @"SELECT t.tutorId, u.userId, u.fullName, u.studentNumber, u.ueGmail, u.year, u.program, u.password, t.credentials,
                 t.subjects, t.availability, t.rating FROM tutor t INNER JOIN user u ON t.userId = u.userId WHERE t.tutorId = @tutorId";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -154,7 +184,7 @@ namespace Study_Session
                         if (reader.Read())
                         {
                             return new Tutor(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["tutorId"]), reader["fullName"].ToString(), reader["studentNumber"].ToString(),
-                            reader["ueGmail"].ToString(), reader["year"].ToString(), reader["program"].ToString(), string.Empty,
+                            reader["ueGmail"].ToString(), reader["year"].ToString(), reader["program"].ToString(), reader["password"].ToString(),
                             reader["subjects"].ToString(), reader["availability"].ToString(), reader["credentials"].ToString(),
                             Convert.ToDouble(reader["rating"]));
                         }
@@ -340,7 +370,7 @@ namespace Study_Session
             }
         }
 
-        public List<Tutor> GetAvailableTutors()
+        public List<Tutor> GetAvailableTutors(int userId)
         {
             List<Tutor> tutors = new List<Tutor>();
 
@@ -349,19 +379,23 @@ namespace Study_Session
                 connection.Open();
 
                 string tutorQuery = @"SELECT t.tutorId, u.userId, u.fullName, u.studentNumber, u.ueGmail, u.year, u.program, t.credentials,
-                t.subjects, t.rating, t.availability FROM tutor t INNER JOIN user u ON t.userId = u.userId ORDER BY u.fullName ASC";
+                t.subjects, t.rating, t.availability FROM tutor t INNER JOIN user u ON t.userId = u.userId WHERE t.userId != @userId ORDER BY u.fullName ASC";
 
                 using (MySqlCommand command = new MySqlCommand(tutorQuery, connection))
-                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    while (reader.Read())
-                    {
-                        Tutor tutor = new Tutor(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["tutorId"]),
-                        reader["fullName"].ToString(), reader["studentNumber"].ToString(), reader["ueGmail"].ToString(), reader["year"].ToString(),
-                        reader["program"].ToString(), string.Empty, reader["subjects"].ToString(), reader["availability"].ToString(),
-                        reader["credentials"].ToString(), Convert.ToDouble(reader["rating"]));
+                    command.Parameters.AddWithValue("@userId", userId);
 
-                        tutors.Add(tutor);
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Tutor tutor = new Tutor(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["tutorId"]),
+                            reader["fullName"].ToString(), reader["studentNumber"].ToString(), reader["ueGmail"].ToString(), reader["year"].ToString(),
+                            reader["program"].ToString(), string.Empty, reader["subjects"].ToString(), reader["availability"].ToString(),
+                            reader["credentials"].ToString(), Convert.ToDouble(reader["rating"]));
+
+                            tutors.Add(tutor);
+                        }
                     }
                 }
             }

@@ -203,6 +203,7 @@
             // flpConfirmedTutors
             // 
             flpConfirmedTutors.AutoScroll = true;
+            flpConfirmedTutors.FlowDirection = FlowDirection.TopDown;
             flpConfirmedTutors.Location = new Point(44, 263);
             flpConfirmedTutors.Name = "flpConfirmedTutors";
             flpConfirmedTutors.Size = new Size(516, 128);
