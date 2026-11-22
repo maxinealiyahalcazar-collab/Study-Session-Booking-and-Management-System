@@ -6,9 +6,22 @@ namespace Study_Session
 {
     public partial class Main : Form
     {
+        private UserRepository userRepository = new UserRepository();
         public Main()
         {
             InitializeComponent();
+            HideAllPanels();
+            pnlStart.Visible = true;
+        }
+
+        private void HideAllPanels()
+        {
+            Panel[] panels = { pnlLogin, pnlSignup, pnlStart };
+
+            foreach (Panel panel in panels)
+            {
+                panel.Visible = false;
+            }
         }
 
         private void btnSignup2_Click(object sender, EventArgs e)
@@ -29,8 +42,13 @@ namespace Study_Session
 
             try
             {
-                UserRepository repository = new UserRepository();
-                int userId = repository.RegisterUser(txtFullName.Text.Trim(), txtStudentNumber.Text.Trim(), txtUEGmail.Text.Trim(), cmbYear.SelectedItem.ToString(), cmbProgram.SelectedItem.ToString(), txtPassword.Text);
+
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(txtPassword.Text);
+
+                Student newStudent = new Student(0, 0, txtFullName.Text.Trim(), txtStudentNumber.Text.Trim(), txtUEGmail.Text.Trim(), cmbYear.SelectedItem.ToString(),
+                cmbProgram.SelectedItem.ToString(), passwordHash);
+
+                Student registeredStudent = userRepository.RegisterUser(newStudent);
 
                 MessageBox.Show("User registered successfully.");
 
@@ -59,19 +77,17 @@ namespace Study_Session
 
             try
             {
-                UserRepository repository = new UserRepository();
+                User loggedInUser = userRepository.LoginUser(txtStudentNumber2.Text.Trim(), txtPassword2.Text);
 
-                int userId = repository.LoginUser(txtStudentNumber2.Text.Trim(), txtPassword2.Text);
-
-                if (userId == 0)
+                if (loggedInUser == null || !loggedInUser.login(txtPassword2.Text))
                 {
                     MessageBox.Show("Invalid student number or password.");
                     return;
                 }
 
                 MessageBox.Show("Login successful.");
-                StudentDashboard dashboard = new StudentDashboard(userId);
-                dashboard.Show();
+
+                loggedInUser.LoadDashboard(null);
                 this.Hide();
             }
 
@@ -79,6 +95,18 @@ namespace Study_Session
             {
                 MessageBox.Show($"LoginError: {ex.Message}");
             }
+        }
+
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            HideAllPanels();
+            pnlLogin.Visible = true;
+        }
+
+        private void btnSignup_Click(object sender, EventArgs e)
+        {
+            HideAllPanels();
+            pnlSignup.Visible = true;
         }
     }
 }

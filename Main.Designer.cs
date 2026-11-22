@@ -38,11 +38,15 @@
             txtStudentNumber = new TextBox();
             txtFullName = new TextBox();
             pnlLogin = new Panel();
+            pnlStart = new Panel();
+            btnSignup = new Button();
+            btnLogin = new Button();
             btnLogin2 = new Button();
             txtPassword2 = new TextBox();
             txtStudentNumber2 = new TextBox();
             pnlSignup.SuspendLayout();
             pnlLogin.SuspendLayout();
+            pnlStart.SuspendLayout();
             SuspendLayout();
             // 
             // pnlSignup
@@ -62,7 +66,7 @@
             // 
             // btnSignup2
             // 
-            btnSignup2.Location = new Point(341, 384);
+            btnSignup2.Location = new Point(637, 421);
             btnSignup2.Name = "btnSignup2";
             btnSignup2.Size = new Size(112, 34);
             btnSignup2.TabIndex = 7;
@@ -74,7 +78,7 @@
             // 
             cmbProgram.FormattingEnabled = true;
             cmbProgram.Items.AddRange(new object[] { "Civil Engineering", "Computer Engineering", "Mechanical Engineering", "Electronics Engineering", "Electrical Engineering" });
-            cmbProgram.Location = new Point(486, 160);
+            cmbProgram.Location = new Point(567, 190);
             cmbProgram.Name = "cmbProgram";
             cmbProgram.Size = new Size(182, 33);
             cmbProgram.TabIndex = 6;
@@ -83,35 +87,35 @@
             // 
             cmbYear.FormattingEnabled = true;
             cmbYear.Items.AddRange(new object[] { "1st Year", "2nd Year", "3rd Year", "4th Year" });
-            cmbYear.Location = new Point(486, 82);
+            cmbYear.Location = new Point(567, 93);
             cmbYear.Name = "cmbYear";
             cmbYear.Size = new Size(182, 33);
             cmbYear.TabIndex = 5;
             // 
             // txtConfirmPassword
             // 
-            txtConfirmPassword.Location = new Point(486, 316);
+            txtConfirmPassword.Location = new Point(567, 342);
             txtConfirmPassword.Name = "txtConfirmPassword";
             txtConfirmPassword.Size = new Size(182, 31);
             txtConfirmPassword.TabIndex = 4;
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(486, 239);
+            txtPassword.Location = new Point(567, 267);
             txtPassword.Name = "txtPassword";
             txtPassword.Size = new Size(182, 31);
             txtPassword.TabIndex = 3;
             // 
             // txtUEGmail
             // 
-            txtUEGmail.Location = new Point(114, 276);
+            txtUEGmail.Location = new Point(114, 301);
             txtUEGmail.Name = "txtUEGmail";
             txtUEGmail.Size = new Size(182, 31);
             txtUEGmail.TabIndex = 2;
             // 
             // txtStudentNumber
             // 
-            txtStudentNumber.Location = new Point(114, 190);
+            txtStudentNumber.Location = new Point(114, 217);
             txtStudentNumber.Name = "txtStudentNumber";
             txtStudentNumber.Size = new Size(182, 31);
             txtStudentNumber.TabIndex = 1;
@@ -132,6 +136,35 @@
             pnlLogin.Name = "pnlLogin";
             pnlLogin.Size = new Size(1179, 644);
             pnlLogin.TabIndex = 8;
+            // 
+            // pnlStart
+            // 
+            pnlStart.Controls.Add(btnSignup);
+            pnlStart.Controls.Add(btnLogin);
+            pnlStart.Location = new Point(0, 0);
+            pnlStart.Name = "pnlStart";
+            pnlStart.Size = new Size(1179, 644);
+            pnlStart.TabIndex = 9;
+            // 
+            // btnSignup
+            // 
+            btnSignup.Location = new Point(973, 499);
+            btnSignup.Name = "btnSignup";
+            btnSignup.Size = new Size(112, 34);
+            btnSignup.TabIndex = 8;
+            btnSignup.Text = "Signup";
+            btnSignup.UseVisualStyleBackColor = true;
+            btnSignup.Click += btnSignup_Click;
+            // 
+            // btnLogin
+            // 
+            btnLogin.Location = new Point(973, 570);
+            btnLogin.Name = "btnLogin";
+            btnLogin.Size = new Size(112, 34);
+            btnLogin.TabIndex = 7;
+            btnLogin.Text = "Login";
+            btnLogin.UseVisualStyleBackColor = true;
+            btnLogin.Click += btnLogin_Click;
             // 
             // btnLogin2
             // 
@@ -162,6 +195,7 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1178, 644);
+            Controls.Add(pnlStart);
             Controls.Add(pnlLogin);
             Controls.Add(pnlSignup);
             Name = "Main";
@@ -170,6 +204,7 @@
             pnlSignup.PerformLayout();
             pnlLogin.ResumeLayout(false);
             pnlLogin.PerformLayout();
+            pnlStart.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -188,5 +223,8 @@
         private Button btnLogin2;
         private TextBox txtPassword2;
         private TextBox txtStudentNumber2;
+        private Panel pnlStart;
+        private Button btnSignup;
+        private Button btnLogin;
     }
 }

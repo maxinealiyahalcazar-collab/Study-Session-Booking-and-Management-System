@@ -10,24 +10,30 @@ namespace Study_Session
 {
     public partial class UserProfile : Form
     {
-        public UserProfile()
-        {
-            InitializeComponent();
-        }
-
-        public UserProfile(DataRow userData)
+        public UserProfile(User user)
         {
             InitializeComponent();
 
-            lblFullName.Text = userData["fullName"].ToString();
-            lblUEGmail.Text = userData["ueGmail"].ToString();
-            lblYear.Text = userData["year"].ToString();
-            lblProgram.Text = userData["program"].ToString();
+            lblFullName.Text = user.FullName;
+            lblUEGmail.Text = user.UEGmail;
+            lblYear.Text = user.Year;
+            lblProgram.Text = user.Program;
 
-            lblCredentials.Text = userData["credentials"].ToString();
-            lblSubjects.Text = userData["subjects"].ToString();
-            lblRating.Text = userData["rating"].ToString();
-            lblAvailability.Text = userData["availability"].ToString();
+            if (user is Tutor tutor)
+            {
+                lblCredentials.Text = tutor.Credentials;
+                lblSubjects.Text = tutor.Subjects;
+                lblRating.Text = tutor.Rating.ToString("0.00");
+                lblAvailability.Text = tutor.Availability;
+            }
+
+            else
+            {
+                lblCredentials.Text = "N/A";
+                lblSubjects.Text = "N/A";
+                lblRating.Text = "N/A";
+                lblAvailability.Text = "N/A";
+            }
         }
     }
         
