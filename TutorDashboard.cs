@@ -1008,5 +1008,10 @@ namespace Study_Session
 
             LoadTutorRequests();
         }
+
+        private void pnlSideBar_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
