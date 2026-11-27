@@ -37,7 +37,7 @@ namespace Study_Session
             lblDate.Text = start.ToString("MMMM dd, yyyy");
             lblTime.Text = start.ToString("hh:mm tt") + " - " + end.ToString("hh:mm tt");
             lblLocation.Text = sessionData.Location;
-            lblSlots.Text = sessionData.AvailableSlots + " / " + sessionData.Slots;
+            lblSlots.Text = (sessionData.Slots - sessionData.AvailableSlots) + " / " + sessionData.Slots;
             lblRequiredTutors.Text = sessionData.RequiredTutors.ToString();
 
             LoadAcceptedTutors(sessionData.SessionId);
@@ -155,8 +155,7 @@ namespace Study_Session
 
                     if (creatorUserId > 0)
                     {
-                        userRepository.AddNotification(
-                            creatorUserId, "A student has successfully booked your session.");
+                        userRepository.AddNotification(creatorUserId, "A student has successfully booked your session.");
                     }
                 }
 

@@ -172,10 +172,13 @@ namespace Study_Session
                 btnSaveProfile.Visible = false;
                 btnCancelProfile.Visible = false;
             }
+
             else
             {
                 MessageBox.Show("Unable to update tutor profile.");
             }
+
+            btnViewProfile.Visible = true;
         }
 
         private void LoadTutorSessions()

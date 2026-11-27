@@ -153,7 +153,7 @@
             // 
             // btnLogout
             // 
-            btnLogout.Location = new Point(11, 222);
+            btnLogout.Location = new Point(12, 272);
             btnLogout.Margin = new Padding(2);
             btnLogout.Name = "btnLogout";
             btnLogout.Size = new Size(204, 35);
@@ -164,10 +164,10 @@
             // 
             // btnBrowseSession
             // 
-            btnBrowseSession.Location = new Point(12, 181);
+            btnBrowseSession.Location = new Point(11, 229);
             btnBrowseSession.Margin = new Padding(2);
             btnBrowseSession.Name = "btnBrowseSession";
-            btnBrowseSession.Size = new Size(204, 33);
+            btnBrowseSession.Size = new Size(204, 36);
             btnBrowseSession.TabIndex = 6;
             btnBrowseSession.Text = "Browse Session";
             btnBrowseSession.UseVisualStyleBackColor = true;
@@ -175,10 +175,10 @@
             // 
             // btnCreateSession
             // 
-            btnCreateSession.Location = new Point(12, 142);
+            btnCreateSession.Location = new Point(11, 185);
             btnCreateSession.Margin = new Padding(2);
             btnCreateSession.Name = "btnCreateSession";
-            btnCreateSession.Size = new Size(204, 34);
+            btnCreateSession.Size = new Size(204, 35);
             btnCreateSession.TabIndex = 5;
             btnCreateSession.Text = "Create Session";
             btnCreateSession.UseVisualStyleBackColor = true;
@@ -186,10 +186,10 @@
             // 
             // btnMySessions
             // 
-            btnMySessions.Location = new Point(12, 102);
+            btnMySessions.Location = new Point(11, 138);
             btnMySessions.Margin = new Padding(2);
             btnMySessions.Name = "btnMySessions";
-            btnMySessions.Size = new Size(204, 34);
+            btnMySessions.Size = new Size(204, 36);
             btnMySessions.TabIndex = 4;
             btnMySessions.Text = "My Sessions";
             btnMySessions.UseVisualStyleBackColor = true;
@@ -197,10 +197,10 @@
             // 
             // btnMyProfile
             // 
-            btnMyProfile.Location = new Point(12, 62);
+            btnMyProfile.Location = new Point(11, 89);
             btnMyProfile.Margin = new Padding(2);
             btnMyProfile.Name = "btnMyProfile";
-            btnMyProfile.Size = new Size(204, 34);
+            btnMyProfile.Size = new Size(204, 36);
             btnMyProfile.TabIndex = 3;
             btnMyProfile.Text = "My Profile";
             btnMyProfile.UseVisualStyleBackColor = true;
@@ -208,10 +208,10 @@
             // 
             // btnMain
             // 
-            btnMain.Location = new Point(12, 22);
+            btnMain.Location = new Point(12, 42);
             btnMain.Margin = new Padding(2);
             btnMain.Name = "btnMain";
-            btnMain.Size = new Size(204, 34);
+            btnMain.Size = new Size(204, 36);
             btnMain.TabIndex = 2;
             btnMain.Text = "Main";
             btnMain.UseVisualStyleBackColor = true;
@@ -926,7 +926,7 @@
             pnlMySession.Location = new Point(0, 0);
             pnlMySession.Margin = new Padding(4);
             pnlMySession.Name = "pnlMySession";
-            pnlMySession.Size = new Size(1735, 773);
+            pnlMySession.Size = new Size(1707, 773);
             pnlMySession.TabIndex = 24;
             // 
             // lblWaitlist

@@ -292,12 +292,6 @@ namespace Study_Session
                 return;
             }
 
-            if (selectedTutorIds.Count != Convert.ToInt32(numRequiredTutors.Value))
-            {
-                MessageBox.Show("Please select the required number of additional tutors.");
-                return;
-            }
-
             int sessionId = sessionRepository.CreateStudentSession(newSession, selectedTutorIds);
 
             if (sessionId > 0)
@@ -555,7 +549,7 @@ namespace Study_Session
                 btnJoinWaitlist.Width = 120;
                 btnJoinWaitlist.Height = 30;
                 btnJoinWaitlist.Location = new Point(10, 145);
-                btnJoinWaitlist.Visible = availableSlots <= 0 && waitlistedCount < 5;
+                btnJoinWaitlist.Visible = availableSlots <= 0 && waitlistedCount < 3;
 
                 Button btnViewDetails = new Button();
                 btnViewDetails.Text = "View Details";
@@ -601,6 +595,11 @@ namespace Study_Session
                             DisplayBrowseSessions(sessionRepository.GetBrowseSessions(loggedInUserId));
                             LoadMySessions();
                         }
+                    }
+
+                    else if (result == "WaitlistFull")
+                    {
+                        MessageBox.Show("The waitlist is already full.");
                     }
 
                     else

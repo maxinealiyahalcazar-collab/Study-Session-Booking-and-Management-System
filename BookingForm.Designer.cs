@@ -216,7 +216,7 @@
             // 
             // btnSubmitPayment
             // 
-            btnSubmitPayment.Location = new Point(815, 503);
+            btnSubmitPayment.Location = new Point(815, 515);
             btnSubmitPayment.Name = "btnSubmitPayment";
             btnSubmitPayment.Size = new Size(112, 34);
             btnSubmitPayment.TabIndex = 18;
@@ -226,14 +226,14 @@
             // 
             // btnCompleteBooking
             // 
-            btnCompleteBooking.Location = new Point(666, 515);
+            btnCompleteBooking.Location = new Point(684, 515);
             btnCompleteBooking.Name = "btnCompleteBooking";
             btnCompleteBooking.Size = new Size(112, 34);
             btnCompleteBooking.TabIndex = 19;
             btnCompleteBooking.Text = "Complete";
             btnCompleteBooking.UseVisualStyleBackColor = true;
             btnCompleteBooking.Visible = false;
-            btnCompleteBooking.Click += this.btnCompleteBooking_Click;
+            btnCompleteBooking.Click += btnCompleteBooking_Click;
             // 
             // BookingForm
             // 

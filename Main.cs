@@ -94,6 +94,7 @@ namespace Study_Session
 
             try
             {
+                
                 User loggedInUser = userRepository.LoginUser(txtStudentNumber2.Text.Trim(), txtPassword2.Text);
 
                 if (loggedInUser == null || !loggedInUser.login(txtPassword2.Text))

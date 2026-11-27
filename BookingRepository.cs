@@ -56,7 +56,7 @@ namespace Study_Session
                     connection2.Open();
 
                     string query2 = @"SELECT s.slots, COUNT(b.bookingId) AS occupiedSlots, s.sessionStatus FROM session s LEFT JOIN booking b ON s.sessionId = b.sessionId
-                    AND b.bookingStatus = 'Accepted' WHERE s.sessionId = @sessionId GROUP BY s.sessionId, s.slots, s.sessionStatus";
+                    AND b.bookingStatus IN ('Accepted', 'Pending') WHERE s.sessionId = @sessionId GROUP BY s.sessionId, s.slots, s.sessionStatus";
 
                     using (MySqlCommand command2 = new MySqlCommand(query2, connection2))
                     {
@@ -73,7 +73,7 @@ namespace Study_Session
                             int occupiedSlots = Convert.ToInt32(reader["occupiedSlots"]);
                             string status = reader["sessionStatus"].ToString();
 
-                            if (status != "Open")
+                            if (status != "Open" && status != "Full")
                             {
                                 return "Session Unavailable";
                             }
@@ -86,14 +86,20 @@ namespace Study_Session
 
                                     string positionQuery = @"SELECT COUNT(*) FROM booking WHERE sessionId = @sessionId AND bookingStatus = 'Waitlisted'";
 
-                                    int position;
+                                    int waitlistedCount;
 
                                     using (MySqlCommand positionCommand = new MySqlCommand(positionQuery, waitlistConnection))
                                     {
                                         positionCommand.Parameters.AddWithValue("@sessionId", sessionId);
-
-                                        position = Convert.ToInt32(positionCommand.ExecuteScalar()) + 1;
+                                        waitlistedCount = Convert.ToInt32(positionCommand.ExecuteScalar());
                                     }
+
+                                    if (waitlistedCount >= 3)
+                                    {
+                                        return "WaitlistFull";
+                                    }
+
+                                    int position = waitlistedCount + 1;
 
                                     string insertQuery = @" INSERT INTO booking (studentId, sessionId, bookingStatus, paymentStatus, waitlistPosition, expectation)
                                     VALUES (@studentId, @sessionId, 'Waitlisted', 'Unpaid', @position, @expectation)";
@@ -103,7 +109,7 @@ namespace Study_Session
                                         insertCommand.Parameters.AddWithValue("@studentId", studentId);
                                         insertCommand.Parameters.AddWithValue("@sessionId", sessionId);
                                         insertCommand.Parameters.AddWithValue("@position", position);
-                                        insertCommand.Parameters.AddWithValue("@expectation", expectation);
+                                        insertCommand.Parameters.AddWithValue("@expectation", "");
 
                                         insertCommand.ExecuteNonQuery();
                                     }
@@ -193,7 +199,7 @@ namespace Study_Session
                 using (MySqlCommand command = new MySqlCommand(bookingQuery, connection))
                 {
                     command.Parameters.AddWithValue("@paymentStatus", booking.PaymentStatus);
-                    command.Parameters.AddWithValue("@expectation", expectation);
+                    command.Parameters.AddWithValue("@expectation", booking.Expectations);
                     command.Parameters.AddWithValue("@bookingId", booking.BookingId);
 
                     return command.ExecuteNonQuery() > 0 ? "Joined" : "BookingNotFound";
@@ -210,6 +216,7 @@ namespace Study_Session
                 return "BookingNotFound";
             }
 
+            booking.confirmBooking();
             booking.completePayment();
 
             using (MySqlConnection connection = Database.GetConnection())
@@ -292,7 +299,7 @@ namespace Study_Session
                         int nextStudentId = 0;
                         int nextStudentUserId = 0;
 
-                        string waitlistQuery = @"SELECT bookingId, studentId, waitlistPosition FROM booking FROM booking WHERE sessionId = @sessionId AND bookingStatus = 'Waitlisted'
+                        string waitlistQuery = @"SELECT bookingId, studentId, waitlistPosition FROM booking WHERE sessionId = @sessionId AND bookingStatus = 'Waitlisted'
                         ORDER BY waitlistPosition ASC LIMIT 1 FOR UPDATE";
 
                         using (MySqlCommand command = new MySqlCommand(waitlistQuery, connection, transaction))
@@ -359,10 +366,7 @@ namespace Study_Session
                         {
                             UserRepository userRepository = new UserRepository();
 
-                            userRepository.AddNotification(
-                                nextStudentUserId,
-                                "A slot is now available! Please complete your payment for your waitlisted session."
-                            );
+                            userRepository.AddNotification(nextStudentUserId, "A slot is now available! Please complete your payment for your waitlisted session.");
                         }
 
                         transaction.Commit();

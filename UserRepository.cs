@@ -540,6 +540,28 @@ namespace Study_Session
             return requests;
         }
 
+
+        public bool HasStudentBookingForSession(int userId, int sessionId)
+        {
+            string query = @"SELECT COUNT(*) FROM booking b INNER JOIN student s ON b.studentId = s.studentId WHERE s.userId = @userId
+            AND b.sessionId = @sessionId AND b.bookingStatus IN ('Accepted', 'Pending', 'Waitlisted')";
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@userId", userId);
+                    cmd.Parameters.AddWithValue("@sessionId", sessionId);
+
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    return count > 0;
+                }
+            }
+        }
+
         public bool RespondToTutorRequest(int sessionTutorId, Tutor tutor, string response)
         {
             if (tutor == null ||
