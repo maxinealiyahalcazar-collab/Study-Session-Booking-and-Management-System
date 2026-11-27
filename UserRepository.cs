@@ -200,7 +200,8 @@ namespace Study_Session
             using (MySqlConnection connection = Database.GetConnection())
             {
                 connection.Open();
-                string userQuery4 = @"SELECT COUNT(*) FROM booking b INNER JOIN student s ON b.studentId = s.studentId WHERE s.userId = @userId AND b.bookingStatus = 'Accepted'";
+                string userQuery4 = @"SELECT COUNT(*) FROM booking b INNER JOIN student s ON b.studentId = s.studentId INNER JOIN session se ON b.sessionId = se.sessionId WHERE s.userId = @userId AND b.bookingStatus = 'Accepted'  
+                AND se.startDateTime > NOW() AND se.sessionStatus != 'Cancelled'";
 
                 using (MySqlCommand command = new MySqlCommand(userQuery4, connection))
                 {
@@ -232,13 +233,17 @@ namespace Study_Session
             using (MySqlConnection connection = Database.GetConnection())
             {
                 connection.Open();
-                string userQuery6 = @"SELECT COUNT(DISTINCT se.sessionId) FROM booking b INNER JOIN student s ON b.studentId = s.studentId 
-                INNER JOIN session se ON b.sessionId = se.sessionId WHERE s.userId = @userId AND b.bookingStatus = 'Booked' AND se.sessionStatus = 'Completed'";
 
-                using (MySqlCommand command = new MySqlCommand(userQuery6, connection))
+                string query = @"SELECT COUNT(DISTINCT se.sessionId) FROM booking b INNER JOIN student s ON b.studentId = s.studentId
+                INNER JOIN session se ON b.sessionId = se.sessionId WHERE s.userId = @userId AND b.bookingStatus = 'Accepted'
+                AND se.sessionStatus = 'Completed'";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@userId", userId);
+
                     object result = command.ExecuteScalar();
+
                     return Convert.ToInt32(result);
                 }
             }
@@ -278,6 +283,34 @@ namespace Study_Session
                     command.Parameters.AddWithValue("@userId", userId);
 
                     return command.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        public void NotifyAllUsers(string message)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = "SELECT userId FROM `user`";
+
+                List<int> userIds = new List<int>();
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            userIds.Add(Convert.ToInt32(reader["userId"]));
+                        }
+                    }
+                }
+
+                foreach (int userId in userIds)
+                {
+                    AddNotification(userId, message);
                 }
             }
         }
@@ -370,58 +403,6 @@ namespace Study_Session
             }
         }
 
-        public List<Tutor> GetAvailableTutors(int userId)
-        {
-            List<Tutor> tutors = new List<Tutor>();
-
-            using (MySqlConnection connection = Database.GetConnection())
-            {
-                connection.Open();
-
-                string tutorQuery = @"SELECT t.tutorId, u.userId, u.fullName, u.studentNumber, u.ueGmail, u.year, u.program, t.credentials,
-                t.subjects, t.rating, t.availability FROM tutor t INNER JOIN user u ON t.userId = u.userId WHERE t.userId != @userId ORDER BY u.fullName ASC";
-
-                using (MySqlCommand command = new MySqlCommand(tutorQuery, connection))
-                {
-                    command.Parameters.AddWithValue("@userId", userId);
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Tutor tutor = new Tutor(Convert.ToInt32(reader["userId"]), Convert.ToInt32(reader["tutorId"]),
-                            reader["fullName"].ToString(), reader["studentNumber"].ToString(), reader["ueGmail"].ToString(), reader["year"].ToString(),
-                            reader["program"].ToString(), string.Empty, reader["subjects"].ToString(), reader["availability"].ToString(),
-                            reader["credentials"].ToString(), Convert.ToDouble(reader["rating"]));
-
-                            tutors.Add(tutor);
-                        }
-                    }
-                }
-            }
-
-            return tutors;
-        }
-
-        public bool HasAlreadyRated(int studentId, int tutorId, int sessionId)
-        {
-            using (MySqlConnection connection = Database.GetConnection())
-            {
-                string query = @"SELECT COUNT(*) FROM rating WHERE studentId = @studentId AND tutorId = @tutorId AND sessionId = @sessionId";
-
-                using (MySqlCommand command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@studentId", studentId);
-                    command.Parameters.AddWithValue("@tutorId", tutorId);
-                    command.Parameters.AddWithValue("@sessionId", sessionId);
-
-                    connection.Open();
-
-                    return Convert.ToInt32(command.ExecuteScalar()) > 0;
-                }
-            }
-        }
-
         public bool SubmitRating(Rating rating)
         {
             if (rating == null)
@@ -443,17 +424,36 @@ namespace Study_Session
                     command.Parameters.AddWithValue("@studentId", rating.StudentId);
                     command.Parameters.AddWithValue("@sessionId", rating.SessionId);
 
-                    return command.ExecuteNonQuery() > 0;
-
                     bool success = command.ExecuteNonQuery() > 0;
 
                     if (success)
                     {
-                        Tutor tutor = new UserRepository().GetTutorById(rating.TutorId);
+                        Tutor tutor = new UserRepository()
+                            .GetTutorById(rating.TutorId);
+
                         return UpdateTutorRating(tutor);
                     }
 
                     return false;
+                }
+            }
+        }
+
+        public bool HasAlreadyRated(int studentId, int tutorId, int sessionId)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                string query = @"SELECT COUNT(*) FROM rating WHERE studentId = @studentId AND tutorId = @tutorId AND sessionId = @sessionId";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@studentId", studentId);
+                    command.Parameters.AddWithValue("@tutorId", tutorId);
+                    command.Parameters.AddWithValue("@sessionId", sessionId);
+
+                    connection.Open();
+
+                    return Convert.ToInt32(command.ExecuteScalar()) > 0;
                 }
             }
         }
@@ -602,34 +602,6 @@ namespace Study_Session
             }
 
             return reviews;
-        }
-
-        public void NotifyAllUsers(string message)
-        {
-            using (MySqlConnection connection = Database.GetConnection())
-            {
-                connection.Open();
-
-                string query = "SELECT userId FROM `user`";
-
-                List<int> userIds = new List<int>();
-
-                using (MySqlCommand command = new MySqlCommand(query, connection))
-                {
-                    using (MySqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            userIds.Add(Convert.ToInt32(reader["userId"]));
-                        }
-                    }
-                }
-
-                foreach (int userId in userIds)
-                {
-                    AddNotification(userId, message);
-                }
-            }
         }
     }
 }

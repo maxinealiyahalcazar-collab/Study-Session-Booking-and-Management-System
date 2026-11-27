@@ -38,12 +38,12 @@
             txtStudentNumber = new TextBox();
             txtFullName = new TextBox();
             pnlLogin = new Panel();
-            pnlStart = new Panel();
-            btnSignup = new Button();
-            btnLogin = new Button();
             btnLogin2 = new Button();
             txtPassword2 = new TextBox();
             txtStudentNumber2 = new TextBox();
+            pnlStart = new Panel();
+            btnSignup = new Button();
+            btnLogin = new Button();
             pnlSignup.SuspendLayout();
             pnlLogin.SuspendLayout();
             pnlStart.SuspendLayout();
@@ -137,6 +137,30 @@
             pnlLogin.Size = new Size(1179, 644);
             pnlLogin.TabIndex = 8;
             // 
+            // btnLogin2
+            // 
+            btnLogin2.Location = new Point(341, 313);
+            btnLogin2.Name = "btnLogin2";
+            btnLogin2.Size = new Size(112, 34);
+            btnLogin2.TabIndex = 7;
+            btnLogin2.Text = "Login";
+            btnLogin2.UseVisualStyleBackColor = true;
+            btnLogin2.Click += btnLogin2_Click;
+            // 
+            // txtPassword2
+            // 
+            txtPassword2.Location = new Point(315, 217);
+            txtPassword2.Name = "txtPassword2";
+            txtPassword2.Size = new Size(182, 31);
+            txtPassword2.TabIndex = 4;
+            // 
+            // txtStudentNumber2
+            // 
+            txtStudentNumber2.Location = new Point(315, 132);
+            txtStudentNumber2.Name = "txtStudentNumber2";
+            txtStudentNumber2.Size = new Size(182, 31);
+            txtStudentNumber2.TabIndex = 2;
+            // 
             // pnlStart
             // 
             pnlStart.Controls.Add(btnSignup);
@@ -166,30 +190,6 @@
             btnLogin.UseVisualStyleBackColor = true;
             btnLogin.Click += btnLogin_Click;
             // 
-            // btnLogin2
-            // 
-            btnLogin2.Location = new Point(341, 313);
-            btnLogin2.Name = "btnLogin2";
-            btnLogin2.Size = new Size(112, 34);
-            btnLogin2.TabIndex = 7;
-            btnLogin2.Text = "Login";
-            btnLogin2.UseVisualStyleBackColor = true;
-            btnLogin2.Click += btnLogin2_Click;
-            // 
-            // txtPassword2
-            // 
-            txtPassword2.Location = new Point(315, 217);
-            txtPassword2.Name = "txtPassword2";
-            txtPassword2.Size = new Size(182, 31);
-            txtPassword2.TabIndex = 4;
-            // 
-            // txtStudentNumber2
-            // 
-            txtStudentNumber2.Location = new Point(315, 132);
-            txtStudentNumber2.Name = "txtStudentNumber2";
-            txtStudentNumber2.Size = new Size(182, 31);
-            txtStudentNumber2.TabIndex = 2;
-            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -200,6 +200,7 @@
             Controls.Add(pnlSignup);
             Name = "Main";
             Text = "Study Session Booking and Management System";
+            FormClosing += Main_FormClosing;
             pnlSignup.ResumeLayout(false);
             pnlSignup.PerformLayout();
             pnlLogin.ResumeLayout(false);

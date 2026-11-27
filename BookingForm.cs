@@ -14,14 +14,10 @@ namespace Study_Session
         private int sessionId;
         private bool isCreator;
         private bool isWaitlist;
-
         private UserRepository userRepository = new UserRepository();
         private SessionRepository sessionRepository = new SessionRepository();
         private BookingRepository bookingRepository = new BookingRepository();
-        public BookingForm()
-        {
-            InitializeComponent();
-        }
+    
 
         public BookingForm(Session sessionData, int userId, bool creator = false, bool waitlist = false)
         {

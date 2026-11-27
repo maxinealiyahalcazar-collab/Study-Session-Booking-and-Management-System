@@ -210,6 +210,12 @@ namespace Study_Session
                 return;
             }
 
+            if (numRequiredTutors.Value <= 0)
+            {
+                MessageBox.Show("Please enter at least one tutor.");
+                return;
+            }
+
             DateTime selectedDate = dtpSessionDate.Value.Date;
             DateTime startDateTime = selectedDate.Add(dtpStartTime.Value.TimeOfDay);
             DateTime endDateTime = selectedDate.Add(dtpEndTime.Value.TimeOfDay);
@@ -235,15 +241,8 @@ namespace Study_Session
                     return;
                 }
 
-                string oldSubject = editingSession.Subject;
-                string oldTopic = editingSession.Topic;
-                DateTime oldStartDateTime = editingSession.StartDateTime;
-                DateTime oldEndDateTime = editingSession.EndDateTime;
-                int oldSlots = editingSession.Slots;
-                int oldRequiredTutors = editingSession.RequiredTutors;
-                string oldLocation = editingSession.Location;
-
-                bool isValid = editingSession.EditSession(txtSubject.Text.Trim(), txtTopic.Text.Trim(), startDateTime, endDateTime, (int)numSlots.Value, (int)numRequiredTutors.Value, txtLocation.Text.Trim());
+                bool isValid = editingSession.EditSession(txtSubject.Text.Trim(), txtTopic.Text.Trim(), startDateTime,
+                endDateTime, (int)numSlots.Value, (int)numRequiredTutors.Value, txtLocation.Text.Trim());
 
                 if (!isValid)
                 {
@@ -255,7 +254,27 @@ namespace Study_Session
 
                 if (success)
                 {
-                    success = sessionRepository.UpdateSessionTutors(editingSessionId, selectedTutorIds);
+                    bool tutorsUpdated = sessionRepository.UpdateSessionTutors(editingSessionId, selectedTutorIds);
+
+                    if (tutorsUpdated)
+                    {
+                        MessageBox.Show("Study session updated successfully!");
+
+                        isEditMode = false;
+                        editingSession = null;
+                        editingSessionId = 0;
+
+                        btnSubmitSession.Text = "Create Session";
+
+                        pnlCreateSession.Visible = false;
+
+                        LoadMySessions();
+                    }
+
+                    else
+                    {
+                        MessageBox.Show("Session details were updated, but the tutor assignments could not be updated.");
+                    }
                 }
 
                 else
@@ -264,45 +283,62 @@ namespace Study_Session
                 }
             }
 
+            Session newSession = loggedInStudent.createSession(txtSubject.Text.Trim(), txtTopic.Text.Trim(), startDateTime, endDateTime,
+            Convert.ToInt32(numRequiredTutors.Value), Convert.ToInt32(numSlots.Value), txtLocation.Text.Trim());
+
+            if (newSession == null)
+            {
+                MessageBox.Show("Invalid session details. Please check the date, time, and other fields.");
+                return;
+            }
+
+            if (selectedTutorIds.Count != Convert.ToInt32(numRequiredTutors.Value))
+            {
+                MessageBox.Show("Please select the required number of additional tutors.");
+                return;
+            }
+
+            int sessionId = sessionRepository.CreateStudentSession(newSession, selectedTutorIds);
+
+            if (sessionId > 0)
+            {
+              
+                MessageBox.Show("Session created successfully!");
+
+                Session createdSession = sessionRepository.GetSessionById(sessionId);
+                BookingForm bookingForm = new BookingForm(createdSession, loggedInUserId, true, false);
+
+                if (bookingForm.ShowDialog() == DialogResult.OK)
+                {
+                    MessageBox.Show("Creator booking completed successfully!");
+                }
+
+                selectedTutorIds.Clear();
+
+                lblSelectedTutors.Text = "Selected Tutors: 0";
+
+                txtSubject.Clear();
+                txtTopic.Clear();
+                txtLocation.Clear();
+
+                numSlots.Value = 1;
+                numRequiredTutors.Value = 0;
+
+                dtpSessionDate.Value = DateTime.Today;
+                dtpStartTime.Value = DateTime.Now;
+                dtpEndTime.Value = DateTime.Now;
+
+                LoadMySessions();
+            }
+
             else
             {
-                Session newSession = loggedInStudent.createSession(txtSubject.Text.Trim(), txtTopic.Text.Trim(), startDateTime,
-                endDateTime, (int)numRequiredTutors.Value, (int)numSlots.Value, txtLocation.Text.Trim());
-
-                if (newSession == null)
-                {
-                    MessageBox.Show("Invalid session details.");
-                    return;
-                }
-
-                int newSessionId = sessionRepository.createStudentSession(newSession, selectedTutorIds);
-
-                if (newSessionId > 0)
-                {
-                    MessageBox.Show("Study session created successfully!");
-
-                    txtSubject.Clear();
-                    txtTopic.Clear();
-                    txtLocation.Clear();
-
-                    numSlots.Value = 1;
-                    numRequiredTutors.Value = 0;
-
-                    dtpSessionDate.Value = DateTime.Today;
-                    dtpStartTime.Value = DateTime.Now;
-                    dtpEndTime.Value = DateTime.Now;
-
-                    lblSelectedTutors.Text = "Selected Tutors: 0";
-                }
-                else
-                {
-                    MessageBox.Show("Unable to create the study session.");
-                }
+                MessageBox.Show("Unable to create session.");
             }
         }
         private void LoadAvailableTutors()
         {
-            availableTutors = userRepository.GetAvailableTutors(loggedInUserId);
+            availableTutors = sessionRepository.GetAvailableTutors(loggedInUserId);
             DisplayTutorList(txtSearchTutor.Text);
 
         }
@@ -353,6 +389,8 @@ namespace Study_Session
                 if (!isAvailable)
                 {
                     tutorCheckBox.Text = tutorName + " (Unavailable)";
+                    selectedTutorIds.Remove(tutorId);
+                    tutorCheckBox.Checked = false;
                     tutorCheckBox.Enabled = false;
                 }
 
@@ -369,8 +407,12 @@ namespace Study_Session
 
                         if (loggedInStudent.requestTutor(tutor))
                         {
-                            selectedTutorIds.Add(tutorId);
+                            if (!selectedTutorIds.Contains(tutorId))
+                            {
+                                selectedTutorIds.Add(tutorId);
+                            }
                         }
+
                         else
                         {
                             tutorCheckBox.Checked = false;
@@ -787,19 +829,7 @@ namespace Study_Session
         }
         private void LoadMySessions()
         {
-            List<Session> understaffedSessions = sessionRepository.GetUnderstaffedSessions();
-
-            foreach (Session session in understaffedSessions)
-            {
-                string oldStatus = session.SessionStatus;
-                session.CancelSession();
-                bool success = sessionRepository.CancelSession(session);
-
-                if (!success)
-                {
-                    session.RestoreSessionStatus(oldStatus);
-                }
-            }
+            sessionRepository.CancelUnderstaffedSessions();
 
             List<Session> sessions = loggedInStudent.viewMySessions();
 
@@ -821,6 +851,10 @@ namespace Study_Session
                 {
                     flpCompletedSessions.Controls.Add(CreateSessionCard(session));
                 }
+                else if (status == "Cancelled")
+                {
+
+                }
                 else if (now < start)
                 {
                     flpUpcomingSessions.Controls.Add(CreateSessionCard(session));
@@ -828,10 +862,6 @@ namespace Study_Session
                 else if (now >= start && now <= end)
                 {
                     flpOngoingSessions.Controls.Add(CreateSessionCard(session));
-                }
-                else
-                {
-                    flpCompletedSessions.Controls.Add(CreateSessionCard(session));
                 }
             }
 
@@ -943,5 +973,13 @@ namespace Study_Session
             HideAllPanels();
             pnlBrowseSession.Visible = true;
         }
+
+        private void btnMain_Click(object sender, EventArgs e)
+        {
+            HideAllPanels();
+            LoadNotifications();
+            pnlMain.Visible = true;
+        }
+
     }
 }

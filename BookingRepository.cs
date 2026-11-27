@@ -142,7 +142,36 @@ namespace Study_Session
             }
         }
 
-       
+        private Booking GetBookingByStudentAndSession(int userId, int sessionId)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT b.bookingId, b.sessionId, b.studentId, b.expectation, b.bookingStatus, b.paymentStatus, b.waitlistPosition
+                FROM booking b INNER JOIN student st ON b.studentId = st.studentId WHERE st.userId = @userId
+                AND b.sessionId = @sessionId AND b.bookingStatus IN ('Accepted', 'Pending', 'Waitlisted') LIMIT 1";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@userId", userId);
+                    command.Parameters.AddWithValue("@sessionId", sessionId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Booking(Convert.ToInt32(reader["bookingId"]), Convert.ToInt32(reader["sessionId"]),
+                                Convert.ToInt32(reader["studentId"]), reader["expectation"].ToString(), reader["bookingStatus"].ToString(),
+                                reader["paymentStatus"].ToString(), reader["waitlistPosition"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["waitlistPosition"]));
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public string CompleteCreatorBooking(int userId, int sessionId, string expectation)
         {
             Booking booking = GetBookingByStudentAndSession(userId, sessionId);
@@ -201,35 +230,6 @@ namespace Study_Session
             }
         }
 
-        private Booking GetBookingByStudentAndSession(int userId, int sessionId)
-        {
-            using (MySqlConnection connection = Database.GetConnection())
-            {
-                connection.Open();
-
-                string query = @"SELECT b.bookingId, b.sessionId, b.studentId, b.expectation, b.bookingStatus, b.paymentStatus, b.waitlistPosition
-                FROM booking b INNER JOIN student st ON b.studentId = st.studentId WHERE st.userId = @userId
-                AND b.sessionId = @sessionId AND b.bookingStatus IN ('Accepted', 'Pending', 'Waitlisted') LIMIT 1";
-
-                using (MySqlCommand command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@userId", userId);
-                    command.Parameters.AddWithValue("@sessionId", sessionId);
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return new Booking(Convert.ToInt32(reader["bookingId"]), Convert.ToInt32(reader["sessionId"]),
-                                Convert.ToInt32(reader["studentId"]), reader["expectation"].ToString(), reader["bookingStatus"].ToString(),
-                                reader["paymentStatus"].ToString(), reader["waitlistPosition"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["waitlistPosition"]));
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
         public bool CancelBooking(int userId, int sessionId)
         {
             Booking booking = GetBookingByStudentAndSession(userId, sessionId);

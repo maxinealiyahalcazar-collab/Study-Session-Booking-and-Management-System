@@ -242,6 +242,7 @@
             btnMain.TabIndex = 0;
             btnMain.Text = "Main";
             btnMain.UseVisualStyleBackColor = true;
+            btnMain.Click += btnMain_Click;
             // 
             // pnlCreateSession
             // 
@@ -721,24 +722,33 @@
             // 
             // flpOngoingSessions
             // 
+            flpOngoingSessions.AutoScroll = true;
+            flpOngoingSessions.FlowDirection = FlowDirection.TopDown;
             flpOngoingSessions.Location = new Point(543, 199);
             flpOngoingSessions.Name = "flpOngoingSessions";
             flpOngoingSessions.Size = new Size(291, 418);
             flpOngoingSessions.TabIndex = 6;
+            flpOngoingSessions.WrapContents = false;
             // 
             // flpCompletedSessions
             // 
+            flpCompletedSessions.AutoScroll = true;
+            flpCompletedSessions.FlowDirection = FlowDirection.TopDown;
             flpCompletedSessions.Location = new Point(840, 199);
             flpCompletedSessions.Name = "flpCompletedSessions";
             flpCompletedSessions.Size = new Size(294, 418);
             flpCompletedSessions.TabIndex = 6;
+            flpCompletedSessions.WrapContents = false;
             // 
             // flpUpcomingSessions
             // 
+            flpUpcomingSessions.AutoScroll = true;
+            flpUpcomingSessions.FlowDirection = FlowDirection.TopDown;
             flpUpcomingSessions.Location = new Point(261, 199);
             flpUpcomingSessions.Name = "flpUpcomingSessions";
             flpUpcomingSessions.Size = new Size(276, 418);
             flpUpcomingSessions.TabIndex = 5;
+            flpUpcomingSessions.WrapContents = false;
             // 
             // lblCompletedSessions
             // 
@@ -1011,13 +1021,13 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1178, 644);
             Controls.Add(pnlSideBar);
+            Controls.Add(pnlMySessions);
             Controls.Add(pnlMyProfile);
             Controls.Add(pnlReviews);
             Controls.Add(pnlMainMenu);
             Controls.Add(pnlRequests);
             Controls.Add(pnlBrowseSession);
             Controls.Add(pnlCreateSession);
-            Controls.Add(pnlMySessions);
             Margin = new Padding(4);
             Name = "TutorDashboard";
             Text = "TutorDashboard";

@@ -25,13 +25,14 @@ namespace Study_Session
         private SessionRepository sessionRepository = new SessionRepository();
         private BookingRepository bookingRepository = new BookingRepository();
 
-        public SessionActivityForm(Session session, int studentId, string mode)
+        public SessionActivityForm(Session session, int studentId, string mode, Student student = null)
         {
             InitializeComponent();
             this.sessionData = session;
             this.sessionId = session.SessionId;
             this.studentId = studentId;
             this.activityMode = mode;
+            this.loggedInStudent = student;
 
             selectedTutorId = 0;
 
@@ -137,14 +138,45 @@ namespace Study_Session
                 return;
             }
 
+            if (userRepository == null)
+            {
+                MessageBox.Show("userRepository is null.");
+                return;
+            }
+
+            if (loggedInStudent == null)
+            {
+                MessageBox.Show("loggedInStudent is null.");
+                return;
+            }
+
+            if (numRating == null)
+            {
+                MessageBox.Show("numRating is null.");
+                return;
+            }
+
+            if (txtReview == null)
+            {
+                MessageBox.Show("txtReview is null.");
+                return;
+            }
+
             Rating rating = new Rating(0, sessionId, studentId, selectedTutorId,
                 (double)numRating.Value, txtReview.Text.Trim());
+            
+            if (loggedInStudent == null)
+            {
+                MessageBox.Show("Student information was not loaded.");
+                return;
+            }
 
             bool success = loggedInStudent.rateTutor(tutor, rating);
 
             if (success)
             {
                 MessageBox.Show("Rating submitted successfully!");
+
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

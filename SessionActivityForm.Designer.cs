@@ -48,18 +48,17 @@
             lblUploadMaterial = new Label();
             pnlRateTutor = new Panel();
             pnlViewMaterials = new Panel();
+            lblViewMaterialsTitle = new Label();
+            lblNoMaterials = new Label();
+            flpMaterials = new FlowLayoutPanel();
             pnlExpectations = new Panel();
             lblReadExpectations = new Label();
             flpExpectations = new FlowLayoutPanel();
-            lblViewMaterialsTitle = new Label();
-            flpMaterials = new FlowLayoutPanel();
-            lblNoMaterials = new Label();
             ((System.ComponentModel.ISupportInitialize)numRating).BeginInit();
             pnlUploadMaterials.SuspendLayout();
             pnlRateTutor.SuspendLayout();
             pnlViewMaterials.SuspendLayout();
             pnlExpectations.SuspendLayout();
-            flpMaterials.SuspendLayout();
             SuspendLayout();
             // 
             // lblTitle
@@ -138,9 +137,12 @@
             // numRating
             // 
             numRating.Location = new Point(120, 357);
+            numRating.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
+            numRating.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numRating.Name = "numRating";
             numRating.Size = new Size(180, 31);
             numRating.TabIndex = 10;
+            numRating.Value = new decimal(new int[] { 2, 0, 0, 0 });
             // 
             // pnlUploadMaterials
             // 
@@ -248,19 +250,46 @@
             // 
             // pnlViewMaterials
             // 
-            pnlViewMaterials.Controls.Add(pnlExpectations);
             pnlViewMaterials.Controls.Add(lblViewMaterialsTitle);
+            pnlViewMaterials.Controls.Add(lblNoMaterials);
             pnlViewMaterials.Controls.Add(flpMaterials);
             pnlViewMaterials.Location = new Point(0, 0);
             pnlViewMaterials.Name = "pnlViewMaterials";
             pnlViewMaterials.Size = new Size(506, 609);
             pnlViewMaterials.TabIndex = 11;
             // 
+            // lblViewMaterialsTitle
+            // 
+            lblViewMaterialsTitle.AutoSize = true;
+            lblViewMaterialsTitle.Location = new Point(41, 43);
+            lblViewMaterialsTitle.Name = "lblViewMaterialsTitle";
+            lblViewMaterialsTitle.Size = new Size(125, 25);
+            lblViewMaterialsTitle.TabIndex = 0;
+            lblViewMaterialsTitle.Text = "View Materials";
+            // 
+            // lblNoMaterials
+            // 
+            lblNoMaterials.AutoSize = true;
+            lblNoMaterials.Location = new Point(3, 0);
+            lblNoMaterials.Name = "lblNoMaterials";
+            lblNoMaterials.Size = new Size(407, 25);
+            lblNoMaterials.TabIndex = 2;
+            lblNoMaterials.Text = "No materials have been uploaded for this session.";
+            // 
+            // flpMaterials
+            // 
+            flpMaterials.AutoScroll = true;
+            flpMaterials.Location = new Point(41, 91);
+            flpMaterials.Name = "flpMaterials";
+            flpMaterials.Size = new Size(415, 476);
+            flpMaterials.TabIndex = 1;
+            flpMaterials.WrapContents = false;
+            // 
             // pnlExpectations
             // 
             pnlExpectations.Controls.Add(lblReadExpectations);
             pnlExpectations.Controls.Add(flpExpectations);
-            pnlExpectations.Location = new Point(3, 3);
+            pnlExpectations.Location = new Point(0, 0);
             pnlExpectations.Name = "pnlExpectations";
             pnlExpectations.Size = new Size(506, 609);
             pnlExpectations.TabIndex = 12;
@@ -283,41 +312,14 @@
             flpExpectations.TabIndex = 1;
             flpExpectations.WrapContents = false;
             // 
-            // lblViewMaterialsTitle
-            // 
-            lblViewMaterialsTitle.AutoSize = true;
-            lblViewMaterialsTitle.Location = new Point(41, 43);
-            lblViewMaterialsTitle.Name = "lblViewMaterialsTitle";
-            lblViewMaterialsTitle.Size = new Size(125, 25);
-            lblViewMaterialsTitle.TabIndex = 0;
-            lblViewMaterialsTitle.Text = "View Materials";
-            // 
-            // flpMaterials
-            // 
-            flpMaterials.AutoScroll = true;
-            flpMaterials.Controls.Add(lblNoMaterials);
-            flpMaterials.Location = new Point(41, 91);
-            flpMaterials.Name = "flpMaterials";
-            flpMaterials.Size = new Size(415, 476);
-            flpMaterials.TabIndex = 1;
-            flpMaterials.WrapContents = false;
-            // 
-            // lblNoMaterials
-            // 
-            lblNoMaterials.AutoSize = true;
-            lblNoMaterials.Location = new Point(3, 0);
-            lblNoMaterials.Name = "lblNoMaterials";
-            lblNoMaterials.Size = new Size(407, 25);
-            lblNoMaterials.TabIndex = 2;
-            lblNoMaterials.Text = "No materials have been uploaded for this session.";
-            // 
             // SessionActivityForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(507, 610);
-            Controls.Add(pnlViewMaterials);
             Controls.Add(pnlRateTutor);
+            Controls.Add(pnlExpectations);
+            Controls.Add(pnlViewMaterials);
             Controls.Add(pnlUploadMaterials);
             Name = "SessionActivityForm";
             Text = "RatingTutor";
@@ -330,8 +332,6 @@
             pnlViewMaterials.PerformLayout();
             pnlExpectations.ResumeLayout(false);
             pnlExpectations.PerformLayout();
-            flpMaterials.ResumeLayout(false);
-            flpMaterials.PerformLayout();
             ResumeLayout(false);
         }
 

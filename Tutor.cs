@@ -43,6 +43,12 @@ namespace Study_Session
             protected set { rating = value; }
         }
 
+        public override void LoadDashboard(Panel dashboardPanel)
+        {
+            TutorDashboard dashboard = new TutorDashboard(this);
+            dashboard.Show();
+        }
+
         public Tutor(int userId, string fullName, string studentNumber, string ueGmail, string year, string program,
         string passwordHash, string subjects, string availability, string credentials) : base(userId, fullName, studentNumber, ueGmail, year, program, passwordHash)
         {
@@ -72,12 +78,6 @@ namespace Study_Session
 
             return new Tutor(student.UserId, student.FullName, student.StudentNumber, student.UEGmail, student.Year,
             student.Program, student.PasswordHash, "", "Unavailable", "");
-        }
-
-        public override void LoadDashboard(Panel dashboardPanel)
-        {
-            TutorDashboard dashboard = new TutorDashboard(this);
-            dashboard.Show();
         }
 
         public Session createSession(string subject, string topic, DateTime startDateTime, DateTime endDateTime, int requiredTutors, int slots, string location)

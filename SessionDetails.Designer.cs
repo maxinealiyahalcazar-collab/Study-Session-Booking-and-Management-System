@@ -119,6 +119,7 @@
             btnCancelBooking.TabIndex = 7;
             btnCancelBooking.Text = "Cancel Booking";
             btnCancelBooking.UseVisualStyleBackColor = true;
+            btnCancelBooking.Visible = false;
             btnCancelBooking.Click += btnCancelBooking_Click;
             // 
             // btnEditSession
@@ -129,6 +130,7 @@
             btnEditSession.TabIndex = 8;
             btnEditSession.Text = "Edit Session";
             btnEditSession.UseVisualStyleBackColor = true;
+            btnEditSession.Visible = false;
             btnEditSession.Click += btnEditSession_Click;
             // 
             // btnCancelSession
@@ -139,6 +141,7 @@
             btnCancelSession.TabIndex = 9;
             btnCancelSession.Text = "Cancel Session";
             btnCancelSession.UseVisualStyleBackColor = true;
+            btnCancelSession.Visible = false;
             btnCancelSession.Click += btnCancelSession_Click;
             // 
             // btnCompleteSession
@@ -149,6 +152,7 @@
             btnCompleteSession.TabIndex = 10;
             btnCompleteSession.Text = "Complete";
             btnCompleteSession.UseVisualStyleBackColor = true;
+            btnCompleteSession.Visible = false;
             btnCompleteSession.Click += btnCompleteSession_Click;
             // 
             // btnUploadMaterials
@@ -159,6 +163,7 @@
             btnUploadMaterials.TabIndex = 11;
             btnUploadMaterials.Text = "Upload";
             btnUploadMaterials.UseVisualStyleBackColor = true;
+            btnUploadMaterials.Visible = false;
             btnUploadMaterials.Click += btnUploadMaterials_Click;
             // 
             // btnViewMaterials
@@ -169,6 +174,7 @@
             btnViewMaterials.TabIndex = 12;
             btnViewMaterials.Text = "View Materials";
             btnViewMaterials.UseVisualStyleBackColor = true;
+            btnViewMaterials.Visible = false;
             btnViewMaterials.Click += btnViewMaterials_Click;
             // 
             // btnRateTutor
@@ -179,6 +185,7 @@
             btnRateTutor.TabIndex = 13;
             btnRateTutor.Text = "Rate Tutor";
             btnRateTutor.UseVisualStyleBackColor = true;
+            btnRateTutor.Visible = false;
             btnRateTutor.Click += btnRateTutor_Click;
             // 
             // btnWithdraw
@@ -189,6 +196,7 @@
             btnWithdraw.TabIndex = 14;
             btnWithdraw.Text = "Withdraw";
             btnWithdraw.UseVisualStyleBackColor = true;
+            btnWithdraw.Visible = false;
             btnWithdraw.Click += btnWithdraw_Click;
             // 
             // lblTutors
@@ -218,6 +226,7 @@
             btnReadExpectations.TabIndex = 17;
             btnReadExpectations.Text = "Read Expectations";
             btnReadExpectations.UseVisualStyleBackColor = true;
+            btnReadExpectations.Visible = false;
             btnReadExpectations.Click += btnReadExpectations_Click;
             // 
             // SessionDetails

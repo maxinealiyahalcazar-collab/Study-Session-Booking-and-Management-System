@@ -50,17 +50,34 @@ namespace Study_Session
 
                 Student registeredStudent = userRepository.RegisterUser(newStudent);
 
-                MessageBox.Show("User registered successfully.");
+                if (registeredStudent != null)
+                {
+                    MessageBox.Show("User registered successfully!");
 
-                txtFullName.Clear();
-                txtStudentNumber.Clear();
-                txtUEGmail.Clear();
-                txtPassword.Clear();
-                txtConfirmPassword.Clear();
-                cmbYear.SelectedIndex = -1;
-                cmbProgram.SelectedIndex = -1;
+                    StudentDashboard studentDashboard = new StudentDashboard(registeredStudent);
+                    studentDashboard.Show();
+
+                    this.Hide();
+                }
+                else
+                {
+                    MessageBox.Show("Registration failed.");
+                }
             }
 
+            catch (MySqlException ex)
+            {
+                if (ex.Number == 1062)
+                {
+                    MessageBox.Show(
+                        "An account with this Gmail or Student Number already exists. Please log in or use different information."
+                    );
+                }
+                else
+                {
+                    MessageBox.Show($"Signup Error: {ex.Message}");
+                }
+            }
             catch (Exception ex)
             {
                 MessageBox.Show($"Signup Error: {ex.Message}");
@@ -107,6 +124,11 @@ namespace Study_Session
         {
             HideAllPanels();
             pnlSignup.Visible = true;
+        }
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

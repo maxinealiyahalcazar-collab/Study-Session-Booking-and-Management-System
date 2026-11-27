@@ -31,12 +31,24 @@ namespace Study_Session
             btnUploadMaterials.Visible = false;
             btnViewMaterials.Visible = false;
             btnRateTutor.Visible = false;
+            btnWithdraw.Visible = false;
+            btnReadExpectations.Visible = false;
 
             sessionCategory = category;
             loggedInUserId = userId;
             sessionId = sessionData.SessionId;
             this.isTutor = isTutor;
             this.sessionData = sessionData;
+
+            if (sessionData.SessionStatus == "Completed")
+            {
+                category = "Completed";
+            }
+            else if (sessionData.SessionStatus == "Cancelled")
+            {
+                category = "Cancelled";
+            }
+
             editSessionCallback = editCallback;
             LoadConfirmedTutors();
 
@@ -218,15 +230,23 @@ namespace Study_Session
                 return;
             }
 
-            SessionActivityForm ratingForm = new SessionActivityForm(sessionData, studentId, "Rate");
+            Student student = repository.GetStudentById(loggedInUserId);
+
+            if (student == null)
+            {
+                MessageBox.Show("Student information not found.");
+                return;
+            }
+
+            SessionActivityForm ratingForm = new SessionActivityForm(sessionData, studentId, "Rate", student);
             ratingForm.ShowDialog();
         }
 
         private void btnUploadMaterials_Click(object sender, EventArgs e)
         {
-            UserRepository repository = new UserRepository();
+            UserRepository userRepository = new UserRepository();
 
-            int studentId = repository.GetStudentIdByUserId(loggedInUserId);
+            int studentId = userRepository.GetStudentIdByUserId(loggedInUserId);
 
             if (studentId <= 0)
             {
@@ -234,8 +254,17 @@ namespace Study_Session
                 return;
             }
 
-            SessionActivityForm activityForm = new SessionActivityForm(sessionData, studentId, "Upload");
-            activityForm.ShowDialog();
+            Student student = userRepository.GetStudentById(loggedInUserId);
+
+            if (student == null)
+            {
+                MessageBox.Show("Student information not found.");
+                return;
+            }
+
+            SessionActivityForm uploadForm = new SessionActivityForm(sessionData, studentId, "Upload", student);
+
+            uploadForm.ShowDialog();
         }
 
         private void btnViewMaterials_Click(object sender, EventArgs e)
