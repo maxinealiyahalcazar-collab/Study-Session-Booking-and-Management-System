@@ -333,7 +333,8 @@ namespace Study_Session
         private void LoadAvailableTutors()
         {
             availableTutors = sessionRepository.GetAvailableTutors(loggedInUserId);
-            DisplayTutorList(txtSearchTutor.Text);
+            
+            List(txtSearchTutor.Text);
 
         }
         private void DisplayTutorList(string searchText)

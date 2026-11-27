@@ -849,7 +849,7 @@ namespace Study_Session
 
                 int sessionId = Convert.ToInt32(row["sessionId"]);
                 int sessionTutorId = Convert.ToInt32(row["sessionTutorId"]);
-
+             
                 btnAccept.Click += (sender, e) =>
                 {
                     DialogResult confirm = MessageBox.Show(
@@ -861,6 +861,16 @@ namespace Study_Session
 
                     if (confirm == DialogResult.Yes)
                     {
+                        if (userRepository.HasStudentBookingForSession(loggedInUserId, sessionId))
+                        {
+                            MessageBox.Show("You already joined this session as a student. You cannot accept the tutor request.", "Cannot Accept Request",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning
+                            );
+
+                            return;
+                        }
+
                         bool success = loggedInTutor.acceptTutorRequest(sessionTutorId, userRepository);
 
                         if (success)
@@ -875,6 +885,7 @@ namespace Study_Session
                             MessageBox.Show("Tutor request accepted!");
                             LoadTutorRequests();
                         }
+
                         else
                         {
                             MessageBox.Show("Unable to accept this request.");
