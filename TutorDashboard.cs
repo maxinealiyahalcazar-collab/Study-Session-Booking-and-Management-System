@@ -194,6 +194,8 @@ namespace Study_Session
             flpOngoingSessions.Controls.Clear();
             flpCompletedSessions.Controls.Clear();
 
+            DateTime now = DateTime.Now;
+
             foreach (Session session in tutorSessions)
             {
              
@@ -203,18 +205,22 @@ namespace Study_Session
                 {
                     category = "Completed";
                 }
+
                 else if (session.SessionStatus == "Cancelled")
                 {
                     continue;
                 }
-                else if (DateTime.Now < session.StartDateTime)
+
+                else if (now < session.StartDateTime)
                 {
                     category = "Upcoming";
                 }
-                else if (DateTime.Now <= session.EndDateTime)
+
+                else if (now <= session.EndDateTime)
                 {
                     category = "Ongoing";
                 }
+
                 else
                 {
                     category = "Completed";
@@ -235,6 +241,7 @@ namespace Study_Session
                     flpCompletedSessions.Controls.Add(sessionCard);
                 }
             }
+        }
         }
 
         private Panel CreateSessionCard(Session session)
