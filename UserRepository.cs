@@ -524,7 +524,7 @@ namespace Study_Session
                 FROM sessionTutor st INNER JOIN session s ON st.sessionId = s.sessionId LEFT JOIN `user` u ON
                 (s.creatorStudentId IS NOT NULL AND u.userId = (SELECT userId FROM student WHERE studentId = s.creatorStudentId))
                 OR (s.creatorTutorId IS NOT NULL AND u.userId = (SELECT userId FROM tutor WHERE tutorId = s.creatorTutorId))
-                WHERE st.tutorId = @tutorId AND st.requestStatus = 'Pending' ORDER BY s.startDateTime ASC";
+                WHERE st.tutorId = @tutorId AND st.requestStatus = 'Pending' AND s.sessionStatus != 'Cancelled' ORDER BY s.startDateTime ASC";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {

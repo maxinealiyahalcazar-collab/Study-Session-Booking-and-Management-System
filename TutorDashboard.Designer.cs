@@ -1021,13 +1021,13 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1178, 644);
             Controls.Add(pnlSideBar);
+            Controls.Add(pnlCreateSession);
             Controls.Add(pnlMySessions);
             Controls.Add(pnlMyProfile);
             Controls.Add(pnlReviews);
             Controls.Add(pnlMainMenu);
             Controls.Add(pnlRequests);
             Controls.Add(pnlBrowseSession);
-            Controls.Add(pnlCreateSession);
             Margin = new Padding(4);
             Name = "TutorDashboard";
             Text = "TutorDashboard";

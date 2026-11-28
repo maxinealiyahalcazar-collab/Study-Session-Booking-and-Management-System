@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySqlX.XDevAPI;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -52,8 +53,8 @@ namespace Study_Session
             editSessionCallback = editCallback;
             LoadConfirmedTutors();
 
-            btnRateTutor.Visible = category == "Completed";
-            btnUploadMaterials.Visible = category == "Completed";
+            btnRateTutor.Visible = !isTutor && category == "Completed";
+            btnUploadMaterials.Visible = !isTutor && category == "Completed";
             btnViewMaterials.Visible = category == "Completed";
 
             lblSubject.Text = sessionData.Subject;
@@ -83,7 +84,7 @@ namespace Study_Session
                 isCreator = sessionData.CreatorStudentId == studentId;
             }
 
-
+           
             if (sessionCategory == "Upcoming")
             {
                 btnEditSession.Visible = isCreator;
@@ -91,10 +92,15 @@ namespace Study_Session
                 btnReadExpectations.Visible = isTutor;
 
                 if (isTutor)
-                    btnWithdraw.Visible = !isCreator;
+                {
+                    bool hasAcceptedSession = sessionRepository.HasAcceptedTutorSession(loggedInUserId, sessionId);
+                    btnWithdraw.Visible = !isCreator && hasAcceptedSession; 
+                }
+
                 else
                     btnCancelBooking.Visible = !isCreator;
             }
+
 
             else if (sessionCategory == "Ongoing")
             {
@@ -103,12 +109,12 @@ namespace Study_Session
 
             else if (sessionCategory == "Completed")
             {
-                btnViewMaterials.Visible = true;
+                btnViewMaterials.Visible = sessionData.SessionStatus == "Completed";
 
                 if (!isTutor)
                 {
-                    btnUploadMaterials.Visible = true;
-                    btnRateTutor.Visible = true;
+                    btnUploadMaterials.Visible = sessionData.SessionStatus == "Completed";
+                    btnRateTutor.Visible = sessionData.SessionStatus == "Completed";
                 }
             }
         }

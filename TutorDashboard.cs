@@ -37,6 +37,8 @@ namespace Study_Session
             LoadTutorRequestCount();
             LoadTutorAverageRating();
             LoadTutorNotifications();
+
+            dtpSessionDate.MinDate = DateTime.Today;
         }
 
         private void HideAllPanels()
@@ -184,6 +186,8 @@ namespace Study_Session
         private void LoadTutorSessions()
         {
             sessionRepository.CancelUnderstaffedSessions();
+            sessionRepository.UpdateOngoingSessions();
+
             List<Session> tutorSessions = sessionRepository.GetTutorMySessions(loggedInTutor.UserId);
 
             flpUpcomingSessions.Controls.Clear();
@@ -192,27 +196,44 @@ namespace Study_Session
 
             foreach (Session session in tutorSessions)
             {
+             
                 string category = "";
 
-                if (DateTime.Now < session.StartDateTime)
-                    category = "Upcoming";
-
-                else if (DateTime.Now <= session.EndDateTime)
-                    category = "Ongoing";
-
-                else
+                if (session.SessionStatus == "Completed")
+                {
                     category = "Completed";
+                }
+                else if (session.SessionStatus == "Cancelled")
+                {
+                    continue;
+                }
+                else if (DateTime.Now < session.StartDateTime)
+                {
+                    category = "Upcoming";
+                }
+                else if (DateTime.Now <= session.EndDateTime)
+                {
+                    category = "Ongoing";
+                }
+                else
+                {
+                    category = "Completed";
+                }
 
                 Panel sessionCard = CreateSessionCard(session);
 
                 if (category == "Upcoming")
+                {
                     flpUpcomingSessions.Controls.Add(sessionCard);
-
+                }
                 else if (category == "Ongoing")
+                {
                     flpOngoingSessions.Controls.Add(sessionCard);
-
-                else
+                }
+                else if (category == "Completed")
+                {
                     flpCompletedSessions.Controls.Add(sessionCard);
+                }
             }
         }
 
@@ -261,14 +282,26 @@ namespace Study_Session
 
             string category = "";
 
-            if (DateTime.Now < session.StartDateTime)
-                category = "Upcoming";
-
-            else if (DateTime.Now <= session.EndDateTime)
-                category = "Ongoing";
-
-            else
+            if (session.SessionStatus == "Completed")
+            {
                 category = "Completed";
+            }
+            else if (session.SessionStatus == "Cancelled")
+            {
+                category = "Cancelled";
+            }
+            else if (DateTime.Now < session.StartDateTime)
+            {
+                category = "Upcoming";
+            }
+            else if (DateTime.Now <= session.EndDateTime)
+            {
+                category = "Ongoing";
+            }
+            else
+            {
+                category = "Completed";
+            }
 
             btnView.Click += (sender, e) =>
             {
@@ -306,11 +339,6 @@ namespace Study_Session
                 return;
             }
 
-            if (numRequiredTutors.Value <= 0)
-            {
-                MessageBox.Show("Please enter at least one tutor.");
-                return;
-            }
 
             DateTime selectedDate = dtpSessionDate.Value.Date;
 
@@ -335,12 +363,6 @@ namespace Study_Session
                 if (editingSession == null)
                 {
                     MessageBox.Show("Unable to find the study session.");
-                    return;
-                }
-
-                if (selectedTutorIds.Count != Convert.ToInt32(numRequiredTutors.Value))
-                {
-                    MessageBox.Show("Please select the required number of additional tutors.");
                     return;
                 }
 
@@ -393,6 +415,7 @@ namespace Study_Session
                     btnSubmitSession.Text = "Create Session";
 
                     LoadTutorSessions();
+                    return;
                 }
                 else
                 {
@@ -741,6 +764,16 @@ namespace Study_Session
 
                     if (confirm == DialogResult.Yes)
                     {
+                        if (userRepository.HasStudentBookingForSession(loggedInUserId, session.SessionId))
+                        {
+                            MessageBox.Show("You already joined this session as a student. You cannot take it as a tutor.",
+                                "Cannot Take Session",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning
+                            );
+
+                            return;
+                        }
                         bool success = loggedInTutor.takeSession(session, sessionRepository);
 
                         if (success)

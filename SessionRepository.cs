@@ -181,9 +181,8 @@ namespace Study_Session
                 COUNT(b.bookingId) AS occupiedSlots, (s.slots - COUNT(b.bookingId)) AS availableSlots, (SELECT COUNT(*) FROM booking wb WHERE wb.sessionId = s.sessionId AND wb.bookingStatus = 'Waitlisted') AS waitlistedCount FROM session s LEFT JOIN booking b ON s.sessionId = b.sessionId
                 AND b.bookingStatus IN ('Accepted', 'Pending') WHERE s.sessionStatus IN ('Open', 'Full') AND s.startDateTime > NOW() AND NOT (s.slots <= (SELECT COUNT(*) FROM booking ab WHERE ab.sessionId = s.sessionId
                 AND ab.bookingStatus IN ('Accepted', 'Pending')) AND (SELECT COUNT(*) FROM booking wb WHERE wb.sessionId = s.sessionId AND wb.bookingStatus = 'Waitlisted') >= 3) AND NOT EXISTS (SELECT 1 FROM student st
-                WHERE st.studentId = s.creatorStudentId AND st.userId = @userId) AND NOT EXISTS (SELECT 1 FROM tutor t WHERE t.tutorId = s.creatorTutorId AND t.userId = @userId) AND NOT EXISTS (SELECT 1
-                FROM booking myBooking INNER JOIN student myStudent ON myBooking.studentId = myStudent.studentId WHERE myBooking.sessionId = s.sessionId AND myStudent.userId = @userId
-                AND myBooking.bookingStatus IN ('Accepted', 'Pending', 'Waitlisted')) AND NOT EXISTS (SELECT 1 FROM sessionTutor st INNER JOIN tutor t ON st.tutorId = t.tutorId
+                WHERE st.studentId = s.creatorStudentId AND st.userId = @userId) AND NOT EXISTS (SELECT 1 FROM tutor t WHERE t.tutorId = s.creatorTutorId AND t.userId = @userId) AND NOT EXISTS (SELECT 1 FROM booking myBooking
+                INNER JOIN student myStudent ON myBooking.studentId = myStudent.studentId WHERE myBooking.sessionId = s.sessionId AND myStudent.userId = @userId) AND NOT EXISTS (SELECT 1 FROM sessionTutor st INNER JOIN tutor t ON st.tutorId = t.tutorId
                 WHERE st.sessionId = s.sessionId AND t.userId = @userId AND st.requestStatus = 'Accepted') GROUP BY s.sessionId, s.subject, s.topic, s.startDateTime, s.endDateTime, s.slots, s.requiredTutors, 
                 s.location, s.creatorStudentId, s.creatorTutorId, s.sessionStatus ORDER BY s.startDateTime ASC";
 
@@ -226,8 +225,9 @@ namespace Study_Session
                 WHERE s.requiredTutors > 0 AND s.sessionStatus IN ('Open', 'Full') AND s.startDateTime > NOW() AND NOT EXISTS (SELECT 1 FROM student st 
                 WHERE st.studentId = s.creatorStudentId AND st.userId = @userId) AND NOT EXISTS (SELECT 1 FROM tutor t WHERE t.tutorId = s.creatorTutorId AND t.userId = @userId) 
                 AND NOT EXISTS (SELECT 1 FROM sessionTutor st INNER JOIN tutor t ON st.tutorId = t.tutorId
-                WHERE st.sessionId = s.sessionId AND t.userId = @userId AND st.requestStatus = 'Accepted')
-                HAVING acceptedTutors < requiredTutors
+                WHERE st.sessionId = s.sessionId AND t.userId = @userId AND st.requestStatus IN ('Accepted', 'Withdrawn')) AND NOT EXISTS (SELECT 1 FROM booking b
+                INNER JOIN student st ON b.studentId = st.studentId WHERE b.sessionId = s.sessionId AND st.userId = @userId
+                AND b.bookingStatus IN ('Accepted', 'Pending', 'Waitlisted')) HAVING acceptedTutors < requiredTutors
                 ORDER BY s.startDateTime ASC";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -292,6 +292,22 @@ namespace Study_Session
 
                     connection.Open();
                     return command.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        public void UpdateOngoingSessions()
+        {
+            string query = @"UPDATE session SET sessionStatus = 'Ongoing' WHERE sessionStatus IN ('Open', 'Full')
+            AND startDateTime <= NOW() AND endDateTime > NOW();";
+
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.ExecuteNonQuery();
                 }
             }
         }
@@ -379,8 +395,11 @@ namespace Study_Session
 
             using (MySqlConnection connection = Database.GetConnection())
             {
-                string query = @"SELECT s.sessionId FROM session s WHERE s.sessionStatus != 'Cancelled' AND s.startDateTime <= NOW() AND (SELECT COUNT(*) FROM sessionTutor st WHERE 
-                st.sessionId = s.sessionId AND st.requestStatus = 'Accepted') < GREATEST(COALESCE(s.requiredTutors, 0), 1)";
+                string query = @"SELECT s.sessionId FROM session s WHERE s.sessionStatus NOT IN ('Cancelled', 'Completed')
+                AND s.startDateTime <= NOW() AND ((COALESCE(s.requiredTutors, 0) > 0
+                AND (SELECT COUNT(*) FROM sessionTutor st WHERE st.sessionId = s.sessionId AND st.requestStatus = 'Accepted'
+                ) < COALESCE(s.requiredTutors, 0)) OR (s.creatorTutorId IS NOT NULL AND (SELECT COUNT(*) FROM booking b
+                WHERE b.sessionId = s.sessionId AND b.bookingStatus IN ('Accepted', 'Pending')) = 0))";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -425,7 +444,7 @@ namespace Study_Session
 
                     foreach (int userId in participantUserIds)
                     {
-                        userRepository.AddNotification(userId, "The session '" + session.Topic + "' has been cancelled because it did not have enough accepted tutors.");
+                        userRepository.AddNotification(userId, "The session '" + session.Topic + "' has been cancelled because it did not meet the session requirements.");
                     }
                 }
             }
@@ -564,10 +583,8 @@ namespace Study_Session
                 {
                     try
                     {
-                        string selectQuery = @"
-                    SELECT tutorId, requestStatus
-                    FROM sessionTutor
-                    WHERE sessionId = @sessionId";
+                        string selectQuery = @"SELECT tutorId, requestStatus FROM sessionTutor
+                        WHERE sessionId = @sessionId";
 
                         DataTable existingTutors = new DataTable();
 
@@ -888,19 +905,61 @@ namespace Study_Session
                             }
                         }
 
+                        string existingQuery = @"SELECT requestStatus FROM sessionTutor WHERE sessionId = @sessionId
+                        AND tutorId = @tutorId";
+
+                        string existingStatus = null;
+
+                        using (MySqlCommand command = new MySqlCommand(existingQuery, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@sessionId", session.SessionId);
+                            command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
+
+                            object result = command.ExecuteScalar();
+
+                            if (result != null)
+                            {
+                                existingStatus = result.ToString();
+                            }
+                        }
+
+                        if (existingStatus == "Accepted")
+                        {
+                            transaction.Rollback();
+                            return false;
+                        }
+
                         if (acceptedTutors >= requiredTutors)
                         {
                             transaction.Rollback();
                             return false;
                         }
 
-                        string insertQuery = @"INSERT INTO sessionTutor (sessionId, tutorId, requestStatus) VALUES (@sessionId, @tutorId, 'Accepted')";
-
-                        using (MySqlCommand command = new MySqlCommand(insertQuery, connection, transaction))
+                        if (existingStatus != null)
                         {
-                            command.Parameters.AddWithValue("@sessionId", session.SessionId);
-                            command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
-                            command.ExecuteNonQuery();
+                            
+                            string updateQuery = @"UPDATE sessionTutor SET requestStatus = 'Accepted' WHERE sessionId = @sessionId
+                            AND tutorId = @tutorId";
+
+                            using (MySqlCommand command = new MySqlCommand(updateQuery, connection, transaction))
+                            {
+                                command.Parameters.AddWithValue("@sessionId", session.SessionId);
+                                command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
+                                command.ExecuteNonQuery();
+                            }
+                        }
+                        else
+                        {
+                           
+                            string insertQuery = @"INSERT INTO sessionTutor (sessionId, tutorId, requestStatus) VALUES
+                            (@sessionId, @tutorId, 'Accepted')";
+
+                            using (MySqlCommand command = new MySqlCommand(insertQuery, connection, transaction))
+                            {
+                                command.Parameters.AddWithValue("@sessionId", session.SessionId);
+                                command.Parameters.AddWithValue("@tutorId", tutor.TutorId);
+                                command.ExecuteNonQuery();
+                            }
                         }
 
                         transaction.Commit();
@@ -912,6 +971,27 @@ namespace Study_Session
                         transaction.Rollback();
                         throw;
                     }
+                }
+            }
+        }
+
+        public bool HasAcceptedTutorSession(int userId, int sessionId)
+        {
+            using (MySqlConnection connection = Database.GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT COUNT(*) FROM sessionTutor st INNER JOIN tutor t ON st.tutorId = t.tutorId WHERE t.userId = @userId
+                AND st.sessionId = @sessionId AND st.requestStatus = 'Accepted'";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@userId", userId);
+                    command.Parameters.AddWithValue("@sessionId", sessionId);
+
+                    int count = Convert.ToInt32(command.ExecuteScalar());
+
+                    return count > 0;
                 }
             }
         }

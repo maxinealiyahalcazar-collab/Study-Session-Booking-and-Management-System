@@ -269,6 +269,7 @@ namespace Study_Session
                         pnlCreateSession.Visible = false;
 
                         LoadMySessions();
+                        return;
                     }
 
                     else
@@ -334,7 +335,7 @@ namespace Study_Session
         {
             availableTutors = sessionRepository.GetAvailableTutors(loggedInUserId);
             
-            List(txtSearchTutor.Text);
+            DisplayTutorList(txtSearchTutor.Text);
 
         }
         private void DisplayTutorList(string searchText)
@@ -830,6 +831,7 @@ namespace Study_Session
         private void LoadMySessions()
         {
             sessionRepository.CancelUnderstaffedSessions();
+            sessionRepository.UpdateOngoingSessions();
 
             List<Session> sessions = loggedInStudent.viewMySessions();
 
@@ -853,7 +855,11 @@ namespace Study_Session
                 }
                 else if (status == "Cancelled")
                 {
-
+                    continue;
+                }
+                else if (status == "Ongoing")
+                {
+                    flpOngoingSessions.Controls.Add(CreateSessionCard(session));
                 }
                 else if (now < start)
                 {
